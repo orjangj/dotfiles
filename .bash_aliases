@@ -50,3 +50,5 @@ alias gstl='git stash list'
 alias gstp='git stash pop'
 alias gsu='git submodule update'
 alias gsuir='git submodule update --init --recursive'
+
+alias config='/usr/bin/git --git-dir=$HOME/dotfiles/ --work-tree=$HOME'
