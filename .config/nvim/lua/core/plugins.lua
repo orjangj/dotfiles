@@ -87,7 +87,10 @@ return packer.startup(function(use)
 	-- Git
 	use({ "lewis6991/gitsigns.nvim" })
   -- Colorizer
-  use({ "norcalli/nvim-colorizer.lua"})
+  use({ "norcalli/nvim-colorizer.lua" })
+
+  use({ "ludovicchabant/vim-gutentags" })
+
 	-- Automatically set up your configuration after cloning packer.nvim
 	-- Put this at the end after all plugins
 	if PACKER_BOOTSTRAP then

@@ -79,12 +79,12 @@ local opts = {
 }
 
 local mappings = {
-  ["a"] = { "<cmd>Alpha<cr>", "Alpha" },
+  ["a"] = { "<cmd>Alpha<cr>", "Main Menu" },
   ["c"] = { "<cmd>Bdelete!<CR>", "Close Buffer" },
   ["e"] = { "<cmd>NvimTreeToggle<cr>", "Explorer" },
   ["h"] = { "<cmd>nohlsearch<CR>", "No Highlight" },
   ["q"] = { "<cmd>q!<CR>", "Quit" },
-  ["w"] = { "<cmd>w!<CR>", "Save" },
+  ["w"] = { "<cmd>w!<CR>", "Save Buffer" },
 
   p = {
     name = "Packer",
@@ -117,18 +117,18 @@ local mappings = {
     b = { "<cmd>lua require('telescope.builtin').buffers(require('telescope.themes').get_dropdown{previewer = false})<cr>", "Buffers" },
     c = { "<cmd>Telescope commands<cr>", "Commands" },
     f = { "<cmd>Telescope find_files find_command=rg,--files,--hidden,--glob,!.git <cr>", "Files" },
-    g = { "<cmd>Telescope live_grep theme=ivy<cr>", "Grep" },
-    h = { "<cmd>Telescope help_tags<cr>", "Help" },
-    k = { "<cmd>Telescope keymaps<cr>", "Keymaps" },
-    m = { "<cmd>Telescope man_pages<cr>", "Man Pages" },
+    g = { "<cmd>Telescope live_grep theme=ivy<cr>", "Ripgrep" },
     p = { "<cmd>lua require('telescope').extensions.projects.projects()<cr>", "Projects" },
-    r = { "<cmd>Telescope registers<cr>", "Registers" },
+    r = { "<cmd>Telescope lsp_references<cr>", "References" },
+    s = { "<cmd>Telescope current_buffer_fuzzy_find<cr>", "String" },
+    t = { "<cmd>Telescope tags<cr>", "Tags"},
+    z = { "<cmd>Telescope spell_suggest<cr>", "Spelling" },
   },
 
   l = {
     name = "LSP",
     a = { "<cmd>lua vim.lsp.buf.code_action()<cr>", "Code Action" },
-    d = { "<cmd>Telescope diagnostics bufnr=0<cr>", "Document Diagnostics" },
+    d = { "<cmd>Telescope diagnostics bufnr=0<cr>", "Diagnostics" },
     f = { "<cmd>lua vim.lsp.buf.format{async=true}<cr>", "Format Buffer" },
     i = { "<cmd>LspInfo<cr>", "List Clients" },
     I = { "<cmd>LspInstallInfo<cr>", "Installer Info" },
@@ -148,7 +148,6 @@ local mappings = {
     h = { "<cmd>ToggleTerm size=10 direction=horizontal<cr>", "Horizontal" },
     p = { "<cmd>lua _PYTHON_TOGGLE()<cr>", "Python" },
     t = { "<cmd>lua _HTOP_TOGGLE()<cr>", "Htop" },
-    u = { "<cmd>lua _NCDU_TOGGLE()<cr>", "NCDU" },
     v = { "<cmd>ToggleTerm size=80 direction=vertical<cr>", "Vertical" },
   },
 }
