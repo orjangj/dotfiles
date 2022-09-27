@@ -114,14 +114,17 @@ local mappings = {
 
   f = {
     name = "Find",
-    b = { "<cmd>lua require('telescope.builtin').buffers(require('telescope.themes').get_dropdown{previewer = false})<cr>", "Buffers" },
+    b = {
+      "<cmd>lua require('telescope.builtin').buffers(require('telescope.themes').get_dropdown{previewer = false})<cr>",
+      "Buffers",
+    },
     c = { "<cmd>Telescope commands<cr>", "Commands" },
     f = { "<cmd>Telescope find_files find_command=rg,--files,--hidden,--glob,!.git <cr>", "Files" },
     g = { "<cmd>Telescope live_grep theme=ivy<cr>", "Ripgrep" },
     p = { "<cmd>lua require('telescope').extensions.projects.projects()<cr>", "Projects" },
     r = { "<cmd>Telescope lsp_references<cr>", "References" },
     s = { "<cmd>Telescope current_buffer_fuzzy_find<cr>", "String" },
-    t = { "<cmd>Telescope tags<cr>", "Tags"},
+    t = { "<cmd>Telescope tags<cr>", "Tags" },
     z = { "<cmd>Telescope spell_suggest<cr>", "Spelling" },
   },
 
@@ -129,7 +132,7 @@ local mappings = {
     name = "LSP",
     a = { "<cmd>lua vim.lsp.buf.code_action()<cr>", "Code Action" },
     d = { "<cmd>Telescope diagnostics bufnr=0<cr>", "Diagnostics" },
-    f = { "<cmd>lua vim.lsp.buf.format{async=true}<cr>", "Format Buffer" },
+    f = { "<cmd>lua vim.lsp.buf.formatting()<cr>", "Format Buffer" },
     i = { "<cmd>LspInfo<cr>", "List Clients" },
     I = { "<cmd>LspInstallInfo<cr>", "Installer Info" },
     j = { "<cmd>lua vim.diagnostic.goto_next()<CR>", "Next Diagnostic" },

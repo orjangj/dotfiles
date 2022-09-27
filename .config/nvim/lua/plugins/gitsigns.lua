@@ -45,4 +45,10 @@ gitsigns.setup {
   yadm = {
     enable = false,
   },
+  worktrees = {
+    {
+      toplevel = vim.env.HOME,
+      gitdir = vim.env.HOME .. '/dotfiles' -- dotfiles bare repo
+    }
+  },
 }
