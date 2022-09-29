@@ -36,7 +36,7 @@ local setup = {
   icons = {
     breadcrumb = "»", -- symbol used in the command line area that shows your active key combo
     separator = "➜", -- symbol used between a key and it's label
-    group = "+", -- symbol prepended to a group
+    group = "", -- symbol prepended to a group
   },
   popup_mappings = {
     scroll_down = "<c-d>", -- binding to scroll down inside the popup
@@ -87,7 +87,11 @@ local mappings = {
   ["w"] = { "<cmd>w!<CR>", "Save Buffer" },
   d = {
     name = "Diagnostics",
-    t = { "<cmd>TroubleToggle<cr>", "Trouble" }
+    d = { "<cmd>Telescope diagnostics bufnr=0<cr>", "Buffer Diagnostics" },
+    D = { "<cmd>Telescope diagnostics<cr>", "Workspace Diagnostics" },
+    j = { "<cmd>lua vim.diagnostic.goto_next()<CR>", "Next Diagnostic" },
+    k = { "<cmd>lua vim.diagnostic.goto_prev()<cr>", "Prev Diagnostic" },
+    t = { "<cmd>TroubleToggle<cr>", "Trouble" },
   },
   g = {
     name = "Git",
@@ -114,8 +118,8 @@ local mappings = {
       "Buffers",
     },
     c = { "<cmd>Telescope commands<cr>", "Commands" },
-    f = { "<cmd>Telescope find_files find_command=rg,--files,--hidden,--glob,!.git <cr>", "Files" },
-    g = { "<cmd>Telescope live_grep theme=ivy<cr>", "Ripgrep" },
+    f = { "<cmd>Telescope find_files<cr>", "Files" },
+    g = { "<cmd>Telescope live_grep<cr>", "Ripgrep" },
     p = { "<cmd>lua require('telescope').extensions.projects.projects()<cr>", "Projects" },
     r = { "<cmd>Telescope lsp_references<cr>", "References" },
     s = { "<cmd>Telescope current_buffer_fuzzy_find<cr>", "String" },
@@ -125,18 +129,13 @@ local mappings = {
   l = {
     name = "LSP",
     a = { "<cmd>lua vim.lsp.buf.code_action()<cr>", "Code Action" },
-    d = { "<cmd>Telescope diagnostics bufnr=0<cr>", "Diagnostics" },
+    A = { "<cmd>lua vim.lsp.codelens.run()<cr>", "CodeLens Action" },
     f = { "<cmd>lua vim.lsp.buf.formatting()<cr>", "Format Buffer" },
     i = { "<cmd>LspInfo<cr>", "List Clients" },
     I = { "<cmd>LspInstallInfo<cr>", "Installer Info" },
-    j = { "<cmd>lua vim.diagnostic.goto_next()<CR>", "Next Diagnostic" },
-    k = { "<cmd>lua vim.diagnostic.goto_prev()<cr>", "Prev Diagnostic" },
-    l = { "<cmd>lua vim.lsp.codelens.run()<cr>", "CodeLens Action" },
-    q = { "<cmd>lua vim.diagnostic.setloclist()<cr>", "Quickfix" },
     r = { "<cmd>lua vim.lsp.buf.rename()<cr>", "Rename" },
     s = { "<cmd>Telescope lsp_document_symbols<cr>", "Document Symbols" },
     S = { "<cmd>Telescope lsp_dynamic_workspace_symbols<cr>", "Workspace Symbols" },
-    w = { "<cmd>Telescope lsp_workspace_diagnostics<cr>", "Workspace Diagnostics" },
   },
   p = {
     name = "Packer",
@@ -148,10 +147,10 @@ local mappings = {
   },
   t = {
     name = "Terminal",
-    f = { "<cmd>ToggleTerm direction=float<cr>", "Float" },
     h = { "<cmd>ToggleTerm size=10 direction=horizontal<cr>", "Horizontal" },
     p = { "<cmd>lua _PYTHON_TOGGLE()<cr>", "Python" },
-    t = { "<cmd>lua _HTOP_TOGGLE()<cr>", "Htop" },
+    P = { "<cmd>lua _HTOP_TOGGLE()<cr>", "Htop" },
+    t = { "<cmd>ToggleTerm direction=float<cr>", "Float" },
     v = { "<cmd>ToggleTerm size=80 direction=vertical<cr>", "Vertical" },
   },
 }

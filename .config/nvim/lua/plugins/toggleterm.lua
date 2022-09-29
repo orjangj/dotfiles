@@ -40,21 +40,25 @@ vim.cmd('autocmd! TermOpen term://* lua set_terminal_keymaps()')
 
 local Terminal = require("toggleterm.terminal").Terminal
 local lazygit = Terminal:new({ cmd = "lazygit", hidden = true })
+local lazygit_dotfiles = Terminal:new({ cmd = "lazygit --git-dir=$HOME/dotfiles --work-tree=$HOME" })
 
 function _LAZYGIT_TOGGLE()
-	lazygit:toggle()
-end
+  -- Not sure if this is the best approach to figure out how to open lazygit for dotfiles as bare repo.
+  -- But it works... so why not, eh? Anyway, this only works for tracked files, so adding untracked files
+  -- still has to be done outside of nvim.
+  local is_dotfile="false"
+  local command = "git --git-dir=$HOME/dotfiles --work-tree=$HOME ls-files --error-unmatch " .. vim.api.nvim_buf_get_name(0) .. " > /dev/null && echo -n 'true' || echo -n 'false'"
+  local handle = io.popen(command)
+  if handle then
+    is_dotfile = handle:read("*a")
+    handle:close()
+  end
 
-local node = Terminal:new({ cmd = "node", hidden = true })
-
-function _NODE_TOGGLE()
-	node:toggle()
-end
-
-local ncdu = Terminal:new({ cmd = "ncdu", hidden = true })
-
-function _NCDU_TOGGLE()
-	ncdu:toggle()
+  if is_dotfile == "true" then
+    lazygit_dotfiles:toggle()
+  else
+	  lazygit:toggle()
+  end
 end
 
 local htop = Terminal:new({ cmd = "htop", hidden = true })
