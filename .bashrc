@@ -31,8 +31,14 @@ YELLOW="\[\033[00;33m\]"
 YELLOW_BOLD="\[\033[01;33m\]"
 BLUE="\[\033[00;34m\]"
 BLUE_BOLD="\[\033[01;34m\]"
-WHITE="\[\033[00;37m\]"
-WHITE_BOLD="\[\033[01;37m\]"
+MAGENTA="\[\033[00;35m\]"
+MAGENTA_BOLD="\[\033[01;35m\]"
+CYAN="\[\033[00;36m\]"
+CYAN_BOLD="\[\033[01;36m\]"
+WHITE="\[\033[00;97m\]"
+WHITE_BOLD="\[\033[01;97m\]"
+
+export VIRTUAL_ENV_DISABLE_PROMPT=1
 
 #parse_git_branch() {
 #    git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
@@ -62,7 +68,7 @@ git_prompt() {
         diverged=$(git rev-list origin/$branch --not $branch 2>/dev/null | wc -l)
 
         # Build the git prompt
-        prompt="($branch"
+        prompt="(git:$branch"
         if [ "$detached" = true ] ; then
             prompt="$prompt|detached|"
         else
@@ -80,8 +86,17 @@ git_prompt() {
     fi
 }
 
+virtual_prompt() {
+    local prompt=""
+    local venv
+    if [[ ! -z "${VIRTUAL_ENV}" ]]; then
+        venv=$(basename "$VIRTUAL_ENV")
+        prompt="(venv:${venv})"
+    fi
+    echo $prompt
+}
 
-PS1="${GREEN_BOLD}┌ ${USERNAME}@${HOSTNAME}${BLUE_BOLD} ➜ ${WORKDIR} ${YELLOW_BOLD}\$(git_prompt)\n${GREEN_BOLD}└┄ ${RESET}"
+PS1="${GREEN_BOLD}┌ ${USERNAME}@${HOSTNAME}${BLUE_BOLD} ➜ ${WORKDIR} ${YELLOW_BOLD}\$(git_prompt) ${MAGENTA_BOLD}\$(virtual_prompt)\n${GREEN_BOLD}└┄ ${RESET}"
 PS2="${YELLOW_BOLD}➜ ${RESET}"
 
 # Source aliases
@@ -153,4 +168,20 @@ export EDITOR="$VISUAL"
 #if type neofetch &> /dev/null; then
 #    neofetch
 #fi
+
+export PYENV_ROOT="$HOME/.pyenv"
+
+if [ -d "$PYENV_ROOT" ]; then
+    path_prepend "$PYENV_ROOT/bin"
+    if [ -n "$(type -t pyenv)" ] && [ "$(type -t pyenv)" = function ]; then
+        #    echo "pyenv is already initialized"
+        true
+    else
+        if type pyenv &> /dev/null; then
+            eval "$(pyenv init --path)"
+            eval "$(pyenv init -)"
+            eval "$(pyenv virtualenv-init -)"
+        fi
+    fi
+fi
 

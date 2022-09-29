@@ -14,6 +14,7 @@ require "plugins.impatient"
 require "plugins.indentline"
 require "plugins.lualine"
 require "plugins.lsp"
+--require "plugins.neorg" -- TODO: Requires nvim v0.8+ to operate
 require "plugins.nvim-tree"
 require "plugins.project"
 require "plugins.telescope"
