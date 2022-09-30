@@ -139,6 +139,11 @@ local mappings = {
     s = { "<cmd>Telescope lsp_document_symbols<cr>", "Document Symbols" },
     S = { "<cmd>Telescope lsp_dynamic_workspace_symbols<cr>", "Workspace Symbols" },
   },
+  n = {
+    name = "Notes",
+    n = { "<cmd>Neorg gtd capture<cr>", "New Task" },
+    v = { "<cmd>Neorg gtd views<cr>", "View Tasks" },
+  },
   p = {
     name = "Packer",
     c = { "<cmd>PackerCompile<cr>", "Compile" },

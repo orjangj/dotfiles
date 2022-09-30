@@ -76,7 +76,10 @@ return packer.startup(function(use)
   use({ "nvim-treesitter/nvim-treesitter" })
   use({ "lewis6991/gitsigns.nvim" })
   use({ "norcalli/nvim-colorizer.lua" })
-  -- use({ "nvim-neorg/neorg", run = ":Neorg sync-parsers" })
+  use({ "nvim-neorg/neorg",
+        requires = {{ "folke/zen-mode.nvim" }},
+        run = ":Neorg sync-parsers"
+  })
   -- Automatically set up your configuration after cloning packer.nvim
   -- Put this at the end after all plugins
   if PACKER_BOOTSTRAP then
