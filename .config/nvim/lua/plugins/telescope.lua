@@ -87,10 +87,14 @@ telescope.setup {
     },
   },
   extensions = {
-    -- Your extension configuration goes here:
-    -- extension_name = {
-    --   extension_config_key = value,
-    -- }
-    -- please take a look at the readme of the extension you want to configure
-  },
+    recent_files = {
+      only_cwd = true,
+    },
+  }
 }
+
+-- To get extensions loaded with telescope, we need to call load_extension,
+-- somewhere after setup function
+require("telescope").load_extension("fzf")
+require("telescope").load_extension("glyph")
+require("telescope").load_extension("recent_files")
