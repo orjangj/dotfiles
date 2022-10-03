@@ -56,7 +56,7 @@ local setup = {
     align = "left", -- align columns left, center or right
   },
   ignore_missing = true, -- enable this to hide mappings for which you didn't specify a label
-  hidden = { "<silent>", "<cmd>", "<Cmd>", "<CR>", "call", "lua", "^:", "^ " }, -- hide mapping boilerplate
+  hidden = { "<silent>", "<cmd>", "<Cmd>", "<cr>", "call", "lua", "^:", "^ " }, -- hide mapping boilerplate
   show_help = true, -- show help message on the command line when the popup is visible
   triggers = "auto", -- automatically setup triggers
   -- triggers = {"<leader>"} -- or specify a list manually
@@ -79,17 +79,18 @@ local opts = {
 }
 
 local mappings = {
-  ["c"] = { "<cmd>Bdelete!<CR>", "Close Buffer" },
+  ["c"] = { "<cmd>Bdelete!<cr>", "Close Buffer" },
   ["e"] = { "<cmd>NvimTreeToggle<cr>", "Explorer" },
-  ["h"] = { "<cmd>nohlsearch<CR>", "No Highlight" },
+  ["h"] = { "<cmd>nohlsearch<cr>", "No Highlight" },
   ["m"] = { "<cmd>Alpha<cr>", "Main Menu" },
-  ["q"] = { "<cmd>q!<CR>", "Quit" },
-  ["w"] = { "<cmd>w!<CR>", "Save Buffer" },
+  ["q"] = { "<cmd>q!<cr>", "Quit" },
+  ["w"] = { "<cmd>w!<cr>", "Save Buffer" },
+  ["z"] = { "<cmd>ZenMode<cr>", "Zen Mode" },
   d = {
     name = "Diagnostics",
     d = { "<cmd>Telescope diagnostics bufnr=0<cr>", "Buffer Diagnostics" },
     D = { "<cmd>Telescope diagnostics<cr>", "Workspace Diagnostics" },
-    j = { "<cmd>lua vim.diagnostic.goto_next()<CR>", "Next Diagnostic" },
+    j = { "<cmd>lua vim.diagnostic.goto_next()<cr>", "Next Diagnostic" },
     k = { "<cmd>lua vim.diagnostic.goto_prev()<cr>", "Prev Diagnostic" },
     t = { "<cmd>TroubleToggle<cr>", "Trouble" },
   },
@@ -98,10 +99,11 @@ local mappings = {
     b = { "<cmd>Telescope git_branches<cr>", "Checkout branch" },
     c = { "<cmd>Telescope git_commits<cr>", "Checkout commit" },
     d = { "<cmd>Gitsigns diffthis HEAD<cr>", "Diff" },
-    g = { "<cmd>lua _LAZYGIT_TOGGLE()<CR>", "Lazygit" },
+    g = { "<cmd>lua _LAZYGIT_TOGGLE()<cr>", "Lazygit" },
     j = { "<cmd>lua require 'gitsigns'.next_hunk()<cr>", "Next Hunk" },
     k = { "<cmd>lua require 'gitsigns'.prev_hunk()<cr>", "Prev Hunk" },
-    l = { "<cmd>lua require 'gitsigns'.blame_line()<cr>", "Blame" },
+    l = { "<cmd>lua require 'gitsigns'.blame_line()<cr>", "Blame Line" },
+    L = { "<cmd>lua require 'gitsigns'.toggle_current_line_blame()<cr>", "Blame Toggle"},
     o = { "<cmd>Telescope git_status<cr>", "Open changed file" },
     p = { "<cmd>lua require 'gitsigns'.preview_hunk()<cr>", "Preview Hunk" },
     r = { "<cmd>lua require 'gitsigns'.reset_hunk()<cr>", "Reset Hunk" },
@@ -121,6 +123,8 @@ local mappings = {
     f = { "<cmd>Telescope find_files<cr>", "Files" },
     F = { "<cmd>lua require('telescope').extensions.recent_files.pick()<cr>", "Recent Files" },
     g = { "<cmd>Telescope glyph<cr>", "Glyphs" },
+    h = { "<cmd>Telescope help_tags<cr>", "Help Tags" },
+    m = { "<cmd>Telescope man_pages<cr>", "Man Pages" },
     p = { "<cmd>lua require('telescope').extensions.projects.projects()<cr>", "Projects" },
     r = { "<cmd>Telescope lsp_references<cr>", "References" },
     s = { "<cmd>Telescope live_grep<cr>", "Workspace Search" },
@@ -132,16 +136,19 @@ local mappings = {
     name = "LSP",
     a = { "<cmd>lua vim.lsp.buf.code_action()<cr>", "Code Action" },
     A = { "<cmd>lua vim.lsp.codelens.run()<cr>", "CodeLens Action" },
-    f = { "<cmd>lua vim.lsp.buf.formatting()<cr>", "Format Buffer" },
+    f = { "<cmd>lua vim.lsp.buf.format{ async = true }<cr>", "Format Buffer" },
     i = { "<cmd>LspInfo<cr>", "List Clients" },
     I = { "<cmd>LspInstallInfo<cr>", "Installer Info" },
     r = { "<cmd>lua vim.lsp.buf.rename()<cr>", "Rename" },
     s = { "<cmd>Telescope lsp_document_symbols<cr>", "Document Symbols" },
     S = { "<cmd>Telescope lsp_dynamic_workspace_symbols<cr>", "Workspace Symbols" },
   },
+  -- TODO: neorg has a lot of default keybinds already, but they're not tracked by whichkey.
+  --       Is there a way to attach neorg keybinds to whichkey?
   n = {
     name = "Notes",
     n = { "<cmd>Neorg gtd capture<cr>", "New Task" },
+    p = { "<cmd>Neorg presenter start<cr>", "Start Presentation" },
     v = { "<cmd>Neorg gtd views<cr>", "View Tasks" },
   },
   p = {
@@ -160,6 +167,18 @@ local mappings = {
     t = { "<cmd>ToggleTerm direction=float<cr>", "Float" },
     v = { "<cmd>ToggleTerm size=80 direction=vertical<cr>", "Vertical" },
   },
+  T = {
+    name = "Test",
+    a = { "<cmd>lua require('neotest').run.attach()<cr>", "Attach" },
+    d = { "<cmd>lua require('neotest').run.run({ strategy = 'dap' })<cr>", "Debug" },
+    f = { "<cmd>lua require('neotest').run.run(vim.fn.expand('%'))<cr>", "File" },
+    j = { "<cmd>lua require('neotest').jump.next({ status = 'failed' })<cr>", "Next Failed Test" },
+    k = { "<cmd>lua require('neotest').jump.prev({ status = 'failed' })<cr>", "Prev Failed Test" },
+    r = { "<cmd>lua require('neotest').output.open()<cr>", "Results" },
+    s = { "<cmd>lua require('neotest').summary.toggle()<cr>", "Summary" },
+    t = { "<cmd>lua require('neotest').run.run()<cr>", "Nearest" },
+    w = { "<cmd>lua require('neotest').run.run(vim.fn.getcwd())<cr>", "Workspace" }
+  }
 }
 
 which_key.setup(setup)

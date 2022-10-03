@@ -42,6 +42,8 @@ packer.init({
 return packer.startup(function(use)
   use({ "wbthomason/packer.nvim" }) -- Allow packer to manage itself
   use({ "nvim-lua/plenary.nvim" }) -- Required by many plugins
+  use({ "nvim-treesitter/nvim-treesitter" })
+
   use({ "windwp/nvim-autopairs" })
   use({ "numToStr/Comment.nvim" })
   use({ "JoosepAlviste/nvim-ts-context-commentstring" })
@@ -58,27 +60,57 @@ return packer.startup(function(use)
   use({ "folke/which-key.nvim" })
   use({ "folke/trouble.nvim" })
   use({ "shaunsingh/nord.nvim" })
-  use({ "hrsh7th/nvim-cmp" })
-  use({ "hrsh7th/cmp-buffer" })
-  use({ "hrsh7th/cmp-path" })
-  use({ "saadparwaiz1/cmp_luasnip" })
-  use({ "hrsh7th/cmp-nvim-lsp" })
-  use({ "hrsh7th/cmp-nvim-lua" })
+
+  use({
+    "hrsh7th/nvim-cmp",
+    requires = {
+      { "hrsh7th/cmp-buffer" },
+      { "hrsh7th/cmp-path" },
+      { "hrsh7th/cmp-nvim-lsp" },
+      { "hrsh7th/cmp-nvim-lua" },
+      { "saadparwaiz1/cmp_luasnip" },
+    },
+  })
+
   use({ "L3MON4D3/LuaSnip" })
   use({ "rafamadriz/friendly-snippets" })
   use({ "neovim/nvim-lspconfig" })
   use({ "williamboman/nvim-lsp-installer" })
   use({ "jose-elias-alvarez/null-ls.nvim" })
-  use({ "nvim-telescope/telescope.nvim" })
-  use({ "nvim-telescope/telescope-fzf-native.nvim", run = "make" })
-  use({ "ghassan0/telescope-glyph.nvim" })
-  use({ "smartpde/telescope-recent-files" })
-  use({ "nvim-treesitter/nvim-treesitter" })
+
+  use({
+    "nvim-telescope/telescope.nvim",
+    requires = {
+      { "nvim-telescope/telescope-fzf-native.nvim", run = "make" },
+      { "ghassan0/telescope-glyph.nvim" },
+      { "smartpde/telescope-recent-files" },
+    },
+  })
+
   use({ "lewis6991/gitsigns.nvim" })
   use({ "norcalli/nvim-colorizer.lua" })
-  use({ "nvim-neorg/neorg",
-        requires = {{ "folke/zen-mode.nvim" }},
-        run = ":Neorg sync-parsers"
+
+  use({
+    "nvim-neotest/neotest",
+    requires = {
+      { "nvim-lua/plenary.nvim" },
+      { "nvim-treesitter/nvim-treesitter" },
+      { "antoinemadec/FixCursorHold.nvim" },
+      { "nvim-neotest/neotest-vim-test" },
+      { "nvim-neotest/neotest-python" },
+      { "nvim-neotest/neotest-plenary" },
+      { "vim-test/vim-test" },
+      { "mfussenegger/nvim-dap" },
+    },
+  })
+
+  use({
+    "nvim-neorg/neorg",
+    requires = {
+      { "folke/zen-mode.nvim" },
+      { "folke/twilight.nvim" },
+    },
+    run = ":Neorg sync-parsers",
   })
   -- Automatically set up your configuration after cloning packer.nvim
   -- Put this at the end after all plugins
