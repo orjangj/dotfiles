@@ -40,11 +40,22 @@ packer.init({
 
 -- Install plugins here
 return packer.startup(function(use)
+  -- Can be called like use({ ... }), but expects local plugin to be
+  -- available in path "~/projects/git/"
+  local local_use = function(plugin)
+    assert(vim.fn.isdirectory(vim.fn.expand("~/projects/git/" .. plugin[1])) == 1)
+    plugin[1] = vim.fn.expand("~/projects/git/" .. plugin[1])
+    use(plugin)
+  end
+
+  -- Local plugins
+  local_use({ "neotest-ctest" })
+
   use({ "wbthomason/packer.nvim" }) -- Allow packer to manage itself
   use({ "nvim-lua/plenary.nvim" }) -- Required by many plugins
   use({ "nvim-treesitter/nvim-treesitter" })
 
-  use({ "windwp/nvim-autopairs" })
+  use({ "windwp/nvim-autopairs" }) -- depends on cmp?
   use({ "numToStr/Comment.nvim" })
   use({ "JoosepAlviste/nvim-ts-context-commentstring" })
   use({ "kyazdani42/nvim-web-devicons" })
@@ -59,8 +70,8 @@ return packer.startup(function(use)
   use({ "goolord/alpha-nvim" })
   use({ "folke/which-key.nvim" })
   use({ "folke/trouble.nvim" })
-  use({ "shaunsingh/nord.nvim" })
 
+  -- Comletion and snippets
   use({
     "hrsh7th/nvim-cmp",
     requires = {
@@ -71,12 +82,17 @@ return packer.startup(function(use)
       { "saadparwaiz1/cmp_luasnip" },
     },
   })
-
   use({ "L3MON4D3/LuaSnip" })
   use({ "rafamadriz/friendly-snippets" })
-  use({ "neovim/nvim-lspconfig" })
-  use({ "williamboman/nvim-lsp-installer" })
-  use({ "jose-elias-alvarez/null-ls.nvim" })
+  use({ "folke/neodev.nvim" })
+
+  use({
+    "neovim/nvim-lspconfig",
+    requires = {
+      { "williamboman/nvim-lsp-installer" },
+      { "jose-elias-alvarez/null-ls.nvim" },
+    },
+  })
 
   use({
     "nvim-telescope/telescope.nvim",
@@ -87,23 +103,38 @@ return packer.startup(function(use)
     },
   })
 
+  -- Git integration
   use({ "lewis6991/gitsigns.nvim" })
+
+  -- Colorschemes
+  use({ "shaunsingh/nord.nvim" })
+  use({ "rmehri01/onenord.nvim" })
   use({ "norcalli/nvim-colorizer.lua" })
 
+  -- Debugging and testing
+  use({
+    "mfussenegger/nvim-dap",
+    requires = {
+      { "mfussenegger/nvim-dap-python" },
+      { "rcarriga/nvim-dap-ui" },
+      { "theHamsta/nvim-dap-virtual-text" },
+      { "nvim-telescope/telescope-dap.nvim" },
+      { "jbyuki/one-small-step-for-vimkind" },
+    },
+  })
   use({
     "nvim-neotest/neotest",
     requires = {
       { "nvim-lua/plenary.nvim" },
       { "nvim-treesitter/nvim-treesitter" },
       { "antoinemadec/FixCursorHold.nvim" },
-      { "nvim-neotest/neotest-vim-test" },
       { "nvim-neotest/neotest-python" },
       { "nvim-neotest/neotest-plenary" },
-      { "vim-test/vim-test" },
-      { "mfussenegger/nvim-dap" },
+      { "andythigpen/nvim-coverage" },
     },
   })
 
+  -- Organizational tools
   use({
     "nvim-neorg/neorg",
     requires = {

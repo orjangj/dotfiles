@@ -6,13 +6,13 @@ end
 local lspconfig = require("lspconfig")
 
 local servers = {
-  "ansiblels",
-  "bashls",
+--  "ansiblels",  -- requires node
+--  "bashls",  -- requires node
   "clangd",
   "cmake",
-  "dockerls",
-  "jsonls",
-  "pyright",
+--  "dockerls",  -- requires node
+--  "jsonls", -- requires node
+--  "pyright", -- requires node
   "sumneko_lua",
 }
 

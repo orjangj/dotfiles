@@ -79,6 +79,10 @@ local opts = {
 }
 
 local mappings = {
+  ["1"] = { "<cmd>ToggleTerm direction=float<cr>", "Terminal (float)" },
+  ["2"] = { "<cmd>ToggleTerm size=80 direction=vertical<cr>", "Terminal (vertical)" },
+  ["3"] = { "<cmd>lua _PYTHON_TOGGLE()<cr>", "Python" },
+  ["4"] = { "<cmd>lua _HTOP_TOGGLE()<cr>", "Htop" },
   ["c"] = { "<cmd>Bdelete!<cr>", "Close Buffer" },
   ["e"] = { "<cmd>NvimTreeToggle<cr>", "Explorer" },
   ["h"] = { "<cmd>nohlsearch<cr>", "No Highlight" },
@@ -128,7 +132,7 @@ local mappings = {
     p = { "<cmd>lua require('telescope').extensions.projects.projects()<cr>", "Projects" },
     r = { "<cmd>Telescope lsp_references<cr>", "References" },
     s = { "<cmd>Telescope live_grep<cr>", "Workspace Search" },
-    S = { "<cmd>Telescope current_buffer_fuzzy_find<cr>", "Buffer Search" },
+    S = { "<cmd>Telescope current_buffer_fuzzy_find theme=ivy<cr>", "Buffer Search" },
     t = { "<cmd>Telescope treesitter<cr>", "Treesitter" },
     z = { "<cmd>Telescope spell_suggest<cr>", "Spelling Suggestions" },
   },
@@ -143,10 +147,9 @@ local mappings = {
     s = { "<cmd>Telescope lsp_document_symbols<cr>", "Document Symbols" },
     S = { "<cmd>Telescope lsp_dynamic_workspace_symbols<cr>", "Workspace Symbols" },
   },
-  -- TODO: neorg has a lot of default keybinds already, but they're not tracked by whichkey.
-  --       Is there a way to attach neorg keybinds to whichkey?
   n = {
     name = "Notes",
+    -- TODO: These doesn't work when in a .norg file (conflicting keybinds with neorg)
     n = { "<cmd>Neorg gtd capture<cr>", "New Task" },
     p = { "<cmd>Neorg presenter start<cr>", "Start Presentation" },
     v = { "<cmd>Neorg gtd views<cr>", "View Tasks" },
@@ -160,24 +163,26 @@ local mappings = {
     z = { "<cmd>PackerSync<cr>", "Sync" },
   },
   t = {
-    name = "Terminal",
-    h = { "<cmd>ToggleTerm size=10 direction=horizontal<cr>", "Horizontal" },
-    p = { "<cmd>lua _PYTHON_TOGGLE()<cr>", "Python" },
-    P = { "<cmd>lua _HTOP_TOGGLE()<cr>", "Htop" },
-    t = { "<cmd>ToggleTerm direction=float<cr>", "Float" },
-    v = { "<cmd>ToggleTerm size=80 direction=vertical<cr>", "Vertical" },
-  },
-  T = {
     name = "Test",
+    -- TODO: Is there a way to specify test suite (namespace)?
     a = { "<cmd>lua require('neotest').run.attach()<cr>", "Attach" },
     d = { "<cmd>lua require('neotest').run.run({ strategy = 'dap' })<cr>", "Debug" },
+    -- NOTE: Currently relies on either (1) manually executing CoverageLoad, or execute neotest on entire workspace.
+    -- Not all adapters (i.e. pytest) makes it easy to isolate coverage report without knowing what modules are tested.
+    -- Maybe there's a more elegant solution here, but this seems to work quite well.
+    c = { "<cmd>lua require('coverage').summary()<cr>", "Coverage Summary"},
     f = { "<cmd>lua require('neotest').run.run(vim.fn.expand('%'))<cr>", "File" },
     j = { "<cmd>lua require('neotest').jump.next({ status = 'failed' })<cr>", "Next Failed Test" },
     k = { "<cmd>lua require('neotest').jump.prev({ status = 'failed' })<cr>", "Prev Failed Test" },
     r = { "<cmd>lua require('neotest').output.open()<cr>", "Results" },
     s = { "<cmd>lua require('neotest').summary.toggle()<cr>", "Summary" },
     t = { "<cmd>lua require('neotest').run.run()<cr>", "Nearest" },
-    w = { "<cmd>lua require('neotest').run.run(vim.fn.getcwd())<cr>", "Workspace" }
+    -- NOTE: Will produce error unless executed inside a file containing tests
+    -- To be able to execute this without having to go through a test file, the adapter option must be set.
+    -- The adapter arg expects "adapter_name:root_dir" as adapter_id. Might want to check if a lua function
+    -- can be used to figure this out based on e.g. file extension. Ex: python files would specify neotest-python.
+    -- example: lua require('neotest').run.run({ suite = true, adapter = 'neotest-python:/home/og/projects/personal/nvim-demo/python' })
+    w = { "<cmd>lua require('neotest').run.run({ suite = true })<cr><cmd>lua require('coverage').load(true)<cr>", "Workspace" },
   }
 }
 

@@ -238,8 +238,6 @@ awful.rules.rules = {
     },
     properties = { floating = true }
   },
-
-  { rule = { class = vars.terminal }, properties = { opacity = vars.terminal_opacity } },
 }
 -- }}}
 
