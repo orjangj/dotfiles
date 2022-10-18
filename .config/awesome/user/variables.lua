@@ -8,7 +8,7 @@ local variables = {
   terminal = "kitty",
   terminal_opacity = 0.95,
   theme = "nord",
-  wallpapers = os.getenv("HOME") .. "/.local/share/backgrounds/nordic-wallpapers/wallpapers",
+  wallpapers = os.getenv("HOME") .. "/.local/share/backgrounds/wallpapers/nord",
 }
 
 return variables
