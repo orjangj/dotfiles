@@ -14,7 +14,6 @@
 -- 5) ram widget (size of the drop down popup)
 -- 6) logout widget -- Consider using i3lock-fancy?
 -- 7) calendar widget -- use beatiful theme instead of predefined set of themes
--- 8) todo widget -- spacing on left and right side too big
 -- 9) storage widget -- themeing
 -- 10) brightness widget
 --      -- Arc ring not updated!
@@ -85,7 +84,6 @@ local cpu_widget = require("widget.cpu")
 local logout_widget = require("widget.logout")
 local ram_widget = require("widget.ram")
 local storage_widget = require("widget.storage")
-local todo_widget = require("widget.todo")
 local volume_widget = require("widget.volume")
 
 -- {{{ Layout
@@ -158,7 +156,6 @@ awful.screen.connect_for_each_screen(function(s)
       cpu_widget(),
       ram_widget(),
       storage_widget(),
-      todo_widget(),
       brightness_widget({ program = 'brightnessctl', base = 50 }),
       volume_widget(),
       battery_widget(),
