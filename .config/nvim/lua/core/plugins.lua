@@ -52,24 +52,40 @@ return packer.startup(function(use)
   local_use({ "neotest-ctest" })
 
   use({ "wbthomason/packer.nvim" }) -- Allow packer to manage itself
-  use({ "nvim-lua/plenary.nvim" }) -- Required by many plugins
-  use({ "nvim-treesitter/nvim-treesitter" })
+  use({ "nvim-lua/plenary.nvim" }) -- Required by most plugins
+  use({ "nvim-treesitter/nvim-treesitter" }) -- Required by most plugins
 
-  use({ "windwp/nvim-autopairs" }) -- depends on cmp?
+  -- Speed up loading time
+  use({ "lewis6991/impatient.nvim" })
+
+  -- Editing helpers
+  use({ "windwp/nvim-autopairs" })
   use({ "numToStr/Comment.nvim" })
   use({ "JoosepAlviste/nvim-ts-context-commentstring" })
-  use({ "kyazdani42/nvim-web-devicons" })
-  use({ "kyazdani42/nvim-tree.lua" })
-  use({ "akinsho/bufferline.nvim" })
-  use({ "akinsho/toggleterm.nvim" })
-  use({ "moll/vim-bbye" })
-  use({ "nvim-lualine/lualine.nvim" })
-  use({ "ahmedkhalf/project.nvim" })
-  use({ "lewis6991/impatient.nvim" })
   use({ "lukas-reineke/indent-blankline.nvim" })
+
+  -- Terminal integrations
+  use({ "akinsho/toggleterm.nvim" })
+
+  -- Keybindings and navigation helpers
   use({ "goolord/alpha-nvim" })
-  use({ "folke/which-key.nvim" })
-  use({ "folke/trouble.nvim" })
+  use({
+    "folke/which-key.nvim",
+    requires = {
+      { "moll/vim-bbye" },
+    },
+  })
+
+  -- File explorer
+  use({ "kyazdani42/nvim-tree.lua" })
+  use({ "kyazdani42/nvim-web-devicons" })
+
+  -- Project management
+  use({ "ahmedkhalf/project.nvim" })
+
+  -- Status line
+  use({ "akinsho/bufferline.nvim" })
+  use({ "nvim-lualine/lualine.nvim" })
 
   -- Comletion and snippets
   use({
@@ -86,6 +102,8 @@ return packer.startup(function(use)
   use({ "rafamadriz/friendly-snippets" })
   use({ "folke/neodev.nvim" })
 
+  -- LSP and diagnostics
+  use({ "folke/trouble.nvim" })
   use({
     "neovim/nvim-lspconfig",
     requires = {
