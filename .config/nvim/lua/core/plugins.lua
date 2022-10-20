@@ -60,8 +60,12 @@ return packer.startup(function(use)
 
   -- Editing helpers
   use({ "windwp/nvim-autopairs" })
-  use({ "numToStr/Comment.nvim" })
-  use({ "JoosepAlviste/nvim-ts-context-commentstring" })
+  use({
+    "numToStr/Comment.nvim",
+    requires = {
+      { "JoosepAlviste/nvim-ts-context-commentstring" }
+    }
+  })
   use({ "lukas-reineke/indent-blankline.nvim" })
 
   -- Terminal integrations
