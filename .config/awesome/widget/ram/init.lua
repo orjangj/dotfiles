@@ -10,9 +10,9 @@ local function worker()
   local timeout = 2
 
   local memory = {
-    ["good"] = { bg = beautiful.bg_normal, fg = beautiful.fg_normal, symbol = "" },
-    ["bad"] = { bg = beautiful.bg_normal, fg = beautiful.fg_urgent, symbol = "" },
-    ["critical"] = { bg = beautiful.bg_normal, fg = beautiful.fg_critical, symbol = "" },
+    ["good"] = { bg = beautiful.bg_normal, fg = beautiful.fg_normal, symbol = "" },
+    ["bad"] = { bg = beautiful.bg_normal, fg = beautiful.fg_urgent, symbol = "" },
+    ["critical"] = { bg = beautiful.bg_normal, fg = beautiful.fg_critical, symbol = "" },
   }
 
   local textbox = wibox.widget({
