@@ -4,6 +4,7 @@ local dpi = require("beautiful.xresources").apply_dpi
 
 local theme = {}
 theme.wallpaper = themes_path .. "nord/nord-background.png"
+theme.name = "nord"
 theme.font      = "Play 9"
 theme.fg_normal  = "#ECEFF4"
 theme.fg_focus   = "#88C0D0"
@@ -15,13 +16,15 @@ theme.bg_urgent  = "#3B4252"
 theme.bg_critical  = "#3B4252"
 theme.bg_systray = theme.bg_normal
 theme.useless_gap   = dpi(4)
-theme.border_width  = dpi(2)
+theme.border_width  = dpi(1)
 theme.border_normal = "#3B4252"
 theme.border_focus  = "#88C0D0"
 theme.border_marked = "#D08770"
 theme.border_critical = "#BF616A"
 theme.titlebar_bg_focus   = "#3B4252"
 theme.titlebar_bg_normal  = "#2E3440"
+
+theme.wibox_spacing = dpi(8)
 
 -- There are other variable sets
 -- overriding the default one when
@@ -40,6 +43,15 @@ theme.titlebar_bg_normal  = "#2E3440"
 --theme.fg_end_widget    = "#BF616A"
 --theme.bg_widget        = "#434C5E"
 --theme.border_widget    = "#3B4252"
+
+theme.normal  = "#2E3440"
+theme.green = "#A3BE8C"
+theme.teal = "#88C0D0"
+theme.orange = "#D08770"
+theme.red = "#BF616A"
+theme.yellow = "#EBCB8B"
+theme.black = "#000000"
+theme.transparent = "#00000000"
 
 theme.mouse_finder_color = "#D08770"
 

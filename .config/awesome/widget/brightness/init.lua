@@ -2,6 +2,7 @@ local wibox = require("wibox")
 local spawn = require("awful.spawn")
 local beautiful = require("beautiful")
 local watch = require("awful.widget.watch")
+local gears = require("gears")
 
 local brightness = {}
 
@@ -35,16 +36,14 @@ local function worker()
     ["high"] = { bg = beautiful.bg_normal, fg = beautiful.fg_urgent, symbol = "" },
   }
 
-  local textbox = wibox.widget({
-    markup = level["high"].symbol,
-    font = beautiful.font,
-    align = "center",
-    valign = "center",
-    widget = wibox.widget.textbox,
-  })
-
   brightness.widget = wibox.widget({
-    textbox,
+    {
+      markup = level["high"].symbol,
+      font = beautiful.font,
+      align = "center",
+      valign = "center",
+      widget = wibox.widget.textbox,
+    },
     fg = level["medium"].fg,
     bg = level["medium"].bg,
     widget = wibox.container.background,

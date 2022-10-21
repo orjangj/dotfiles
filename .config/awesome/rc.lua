@@ -7,17 +7,17 @@
 
 -- TODO review/change
 --
--- Widgets:
+-- FIX:
 -- - Wifi -- replace systray
 -- - Bluetooth -- replace systray
--- - Spacing between widgets
 -- - Number of tag views (set to 5)
 -- - Rounded wibar and widgets
 -- - Fonts
+-- - Compton transparency not working when reloading awesome wm config
 --
 -- 0) Get list of all dependencies (i.e. xbacklight, pavucontrol, etc..)
 -- 1) keybindings (remove unused, apply better keys, etc..)
--- 2) battery widget -- extend with power management tool (ie. look at ChrisTitusTech use of xcfe power manager) 
+-- 2) battery widget -- extend with power management tool (ie. look at ChrisTitusTech use of xcfe power manager)
 -- 3) volume widget (extend with mute speaker -- and attach keybinding)
 -- 4) cpu widget (color theme)
 -- 5) ram widget (size of the drop down popup)
@@ -54,14 +54,14 @@
 -- 7) Rofi application launcher
 --     - Want a drop-down list in the upper left corner
 -- 8) Dynamic monitor configuration (multihead) -- xrandr vs autorandr vs mons vs xorg conf
-  -- NOTE:
-  -- The current impl of xrandr.lua works fine in terms of enabling screens on demand
-  -- but it doesn't seem to work very well with compton. I.e. transparency not working, text still visible in background when typing.
-  -- The only workaround for now is reloading awesome config (ctrl + super + r) after changing the screen layout 
-  -- Maybe I'm missing some essential code in the rc.lua when screen/monitor geometry/setup changes
-  -- Maybe reload awesome config in the xrandr command.
-  -- NOTE:
-  -- Should awesome wm even handle multi-head setup? Doesn't seem like the best solution so far
+-- NOTE:
+-- The current impl of xrandr.lua works fine in terms of enabling screens on demand
+-- but it doesn't seem to work very well with compton. I.e. transparency not working, text still visible in background when typing.
+-- The only workaround for now is reloading awesome config (ctrl + super + r) after changing the screen layout
+-- Maybe I'm missing some essential code in the rc.lua when screen/monitor geometry/setup changes
+-- Maybe reload awesome config in the xrandr command.
+-- NOTE:
+-- Should awesome wm even handle multi-head setup? Doesn't seem like the best solution so far
 -- 9) Adjust screen brightness on active screen/monitor
 --    - Can be solved with a keybinding?
 -- 10) Floating applications
@@ -71,7 +71,7 @@
 -- Awesome libraries
 local gears = require("gears")
 local awful = require("awful")
-              require("awful.autofocus")
+require("awful.autofocus")
 local wibox = require("wibox")
 local beautiful = require("beautiful")
 local naughty = require("naughty")
@@ -108,52 +108,55 @@ menubar.utils.terminal = vars.terminal -- Set the terminal for applications that
 -- {{{ Wibar
 -- Create a wibox for each screen and add it
 local taglist_buttons = gears.table.join(
-  awful.button({        }, 1, function(t) t:view_only() end),
-  awful.button({ vars.modkey }, 1,
-    function(t)
-      if client.focus then
-        client.focus:move_to_tag(t)
-      end
+  awful.button({}, 1, function(t)
+    t:view_only()
+  end),
+  awful.button({ vars.modkey }, 1, function(t)
+    if client.focus then
+      client.focus:move_to_tag(t)
     end
-  ),
-  awful.button({        }, 3, awful.tag.viewtoggle),
-  awful.button({ vars.modkey }, 3,
-    function(t)
-      if client.focus then
-        client.focus:toggle_tag(t)
-      end
+  end),
+  awful.button({}, 3, awful.tag.viewtoggle),
+  awful.button({ vars.modkey }, 3, function(t)
+    if client.focus then
+      client.focus:toggle_tag(t)
     end
-  ),
-  awful.button({        }, 4, function(t) awful.tag.viewnext(t.screen) end),
-  awful.button({        }, 5, function(t) awful.tag.viewprev(t.screen) end)
+  end),
+  awful.button({}, 4, function(t)
+    awful.tag.viewnext(t.screen)
+  end),
+  awful.button({}, 5, function(t)
+    awful.tag.viewprev(t.screen)
+  end)
 )
 
 local mytextclock = wibox.widget.textclock()
 local cw = calendar_widget({
-  theme = 'nord',
-  placement = 'top_right',
+  theme = beautiful.name,
+  placement = "top_right",
 })
-mytextclock:connect_signal("button::press",
-  function (_, _, _, button)
-    if button == 1 then cw.toggle() end
-  end)
+mytextclock:connect_signal("button::press", function(_, _, _, button)
+  if button == 1 then
+    cw.toggle()
+  end
+end)
 
 awful.screen.connect_for_each_screen(function(s)
   -- Each screen has its own tag table.
   awful.tag({ "1", "2", "3", "4", "5", "6", "7", "8", "9" }, s, awful.layout.layouts[1])
 
   -- Create a taglist widget
-  s.mytaglist = awful.widget.taglist {
-    screen  = s,
-    filter  = awful.widget.taglist.filter.all,
-    buttons = taglist_buttons
-  }
+  s.mytaglist = awful.widget.taglist({
+    screen = s,
+    filter = awful.widget.taglist.filter.all,
+    buttons = taglist_buttons,
+  })
 
   -- Create the wibox
   s.mywibox = awful.wibar({ position = "top", screen = s })
 
   -- Add widgets to the wibox
-  s.mywibox:setup {
+  s.mywibox:setup({
     layout = wibox.layout.align.horizontal,
     { -- Left widgets
       layout = wibox.layout.fixed.horizontal,
@@ -162,6 +165,7 @@ awful.screen.connect_for_each_screen(function(s)
     nil, -- Middle widget
     { -- Right widgets
       layout = wibox.layout.fixed.horizontal,
+      spacing = beautiful.wibox_spacing,
       cpu_widget(),
       ram_widget(),
       storage_widget(),
@@ -172,21 +176,21 @@ awful.screen.connect_for_each_screen(function(s)
       mytextclock,
       logout_widget(),
     },
-  }
+  })
 end)
 -- }}}
 
 -- {{{ Key bindings
 local clientbuttons = gears.table.join(
-  awful.button({ }, 1, function (c)
-    c:emit_signal("request::activate", "mouse_click", {raise = true})
+  awful.button({}, 1, function(c)
+    c:emit_signal("request::activate", "mouse_click", { raise = true })
   end),
-  awful.button({ vars.modkey }, 1, function (c)
-    c:emit_signal("request::activate", "mouse_click", {raise = true})
+  awful.button({ vars.modkey }, 1, function(c)
+    c:emit_signal("request::activate", "mouse_click", { raise = true })
     awful.mouse.client.move(c)
   end),
-  awful.button({ vars.modkey }, 3, function (c)
-    c:emit_signal("request::activate", "mouse_click", {raise = true})
+  awful.button({ vars.modkey }, 3, function(c)
+    c:emit_signal("request::activate", "mouse_click", { raise = true })
     awful.mouse.client.resize(c)
   end)
 )
@@ -199,7 +203,8 @@ root.keys(keys.global)
 -- Rules to apply to new clients (through the "manage" signal).
 awful.rules.rules = {
   -- All clients will match this rule.
-  { rule = { },
+  {
+    rule = {},
     properties = {
       border_width = beautiful.border_width,
       border_color = beautiful.border_normal,
@@ -208,15 +213,16 @@ awful.rules.rules = {
       keys = keys.client,
       buttons = clientbuttons,
       screen = awful.screen.preferred,
-      placement = awful.placement.no_overlap+awful.placement.no_offscreen
-    }
+      placement = awful.placement.no_overlap + awful.placement.no_offscreen,
+    },
   },
 
   -- Floating clients.
-  { rule_any = {
+  {
+    rule_any = {
       instance = {
-        "DTA",  -- Firefox addon DownThemAll.
-        "copyq",  -- Includes session name in class.
+        "DTA", -- Firefox addon DownThemAll.
+        "copyq", -- Includes session name in class.
         "pinentry",
       },
       class = {
@@ -224,32 +230,32 @@ awful.rules.rules = {
         "Blueman-manager",
         "Gpick",
         "Kruler",
-        "MessageWin",  -- kalarm.
+        "MessageWin", -- kalarm.
         "Sxiv",
         "Tor Browser", -- Needs a fixed window size to avoid fingerprinting by screen size.
         "Wpa_gui",
         "veromix",
-        "xtightvncviewer"
+        "xtightvncviewer",
       },
       -- Note that the name property shown in xprop might be set slightly after creation of the client
       -- and the name shown there might not match defined rules here.
       name = {
-        "Event Tester",  -- xev.
+        "Event Tester", -- xev.
       },
       role = {
-        "AlarmWindow",  -- Thunderbird's calendar.
-        "ConfigManager",  -- Thunderbird's about:config.
-        "pop-up",       -- e.g. Google Chrome's (detached) Developer Tools.
-      }
+        "AlarmWindow", -- Thunderbird's calendar.
+        "ConfigManager", -- Thunderbird's about:config.
+        "pop-up", -- e.g. Google Chrome's (detached) Developer Tools.
+      },
     },
-    properties = { floating = true }
+    properties = { floating = true },
   },
 }
 -- }}}
 
 -- {{{ Signals
 -- Signal function to execute when a new client appears.
-client.connect_signal("manage", function (c)
+client.connect_signal("manage", function(c)
   -- Set the windows at the slave,
   -- i.e. put it at the end of others instead of setting it master.
   -- if not awesome.startup then awful.client.setslave(c) end
@@ -260,8 +266,12 @@ client.connect_signal("manage", function (c)
   end
 end)
 
-client.connect_signal("focus", function(c) c.border_color = beautiful.border_focus end)
-client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
+client.connect_signal("focus", function(c)
+  c.border_color = beautiful.border_focus
+end)
+client.connect_signal("unfocus", function(c)
+  c.border_color = beautiful.border_normal
+end)
 -- }}}
 
 -- Autostart
