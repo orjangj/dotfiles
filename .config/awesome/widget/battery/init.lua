@@ -6,7 +6,7 @@ local wibox = require("wibox")
 local battery_widget = {}
 
 local function worker()
-  local timeout = 30
+  local timeout = 10
   local discharging = {
     [0] = { bg = beautiful.bg_normal, fg = beautiful.fg_critical, symbol = "" },
     [25] = { bg = beautiful.bg_normal, fg = beautiful.fg_urgent, symbol = "" },
@@ -39,10 +39,10 @@ local function worker()
     naughty.notify({
       text = "The battery is dying",
       title = "WAAAH... We have a problem!!!",
-      timeout = 25, -- show the warning for a longer time
+      timeout = timeout,
       hover_timeout = 0.5,
       position = "top_right",
-      bg = beautiful.fg_critical, -- Note: Make the background stand out
+      bg = beautiful.red, -- Note: Make the background stand out
       fg = beautiful.fg_normal,
       width = 300,
       screen = mouse.screen,

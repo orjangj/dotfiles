@@ -5,71 +5,29 @@
 --      ██║  ██║╚███╔███╔╝███████╗███████║╚██████╔╝██║ ╚═╝ ██║███████╗
 --      ╚═╝  ╚═╝ ╚══╝╚══╝ ╚══════╝╚══════╝ ╚═════╝ ╚═╝     ╚═╝╚══════╝
 
--- TODO review/change
---
+-- WARNING: Using chrome/chromium seem to cause a lot of flicker. Often occurring while using BLE headset and listening on youtube.
+--          Firefox does not have the same issue, although some flicker happen now and then.
+
 -- FIX:
--- - Wifi -- replace systray
--- - Bluetooth -- replace systray
+-- - Wifi -- replace systray -- use glyph  and signal quality -- on hover, show the network name (SSID), BSSID, rate and security protocol
+-- - Bluetooth -- replace systray  -- use glyph 
 -- - calendar -- simplify and use beatiful theme
 -- - logout -- simplify and use font glyphs instead of icon set
 -- - temperature -- add
 -- - Number of tag views (set to 5)
--- - Rounded wibar and widgets
 -- - Fonts -- See https://github.com/ryanoasis/nerd-fonts
 -- - Compton transparency not working when reloading awesome wm config
+-- - xset doesn't seem to always apply on startup -- reloading config works though...
 --
--- 0) Get list of all dependencies (i.e. xbacklight, pavucontrol, etc..)
--- 1) keybindings (remove unused, apply better keys, etc..)
--- 2) battery widget -- extend with power management tool (ie. look at ChrisTitusTech use of xcfe power manager)
--- 3) volume widget (extend with mute speaker -- and attach keybinding)
--- 4) cpu widget (color theme)
--- 5) ram widget (size of the drop down popup)
--- 6) logout widget -- Consider using i3lock-fancy?
--- 7) calendar widget -- use beatiful theme instead of predefined set of themes
--- 9) storage widget -- themeing
--- 10) brightness widget
---      -- Arc ring not updated!
---      -- See redshift as alternative to current program
---      -- Could use xrandr + https://awesomewm.org/doc/api/classes/screen.html to detect current screen
---      -- Also look at: https://www.reddit.com/r/archlinux/comments/fopuht/comment/flguaep/
--- TODO issues
--- 0) Some of the widgets are leaking memory --> see https://github.com/streetturtle/awesome-wm-widgets/issues/11
---    -- Either CPU, RAM or brightness widget is causing system to be laggy or cause screen flickering
---    -- Maybe use garbage collection? As ChrisTitusTech does in his configs?
--- 1) xset
---    -- Using xset in autostart doesnt seem to persist between locked screen
---    -- xset doesnt seem to work after bootup or after a new monitor gets connected
--- 2) Widgets always opens to the right, going outside the screen border. Second click opens left.
--- 3) Screen tearing (compton issue?)
---    - Occurs when reloading rc.lua and changing tags
---    - Use different backend?
--- 4) Not related to awesome, but I would like to figure out why using headset as mic doesn't work very well.
--- 5) Keyboard keeps flashing -- Need to check when running Ubuntu, i.e. something to do with config?
--- TODO cleanup
--- 1) Go back to single rc.lua file?
--- TODO features
--- 1) Conky
--- 3) Use dmenu or rofi scripts to save keybindings?
--- 5) Automatic screen lock (see sway config for ideas)
---    - Possible to use login manager?
---    - Currently using i3lock
--- 6) Dynamic tags (create tags on demand, rather than having a predefined set)
--- 7) Rofi application launcher
---     - Want a drop-down list in the upper left corner
--- 8) Dynamic monitor configuration (multihead) -- xrandr vs autorandr vs mons vs xorg conf
--- NOTE:
--- The current impl of xrandr.lua works fine in terms of enabling screens on demand
--- but it doesn't seem to work very well with compton. I.e. transparency not working, text still visible in background when typing.
--- The only workaround for now is reloading awesome config (ctrl + super + r) after changing the screen layout
--- Maybe I'm missing some essential code in the rc.lua when screen/monitor geometry/setup changes
--- Maybe reload awesome config in the xrandr command.
--- NOTE:
--- Should awesome wm even handle multi-head setup? Doesn't seem like the best solution so far
--- 9) Adjust screen brightness on active screen/monitor
---    - Can be solved with a keybinding?
--- 10) Floating applications
---     - VirtualBox
---     - VPN clients (FortiNet, NetExtender)
+-- TODO:
+-- - Cleanup unused/redundant code
+-- - Get list of all dependencies (i.e. xbacklight, pavucontrol, etc..)
+-- - keybindings (remove unused, apply better keys, etc.. ???)
+-- - dmenu vs rofi?
+-- - Use dmenu or rofi scripts to save keybindings?
+-- - Automatic screen lock (see sway config for ideas)
+--   - Possible to use login manager?
+--   - Currently using i3lock
 
 -- Awesome libraries
 local gears = require("gears")
@@ -97,6 +55,7 @@ local logout_widget = require("widget.logout")
 local ram_widget = require("widget.ram")
 local storage_widget = require("widget.storage")
 local volume_widget = require("widget.volume")
+local wifi_widget = require("widget.wifi")
 
 -- {{{ Layout
 awful.layout.layouts = {
@@ -175,7 +134,7 @@ awful.screen.connect_for_each_screen(function(s)
       brightness_widget(),
       volume_widget(),
       battery_widget(),
-      wibox.widget.systray(),
+      wifi_widget(),
       mytextclock,
       logout_widget(),
     },
