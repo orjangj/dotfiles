@@ -6,6 +6,15 @@
 --      ╚═╝  ╚═╝ ╚══╝╚══╝ ╚══════╝╚══════╝ ╚═════╝ ╚═╝     ╚═╝╚══════╝
 
 -- TODO review/change
+--
+-- Widgets:
+-- - Wifi -- replace systray
+-- - Bluetooth -- replace systray
+-- - Spacing between widgets
+-- - Number of tag views (set to 5)
+-- - Rounded wibar and widgets
+-- - Fonts
+--
 -- 0) Get list of all dependencies (i.e. xbacklight, pavucontrol, etc..)
 -- 1) keybindings (remove unused, apply better keys, etc..)
 -- 2) battery widget -- extend with power management tool (ie. look at ChrisTitusTech use of xcfe power manager) 

@@ -1,7 +1,7 @@
-
 local wibox = require("wibox")
 local spawn = require("awful.spawn")
 local beautiful = require("beautiful")
+local watch = require("awful.widget.watch")
 
 local brightness = {}
 
@@ -22,6 +22,11 @@ local function DEC_BRIGHTNESS_CMD(step)
 end
 
 local function worker()
+  spawn.easy_async("brightnessctl max", function(stdout)
+    brightness.max_value = tonumber(string.format("%.0f", stdout))
+  end)
+
+  local timeout = 3600
   local base = 20
   local step = 5
   local level = { -- Is this really necessary? :D
@@ -31,7 +36,7 @@ local function worker()
   }
 
   local textbox = wibox.widget({
-    markup = level["high"].symbol .. string.format("%s%%", base),
+    markup = level["high"].symbol,
     font = beautiful.font,
     align = "center",
     valign = "center",
@@ -45,45 +50,38 @@ local function worker()
     widget = wibox.container.background,
   })
 
-  spawn.easy_async("brightnessctl max", function(stdout)
-    brightness.max_value = tonumber(string.format("%.0f", stdout))
-  end)
+  _, brightness.watcher = watch(GET_BRIGHTNESS_CMD(), timeout, function(widget, stdout)
+    local percentage = 100 * tonumber(string.format("%.0f", stdout)) / brightness.max_value
+    local type
 
-  -- TODO: Why is it only updated on one screen with multi-monitor setup?
-  local function update()
-    spawn.easy_async(GET_BRIGHTNESS_CMD(), function(out)
-      local percentage = 100 * tonumber(string.format("%.0f", out)) / brightness.max_value
-      local type
-      if percentage < 10 then
-        type = level.low
-      elseif percentage > 70 then
-        type = level.high
-      else
-        type = level.medium
-      end
-      brightness.widget.widget.markup = type.symbol .. " " .. ("%d"):format(percentage) .. "%"
-      brightness.widget.fg = type.fg
-      brightness.widget.bg = type.bg
-    end)
-  end
+    if percentage < 10 then
+      type = level.low
+    elseif percentage > 70 then
+      type = level.high
+    else
+      type = level.medium
+    end
 
-  brightness.widget:connect_signal("redraw_needed", update)
+    widget.widget.markup = ("%s %d%%"):format(type.symbol, percentage)
+    widget.fg = type.fg
+    widget.bg = type.bg
+  end, brightness.widget)
 
   function brightness:set(value)
     spawn.easy_async(SET_BRIGHTNESS_CMD(value or base), function()
-      brightness.widget:emit_signal("redraw_needed")
+      brightness.watcher:emit_signal("timeout")
     end)
   end
 
   function brightness:inc(value)
     spawn.easy_async(INC_BRIGHTNESS_CMD(value or step), function()
-      brightness.widget:emit_signal("redraw_needed")
+      brightness.watcher:emit_signal("timeout")
     end)
   end
 
   function brightness:dec(value)
     spawn.easy_async(DEC_BRIGHTNESS_CMD(value or step), function()
-      brightness.widget:emit_signal("redraw_needed")
+      brightness.watcher:emit_signal("timeout")
     end)
   end
 
