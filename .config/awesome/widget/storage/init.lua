@@ -50,7 +50,7 @@ local function worker()
       type = space["good"]
     end
 
-    widget.widget.markup = type.symbol .. used_percentage .. "%"
+    widget.widget.markup = type.symbol .. " " .. used_percentage .. "%"
     widget.fg = type.fg
     widget.bg = type.bg
 
