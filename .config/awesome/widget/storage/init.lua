@@ -33,7 +33,7 @@ local function worker()
     for line in stdout:gmatch("[^\r\n$]+") do
       -- filesystem, size, used, avail, perc, mount
       local _, _, _, _, perc, mount =
-      line:match("([%p%w]+)%s+([%d%w]+)%s+([%d%w]+)%s+([%d%w]+)%s+([%d]+)%%%s+([%p%w]+)")
+        line:match("([%p%w]+)%s+([%d%w]+)%s+([%d%w]+)%s+([%d%w]+)%s+([%d]+)%%%s+([%p%w]+)")
 
       -- rootfs
       if mount == "/" then
@@ -53,7 +53,6 @@ local function worker()
     widget.widget.markup = type.symbol .. " " .. used_percentage .. "%"
     widget.fg = type.fg
     widget.bg = type.bg
-
   end, storage)
 
   return storage

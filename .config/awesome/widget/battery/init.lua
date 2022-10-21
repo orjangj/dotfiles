@@ -1,8 +1,3 @@
---------------------------------------------------
---- Battery Widget for Awesome Window Manager
---- Shows the battery status using the ACPI tool
---------------------------------------------------
-
 local beautiful = require("beautiful")
 local naughty = require("naughty")
 local watch = require("awful.widget.watch")
@@ -99,7 +94,7 @@ local function worker()
         end
       elseif charge >= 5 and charge < 15 then
         type = discharging[25]
-        if os.difftime(os.time(), last_battery_check) > 3*timeout then
+        if os.difftime(os.time(), last_battery_check) > 3 * timeout then
           last_battery_check = os.time()
           show_battery_warning()
         end
