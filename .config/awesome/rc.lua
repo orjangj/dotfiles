@@ -10,9 +10,12 @@
 -- FIX:
 -- - Wifi -- replace systray
 -- - Bluetooth -- replace systray
+-- - calendar -- simplify and use beatiful theme
+-- - logout -- simplify and use font glyphs instead of icon set
+-- - temperature -- add
 -- - Number of tag views (set to 5)
 -- - Rounded wibar and widgets
--- - Fonts
+-- - Fonts -- See https://github.com/ryanoasis/nerd-fonts
 -- - Compton transparency not working when reloading awesome wm config
 --
 -- 0) Get list of all dependencies (i.e. xbacklight, pavucontrol, etc..)

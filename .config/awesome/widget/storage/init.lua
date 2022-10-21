@@ -7,9 +7,9 @@ local storage = {}
 local function worker()
   local timeout = 300
   local space = {
-    ["good"] = { bg = beautiful.bg_normal, fg = beautiful.fg_normal, symbol = "﫭" },
-    ["urgent"] = { bg = beautiful.bg_normal, fg = beautiful.fg_urgent, symbol = "﫭" },
-    ["critical"] = { bg = beautiful.bg_normal, fg = beautiful.fg_critical, symbol = "﫭" },
+    ["good"] = { bg = beautiful.bg_normal, fg = beautiful.fg_normal, symbol = "" },
+    ["urgent"] = { bg = beautiful.bg_normal, fg = beautiful.fg_urgent, symbol = "" },
+    ["critical"] = { bg = beautiful.bg_normal, fg = beautiful.fg_critical, symbol = "" },
   }
 
   -- TODO: Spacing between other widgets

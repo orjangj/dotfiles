@@ -31,9 +31,9 @@ local function worker()
   local base = 20
   local step = 5
   local level = { -- Is this really necessary? :D
-    ["low"] = { bg = beautiful.bg_normal, fg = beautiful.fg_urgent, symbol = "" },
-    ["medium"] = { bg = beautiful.bg_normal, fg = beautiful.fg_normal, symbol = "" },
-    ["high"] = { bg = beautiful.bg_normal, fg = beautiful.fg_urgent, symbol = "" },
+    ["low"] = { bg = beautiful.bg_normal, fg = beautiful.fg_urgent, symbol = "" },
+    ["medium"] = { bg = beautiful.bg_normal, fg = beautiful.fg_normal, symbol = "" },
+    ["high"] = { bg = beautiful.bg_normal, fg = beautiful.fg_urgent, symbol = "" },
   }
 
   brightness.widget = wibox.widget({

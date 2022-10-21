@@ -11,39 +11,29 @@ local wibox = require("wibox")
 local battery_widget = {}
 
 local function worker()
-  -- Configuration
-  local timeout = 10 -- how often (in seconds) then watcher function runs
-  -- NOTE: The icons/glyphs are from "Material Design"
+  local timeout = 30
   local discharging = {
-    [10] = { bg = beautiful.bg_normal, fg = beautiful.fg_critical, symbol = "" },
-    [20] = { bg = beautiful.bg_normal, fg = beautiful.fg_urgent, symbol = "" },
-    [30] = { bg = beautiful.bg_normal, fg = beautiful.fg_urgent, symbol = "" },
-    [40] = { bg = beautiful.bg_normal, fg = beautiful.fg_focus, symbol = "" },
-    [50] = { bg = beautiful.bg_normal, fg = beautiful.fg_focus, symbol = "" },
-    [60] = { bg = beautiful.bg_normal, fg = beautiful.fg_normal, symbol = "" },
-    [70] = { bg = beautiful.bg_normal, fg = beautiful.fg_normal, symbol = "" },
-    [80] = { bg = beautiful.bg_normal, fg = beautiful.fg_normal, symbol = "" },
-    [90] = { bg = beautiful.bg_normal, fg = beautiful.fg_normal, symbol = "" },
-    [100] = { bg = beautiful.bg_normal, fg = beautiful.fg_normal, symbol = "" },
+    [0] = { bg = beautiful.bg_normal, fg = beautiful.fg_critical, symbol = "" },
+    [25] = { bg = beautiful.bg_normal, fg = beautiful.fg_urgent, symbol = "" },
+    [50] = { bg = beautiful.bg_normal, fg = beautiful.fg_normal, symbol = "" },
+    [75] = { bg = beautiful.bg_normal, fg = beautiful.fg_normal, symbol = "" },
+    [100] = { bg = beautiful.bg_normal, fg = beautiful.fg_normal, symbol = "" },
   }
   local charging = {
     bg = beautiful.bg_normal,
     fg = beautiful.fg_normal,
-    symbol = "",
+    symbol = "",
   }
   local last_battery_check = os.time()
 
-  -- TODO: Spacing between other widgets
-  local battery_textbox = wibox.widget({
-    markup = discharging[100].symbol .. " 100%", -- initial condition
-    font = beautiful.font,
-    align = "center",
-    valign = "center",
-    widget = wibox.widget.textbox,
-  })
-
   battery_widget = wibox.widget({
-    battery_textbox,
+    {
+      markup = discharging[100].symbol,
+      font = beautiful.font,
+      align = "center",
+      valign = "center",
+      widget = wibox.widget.textbox,
+    },
     fg = discharging[100].fg,
     bg = discharging[100].bg,
     widget = wibox.container.background,
@@ -101,34 +91,30 @@ local function worker()
     if status == "Charging" then
       type = charging
     else
-      if charge >= 0 and charge < 15 then
-        type = discharging[10]
-        if os.difftime(os.time(), last_battery_check) > 300 then
-          -- if 5 minutes have elapsed since the last warning
+      if charge >= 0 and charge < 5 then
+        type = discharging[0]
+        if os.difftime(os.time(), last_battery_check) > timeout then
           last_battery_check = os.time()
           show_battery_warning()
         end
-      elseif charge >= 15 and charge < 25 then
-        type = discharging[20]
-      elseif charge >= 25 and charge < 35 then
-        type = discharging[30]
-      elseif charge >= 35 and charge < 45 then
-        type = discharging[40]
-      elseif charge >= 45 and charge < 55 then
+      elseif charge >= 5 and charge < 15 then
+        type = discharging[25]
+        if os.difftime(os.time(), last_battery_check) > 3*timeout then
+          last_battery_check = os.time()
+          show_battery_warning()
+        end
+      elseif charge >= 15 and charge < 37 then
+        type = discharging[25]
+      elseif charge >= 37 and charge < 62 then
         type = discharging[50]
-      elseif charge >= 55 and charge < 65 then
-        type = discharging[60]
-      elseif charge >= 75 and charge < 85 then
-        type = discharging[70]
-      elseif charge >= 85 and charge < 95 then
-        type = discharging[80]
+      elseif charge >= 62 and charge < 87 then
+        type = discharging[75]
       else
-        -- TODO: 100?
-        type = discharging[90]
+        type = discharging[100]
       end
     end
 
-    widget.widget.markup = type.symbol .. " " .. ("%d"):format(charge) .. "%"
+    widget.widget.markup = ("%s %d%%"):format(type.symbol, charge)
     widget.fg = type.fg
     widget.bg = type.bg
 
