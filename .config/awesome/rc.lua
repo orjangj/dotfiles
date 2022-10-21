@@ -156,7 +156,7 @@ awful.screen.connect_for_each_screen(function(s)
       cpu_widget(),
       ram_widget(),
       storage_widget(),
-      brightness_widget({ program = 'brightnessctl', base = 50 }),
+      brightness_widget(),
       volume_widget(),
       battery_widget(),
       wibox.widget.systray(),

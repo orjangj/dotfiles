@@ -50,6 +50,7 @@ local function worker()
   })
 
   local function show_battery_warning()
+    -- TODO: Fix border color
     naughty.notify({
       text = "The battery is dying",
       title = "WAAAH... We have a problem!!!",
