@@ -7,10 +7,11 @@ local vars = require("user.variables")
 
 local xrandr = require("module.xrandr")
 local volume = require("widget.volume")
+local mic = require("widget.mic")
 local brightness = require("widget.brightness")
 
 local globalkeys = gears.table.join(
--- Group "awesome"
+  -- Group "awesome"
   awful.key({ vars.modkey }, "s", hotkeys_popup.show_help, { description = "show help", group = "awesome" }),
   awful.key({ vars.modkey, "Control" }, "r", awesome.restart, { description = "reload awesome", group = "awesome" }),
   awful.key({ vars.modkey, "Shift" }, "q", awesome.quit, { description = "logout", group = "awesome" }),
@@ -29,7 +30,7 @@ local globalkeys = gears.table.join(
     awful.spawn.with_shell("rofi -show drun")
   end, { description = "launch rofi", group = "launcher" }),
   awful.key({ vars.modkey }, "d", function()
-    awful.util.spawn_with_shell(
+    awful.spawn.with_shell(
       "dmenu_run -i -nb '#2E3440' -sf '#2E3440' -sb '#88C0D0' -nf '#88C0D0' -fn 'Hack:bold:pixelsize=12'"
     )
   end, { description = "launch dmenu", group = "launcher" }),
@@ -130,8 +131,14 @@ local globalkeys = gears.table.join(
   awful.key({}, "XF86AudioMute", function()
     volume:toggle()
   end),
+  awful.key({ vars.modkey }, "XF86AudioRaiseVolume", function()
+    mic:inc(5)
+  end),
+  awful.key({ vars.modkey }, "XF86AudioLowerVolume", function()
+    mic:dec(5)
+  end),
   awful.key({}, "XF86AudioMicMute", function()
-    awful.util.spawn("pactl set-source-mute @DEFAULT_SOURCE@ toggle", false)
+    mic:toggle()
   end),
   awful.key({}, "XF86MonBrightnessDown", function()
     brightness:dec(5)

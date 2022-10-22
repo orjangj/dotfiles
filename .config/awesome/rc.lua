@@ -9,8 +9,17 @@
 --          Firefox does not have the same issue, although some flicker happen now and then.
 
 -- FIX:
--- - Wifi -- replace systray -- use glyph  and signal quality -- on hover, show the network name (SSID), BSSID, rate and security protocol
--- - Bluetooth -- replace systray  -- use glyph 
+-- - Flickering -- See comment above. May want to check issues with awesome wm on github
+-- - Volume
+--   -- color is orange on startup?
+--   -- add mic widget
+--   -- Change symbol based on output source (i.e. headset vs speaker)
+-- - Wifi
+--   - on hover, show the network name (SSID), BSSID, rate and security protocol
+--   - on click, add options to connect to network
+-- - Bluetooth
+--   - on hover, show connected devices
+--   - on click, add options to add new devices etc..
 -- - calendar -- simplify and use beatiful theme
 -- - logout -- simplify and use font glyphs instead of icon set
 -- - temperature -- add
@@ -48,10 +57,12 @@ beautiful.init(string.format("%s/.config/awesome/themes/%s/theme.lua", os.getenv
 
 -- User specific widgets
 local battery_widget = require("widget.battery")
+local bluetooth_widget = require("widget.bluetooth")
 local brightness_widget = require("widget.brightness")
 local calendar_widget = require("widget.calendar")
 local cpu_widget = require("widget.cpu")
 local logout_widget = require("widget.logout")
+local mic_widget = require("widget.mic")
 local ram_widget = require("widget.ram")
 local storage_widget = require("widget.storage")
 local volume_widget = require("widget.volume")
@@ -133,8 +144,10 @@ awful.screen.connect_for_each_screen(function(s)
       storage_widget(),
       brightness_widget(),
       volume_widget(),
+      mic_widget(),
       battery_widget(),
       wifi_widget(),
+      bluetooth_widget(),
       mytextclock,
       logout_widget(),
     },
@@ -240,6 +253,4 @@ end)
 awful.spawn.with_shell("autorandr --change")
 awful.spawn.with_shell("xset r rate 200 40")
 awful.spawn.with_shell(vars.compositor)
-awful.spawn.with_shell("nm-applet")
-awful.spawn.with_shell("blueman-applet")
 awful.spawn.with_shell("feh --randomize --bg-fill " .. vars.wallpapers)

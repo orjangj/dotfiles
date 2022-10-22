@@ -20,6 +20,7 @@ local function DEC_VOLUME_CMD(device, step)
 end
 
 local function TOG_VOLUME_CMD(device)
+  -- NOTE: LED on laptop not toggled if i.e. connected to BLE headset
   return "amixer -D " .. device .. " sset Master toggle"
 end
 
@@ -27,9 +28,9 @@ local volume = {}
 
 local function worker()
   local timeout = 3600
-  local base = 50
+  local base = 20
   local step = 5
-  local device = "pulse" -- pipewire?
+  local device = "pulse"
 
   local level = {
     ["mute"] = { bg = beautiful.bg_normal, fg = beautiful.fg_urgent, symbol = "" },
