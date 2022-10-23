@@ -65,8 +65,6 @@ local storage_widget = require("widget.storage")
 local volume_widget = require("widget.volume")
 local temperature_widget = require("widget.temperature")
 local wifi_widget = require("widget.wifi")
-
-
 -- }}}
 -- {{{ Layout
 awful.layout.layouts = {
@@ -95,8 +93,24 @@ awful.screen.connect_for_each_screen(function(s)
     },
   })
 
+  -- Just to simulate useless_gap on top of main wibar. This is a workaround for
+  -- Awesome WM <= v4.3. Newer versions have a margins property that can be used.
+  s.mywibox_useless = awful.wibar({
+    position = "top",
+    height = 2*beautiful.useless_gap,
+    bg = beautiful.transparent,
+    screen = s,
+  })
   -- Create the wibox
-  s.mywibox = awful.wibar({ position = "top", screen = s })
+  s.mywibox = awful.wibar({
+    position = "top",
+    screen = s,
+    width = s.geometry.width - 4*beautiful.useless_gap, -- just to simulate useless_gap on left/right sides
+    border_color = beautiful.fg_focus,
+    shape = function(cr, w, h)
+      gears.shape.rounded_rect(cr, w, h, 4)
+    end,
+  })
 
   -- Add widgets to the wibox
   s.mywibox:setup({
