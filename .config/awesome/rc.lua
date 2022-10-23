@@ -9,7 +9,6 @@
 --          Firefox does not have the same issue, although some flicker happen now and then.
 
 -- FIX:
--- - temperature -- add
 -- - Flickering -- See comment above. May want to check issues with awesome wm on github
 -- - Volume
 --   -- color is orange on startup?
@@ -252,7 +251,16 @@ end)
 -- }}}
 
 -- Autostart
-awful.spawn.with_shell("autorandr --change")
-awful.spawn.with_shell("xset r rate 200 40")
-awful.spawn.with_shell(vars.compositor)
-awful.spawn.with_shell("feh --randomize --bg-fill " .. vars.wallpapers)
+local function run_once(cmd)
+  local findme = cmd
+  local firstspace = cmd:find(" ")
+  if firstspace then
+    findme = cmd:sub(0, firstspace-1)
+  end
+  awful.util.spawn_with_shell("pgrep -u $USER -x " .. findme .. " > /dev/null || (" .. cmd .. ")")
+end
+
+--awful.spawn.easy_async("autorandr --change")  -- Not sure this is needed, but it is slow to execute (2-3 seconds freeze)!!
+awful.spawn.easy_async("xset r rate 200 40")
+awful.spawn.easy_async("feh --randomize --bg-fill " .. vars.wallpapers)
+run_once(vars.compositor)
