@@ -94,9 +94,6 @@ local function worker()
     end)
   end
 
-  -- set level before leaving
-  volume:set(base)
-
   return volume.widget
 end
 

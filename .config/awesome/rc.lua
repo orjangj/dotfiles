@@ -9,20 +9,20 @@
 --          Firefox does not have the same issue, although some flicker happen now and then.
 
 -- FIX:
+-- - temperature -- add
 -- - Flickering -- See comment above. May want to check issues with awesome wm on github
 -- - Volume
 --   -- color is orange on startup?
---   -- add mic widget
 --   -- Change symbol based on output source (i.e. headset vs speaker)
+--     -- Look into using "pactl subscribe" to listen for events on headset connect/disconnect
 -- - Wifi
 --   - on hover, show the network name (SSID), BSSID, rate and security protocol
 --   - on click, add options to connect to network
 -- - Bluetooth
 --   - on hover, show connected devices
 --   - on click, add options to add new devices etc..
--- - calendar -- simplify and use beatiful theme
+-- - calendar -- simplify and use beatiful theme -- move to middle or left of wibar? if left, then maybe tags should be middle
 -- - logout -- simplify and use font glyphs instead of icon set
--- - temperature -- add
 -- - Number of tag views (set to 5)
 -- - Fonts -- See https://github.com/ryanoasis/nerd-fonts
 -- - Compton transparency not working when reloading awesome wm config
@@ -66,6 +66,7 @@ local mic_widget = require("widget.mic")
 local ram_widget = require("widget.ram")
 local storage_widget = require("widget.storage")
 local volume_widget = require("widget.volume")
+local temperature_widget = require("widget.temperature")
 local wifi_widget = require("widget.wifi")
 
 -- {{{ Layout
@@ -140,6 +141,7 @@ awful.screen.connect_for_each_screen(function(s)
       layout = wibox.layout.fixed.horizontal,
       spacing = beautiful.wibox_spacing,
       cpu_widget(),
+      temperature_widget(),
       ram_widget(),
       storage_widget(),
       brightness_widget(),
