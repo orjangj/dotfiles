@@ -56,7 +56,7 @@ beautiful.init(string.format("%s/.config/awesome/themes/%s/theme.lua", os.getenv
 local battery_widget = require("widget.battery")
 local bluetooth_widget = require("widget.bluetooth")
 local brightness_widget = require("widget.brightness")
-local calendar_widget = require("widget.calendar")
+local clock_widget = require("widget.clock")
 local cpu_widget = require("widget.cpu")
 local logout_widget = require("widget.logout")
 local mic_widget = require("widget.mic")
@@ -65,14 +65,7 @@ local storage_widget = require("widget.storage")
 local volume_widget = require("widget.volume")
 local temperature_widget = require("widget.temperature")
 local wifi_widget = require("widget.wifi")
-local clock_widget = wibox.widget.textclock()
 
-local cw = calendar_widget({ theme = beautiful.name, placement = "top_right" })
-clock_widget:connect_signal("button::press", function(_, _, _, button)
-  if button == 1 then
-    cw.toggle()
-  end
-end)
 
 -- }}}
 -- {{{ Layout
@@ -83,7 +76,6 @@ awful.layout.layouts = {
 -- {{{ Menu
 menubar.utils.terminal = vars.terminal -- Set the terminal for applications that require it
 -- }}}
-
 -- {{{ Wibar
 -- Create a wibox for each screen and add it
 
@@ -127,13 +119,12 @@ awful.screen.connect_for_each_screen(function(s)
       battery_widget(),
       wifi_widget(),
       bluetooth_widget(),
-      clock_widget,
+      clock_widget(),
       logout_widget(),
     },
   })
 end)
 -- }}}
-
 -- {{{ Key bindings
 local clientbuttons = gears.table.join(
   awful.button({}, 1, function(c)
@@ -152,7 +143,6 @@ local clientbuttons = gears.table.join(
 -- Set keys
 root.keys(keys.global)
 -- }}}
-
 -- {{{ Rules
 -- Rules to apply to new clients (through the "manage" signal).
 awful.rules.rules = {
@@ -206,7 +196,6 @@ awful.rules.rules = {
   },
 }
 -- }}}
-
 -- {{{ Signals
 -- Signal function to execute when a new client appears.
 client.connect_signal("manage", function(c)
@@ -227,7 +216,6 @@ client.connect_signal("unfocus", function(c)
   c.border_color = beautiful.border_normal
 end)
 -- }}}
-
 -- Autostart
 local function run_once(cmd)
   local findme = cmd
