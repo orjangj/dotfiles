@@ -11,7 +11,6 @@
 -- FIX:
 -- - Flickering -- See comment above. May want to check issues with awesome wm on github
 -- - Volume
---   -- color is orange on startup?
 --   -- Change symbol based on output source (i.e. headset vs speaker)
 --     -- Look into using "pactl subscribe" to listen for events on headset connect/disconnect
 -- - Wifi
@@ -24,7 +23,6 @@
 -- - logout -- simplify and use font glyphs instead of icon set
 -- - Number of tag views (set to 5)
 -- - Fonts -- See https://github.com/ryanoasis/nerd-fonts
--- - Compton transparency not working when reloading awesome wm config
 -- - xset doesn't seem to always apply on startup -- reloading config works though...
 --
 -- TODO:
@@ -54,7 +52,7 @@ local vars = require("user.variables")
 -- as they might depend on the color theme
 beautiful.init(string.format("%s/.config/awesome/themes/%s/theme.lua", os.getenv("HOME"), vars.theme))
 
--- User specific widgets
+-- {{{ User specific widgets
 local battery_widget = require("widget.battery")
 local bluetooth_widget = require("widget.bluetooth")
 local brightness_widget = require("widget.brightness")
@@ -67,62 +65,42 @@ local storage_widget = require("widget.storage")
 local volume_widget = require("widget.volume")
 local temperature_widget = require("widget.temperature")
 local wifi_widget = require("widget.wifi")
+local clock_widget = wibox.widget.textclock()
 
+local cw = calendar_widget({ theme = beautiful.name, placement = "top_right" })
+clock_widget:connect_signal("button::press", function(_, _, _, button)
+  if button == 1 then
+    cw.toggle()
+  end
+end)
+
+-- }}}
 -- {{{ Layout
 awful.layout.layouts = {
   awful.layout.suit.tile,
 }
 -- }}}
-
 -- {{{ Menu
 menubar.utils.terminal = vars.terminal -- Set the terminal for applications that require it
 -- }}}
 
 -- {{{ Wibar
 -- Create a wibox for each screen and add it
-local taglist_buttons = gears.table.join(
-  awful.button({}, 1, function(t)
-    t:view_only()
-  end),
-  awful.button({ vars.modkey }, 1, function(t)
-    if client.focus then
-      client.focus:move_to_tag(t)
-    end
-  end),
-  awful.button({}, 3, awful.tag.viewtoggle),
-  awful.button({ vars.modkey }, 3, function(t)
-    if client.focus then
-      client.focus:toggle_tag(t)
-    end
-  end),
-  awful.button({}, 4, function(t)
-    awful.tag.viewnext(t.screen)
-  end),
-  awful.button({}, 5, function(t)
-    awful.tag.viewprev(t.screen)
-  end)
-)
-
-local mytextclock = wibox.widget.textclock()
-local cw = calendar_widget({
-  theme = beautiful.name,
-  placement = "top_right",
-})
-mytextclock:connect_signal("button::press", function(_, _, _, button)
-  if button == 1 then
-    cw.toggle()
-  end
-end)
 
 awful.screen.connect_for_each_screen(function(s)
   -- Each screen has its own tag table.
-  awful.tag({ "1", "2", "3", "4", "5", "6", "7", "8", "9" }, s, awful.layout.layouts[1])
+  awful.tag(vars.tags.glyphs, s, awful.layout.layouts[1])
 
   -- Create a taglist widget
   s.mytaglist = awful.widget.taglist({
     screen = s,
     filter = awful.widget.taglist.filter.all,
-    buttons = taglist_buttons,
+    style = {
+      spacing = 4,
+      shape = function(cr, w, h)
+        gears.shape.rounded_rect(cr, w, h, 4)
+      end,
+    },
   })
 
   -- Create the wibox
@@ -135,7 +113,7 @@ awful.screen.connect_for_each_screen(function(s)
       layout = wibox.layout.fixed.horizontal,
       s.mytaglist,
     },
-    nil, -- Middle widget
+    nil, -- center widgets
     { -- Right widgets
       layout = wibox.layout.fixed.horizontal,
       spacing = beautiful.wibox_spacing,
@@ -149,7 +127,7 @@ awful.screen.connect_for_each_screen(function(s)
       battery_widget(),
       wifi_widget(),
       bluetooth_widget(),
-      mytextclock,
+      clock_widget,
       logout_widget(),
     },
   })
@@ -255,7 +233,7 @@ local function run_once(cmd)
   local findme = cmd
   local firstspace = cmd:find(" ")
   if firstspace then
-    findme = cmd:sub(0, firstspace-1)
+    findme = cmd:sub(0, firstspace - 1)
   end
   awful.util.spawn_with_shell("pgrep -u $USER -x " .. findme .. " > /dev/null || (" .. cmd .. ")")
 end

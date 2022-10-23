@@ -32,7 +32,7 @@ theme.wibox_spacing = dpi(8)
 -- titlebar_[normal|focus]
 -- tooltip_[font|opacity|fg_color|bg_color|border_width|border_color]
 -- Example:
---theme.taglist_bg_focus = "#D08770"
+theme.taglist_fg_empty = theme.bg_focus
 
 -- You can add as many variables as
 -- you wish and access them by using
