@@ -5,11 +5,12 @@
 --      ██║  ██║╚███╔███╔╝███████╗███████║╚██████╔╝██║ ╚═╝ ██║███████╗
 --      ╚═╝  ╚═╝ ╚══╝╚══╝ ╚══════╝╚══════╝ ╚═════╝ ╚═╝     ╚═╝╚══════╝
 
--- WARNING: Using chrome/chromium seem to cause a lot of flicker. Often occurring while using BLE headset and listening on youtube.
---          Firefox does not have the same issue, although some flicker happen now and then.
+-- WARNING: Using chrome/chromium seem to cause a lot of flicker. Often occurring
+--          while using BLE headset and listening on youtube. Firefox does not seem
+--          to have the same issue, although some flicker happen now and then.
 
 -- FIX:
--- - wibar opacity
+-- - theme -- remove unecessary bloat
 -- - Flickering -- See comment above. May want to check issues with awesome wm on github
 -- - Volume
 --   -- Change symbol based on output source (i.e. headset vs speaker)
@@ -97,7 +98,7 @@ awful.screen.connect_for_each_screen(function(s)
   s.mywibox = awful.wibar({
     position = "top",
     screen = s,
-    height = 8*beautiful.useless_gap, -- adjust for margins in the setup root container
+    height = 8 * beautiful.useless_gap, -- adjust for margins in the setup root container
     bg = beautiful.transparent,
   })
 
@@ -122,7 +123,6 @@ awful.screen.connect_for_each_screen(function(s)
       { -- Right widgets
         {
           layout = wibox.layout.fixed.horizontal,
---          spacing = beautiful.wibox_spacing,
           cpu_widget(),
           temperature_widget(),
           ram_widget(),
@@ -145,9 +145,9 @@ awful.screen.connect_for_each_screen(function(s)
       },
     },
     bg = beautiful.transparent,
-    left = 2*beautiful.useless_gap,
-    right = 2*beautiful.useless_gap,
-    top = 2*beautiful.useless_gap,
+    left = 2 * beautiful.useless_gap,
+    right = 2 * beautiful.useless_gap,
+    top = 2 * beautiful.useless_gap,
     widget = wibox.container.margin,
   })
 end)
