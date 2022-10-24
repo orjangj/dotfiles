@@ -1,8 +1,6 @@
-local themes_path = string.format("%s/.config/awesome/themes/", os.getenv("HOME"))
 local dpi = require("beautiful.xresources").apply_dpi
 
 local theme = {}
-theme.wallpaper = themes_path .. "nord/nord-background.png"
 theme.name = "nord"
 theme.font = "Ubuntu 10"
 theme.fg_normal = "#ECEFF4"
