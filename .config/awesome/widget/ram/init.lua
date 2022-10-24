@@ -9,26 +9,20 @@ local ram = {}
 local function worker()
   local timeout = 2
 
-  local memory = {
-    ["good"] = { bg = beautiful.bg_normal, fg = beautiful.fg_normal, symbol = "" },
-    ["bad"] = { bg = beautiful.bg_normal, fg = beautiful.fg_urgent, symbol = "" },
-    ["critical"] = { bg = beautiful.bg_normal, fg = beautiful.fg_critical, symbol = "" },
-  }
-
-  local textbox = wibox.widget({
-    markup = memory["good"].symbol,
-    font = beautiful.font,
-    align = "center",
-    valign = "center",
-    widget = wibox.widget.textbox,
-  })
-
-  --- Main ram widget shown on wibar
   ram = wibox.widget({
-    textbox,
-    fg = memory["good"].fg,
-    bg = memory["good"].bg,
-    widget = wibox.widget.background,
+    {
+      {
+        id = "text",
+        widget = wibox.widget.textbox,
+      },
+      left = 4,
+      right = 4,
+      layout = wibox.container.margin,
+    },
+    shape = function(cr, width, height)
+      gears.shape.rounded_rect(cr, width, height, 4)
+    end,
+    widget = wibox.container.background,
   })
 
   --- Widget which is shown when user clicks on the ram widget
@@ -65,19 +59,21 @@ local function worker()
 
     total_used = used + used_swap
     total_free = free + free_swap
-    local type
     local free_percentage = getPercentage(total_free)
+
+    local highlight
     if free_percentage < 20 then
-      type = memory["critical"]
-    elseif free_percentage >= 20 and free_percentage < 40 then
-      type = memory["bad"]
+      highlight = beautiful.fg_critical
+    elseif free_percentage < 40 then
+      highlight = beautiful.fg_urgent
+    elseif free_percentage < 60 then
+      highlight = beautiful.fg_focus
     else
-      type = memory["good"]
+      highlight = beautiful.fg_normal
     end
 
-    widget.widget.markup = type.symbol .. " " .. free_percentage .. "%"
-    widget.bg = type.bg
-    widget.fg = type.fg
+    widget:get_children_by_id("text")[1]:set_text(string.format(" %d%%", free_percentage))
+    widget:set_fg(highlight)
 
     if popup.visible then
       popup:get_widget().data_list = {

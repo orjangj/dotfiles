@@ -1,30 +1,26 @@
+local beautiful = require("beautiful")
+local gears = require("gears")
 local watch = require("awful.widget.watch")
 local wibox = require("wibox")
-local beautiful = require("beautiful")
 
 local storage = {}
 
 local function worker()
   local timeout = 300
-  local space = {
-    ["good"] = { bg = beautiful.bg_normal, fg = beautiful.fg_normal, symbol = "" },
-    ["urgent"] = { bg = beautiful.bg_normal, fg = beautiful.fg_urgent, symbol = "" },
-    ["critical"] = { bg = beautiful.bg_normal, fg = beautiful.fg_critical, symbol = "" },
-  }
-
-  -- TODO: Spacing between other widgets
-  local textbox = wibox.widget({
-    markup = space["good"].symbol,
-    font = beautiful.font,
-    align = "center",
-    valign = "center",
-    widget = wibox.widget.textbox,
-  })
 
   storage = wibox.widget({
-    textbox,
-    fg = space["good"].fg,
-    bg = space["good"].bg,
+    {
+      {
+        id = "text",
+        widget = wibox.widget.textbox,
+      },
+      left = 4,
+      right = 4,
+      layout = wibox.container.margin,
+    },
+    shape = function(cr, width, height)
+      gears.shape.rounded_rect(cr, width, height, 4)
+    end,
     widget = wibox.container.background,
   })
 
@@ -41,18 +37,19 @@ local function worker()
       end
     end
 
-    local type
-    if used_percentage >= 70 and used_percentage < 90 then
-      type = space["urgent"]
-    elseif used_percentage >= 90 then
-      type = space["critical"]
+    local highlight
+    if used_percentage > 90 then
+      highlight = beautiful.fg_critical
+    elseif used_percentage > 70 then
+      highlight = beautiful.fg_urgent
+    elseif used_percentage > 50 then
+      highlight = beautiful.fg_focus
     else
-      type = space["good"]
+      highlight = beautiful.fg_normal
     end
 
-    widget.widget.markup = type.symbol .. " " .. used_percentage .. "%"
-    widget.fg = type.fg
-    widget.bg = type.bg
+    widget:get_children_by_id("text")[1]:set_text((" %d%%"):format(used_percentage))
+    widget:set_fg(highlight)
   end, storage)
 
   return storage

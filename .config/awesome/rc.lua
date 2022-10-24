@@ -9,6 +9,7 @@
 --          Firefox does not have the same issue, although some flicker happen now and then.
 
 -- FIX:
+-- - wibar opacity
 -- - Flickering -- See comment above. May want to check issues with awesome wm on github
 -- - Volume
 --   -- Change symbol based on output source (i.e. headset vs speaker)
@@ -21,9 +22,9 @@
 --   - on click, add options to add new devices etc..
 -- - calendar -- simplify and use beatiful theme -- move to middle or left of wibar? if left, then maybe tags should be middle
 -- - logout -- simplify and use font glyphs instead of icon set
--- - Number of tag views (set to 5)
 -- - Fonts -- See https://github.com/ryanoasis/nerd-fonts
--- - xset doesn't seem to always apply on startup -- reloading config works though...
+-- - Power management
+--   - Maybe add functionality to battery widget?
 --
 -- TODO:
 -- - Cleanup unused/redundant code
@@ -81,61 +82,73 @@ awful.screen.connect_for_each_screen(function(s)
   -- Each screen has its own tag table.
   awful.tag(vars.tags.glyphs, s, awful.layout.layouts[1])
 
-  -- Create a taglist widget
+  -- Create a taglist widget that can be used in the wibar
   s.mytaglist = awful.widget.taglist({
     screen = s,
     filter = awful.widget.taglist.filter.all,
     style = {
-      spacing = 4,
+      spacing = 6,
       shape = function(cr, w, h)
         gears.shape.rounded_rect(cr, w, h, 4)
       end,
     },
   })
 
-  -- Just to simulate useless_gap on top of main wibar. This is a workaround for
-  -- Awesome WM <= v4.3. Newer versions have a margins property that can be used.
-  s.mywibox_useless = awful.wibar({
-    position = "top",
-    height = 2*beautiful.useless_gap,
-    bg = beautiful.transparent,
-    screen = s,
-  })
-  -- Create the wibox
   s.mywibox = awful.wibar({
     position = "top",
     screen = s,
-    width = s.geometry.width - 4*beautiful.useless_gap, -- just to simulate useless_gap on left/right sides
-    border_color = beautiful.fg_focus,
-    shape = function(cr, w, h)
-      gears.shape.rounded_rect(cr, w, h, 4)
-    end,
+    height = 8*beautiful.useless_gap, -- adjust for margins in the setup root container
+    bg = beautiful.transparent,
   })
 
   -- Add widgets to the wibox
   s.mywibox:setup({
-    layout = wibox.layout.align.horizontal,
-    { -- Left widgets
-      layout = wibox.layout.fixed.horizontal,
-      s.mytaglist,
+    {
+      layout = wibox.layout.align.horizontal,
+      { -- Left widgets
+        {
+          layout = wibox.layout.fixed.horizontal,
+          s.mytaglist,
+        },
+        bg = beautiful.bg_normal .. "EF",
+        border_width = 10,
+        border_color = beautiful.fg_focus,
+        shape = function(cr, w, h)
+          gears.shape.rounded_rect(cr, w, h, 4)
+        end,
+        widget = wibox.container.background,
+      },
+      nil, -- center widgets
+      { -- Right widgets
+        {
+          layout = wibox.layout.fixed.horizontal,
+--          spacing = beautiful.wibox_spacing,
+          cpu_widget(),
+          temperature_widget(),
+          ram_widget(),
+          storage_widget(),
+          brightness_widget(),
+          volume_widget(),
+          mic_widget(),
+          battery_widget(),
+          wifi_widget(),
+          bluetooth_widget(),
+          clock_widget(),
+          logout_widget(),
+        },
+        bg = beautiful.bg_normal .. "EF",
+        border_color = beautiful.bg_focus,
+        shape = function(cr, w, h)
+          gears.shape.rounded_rect(cr, w, h, 4)
+        end,
+        widget = wibox.container.background,
+      },
     },
-    nil, -- center widgets
-    { -- Right widgets
-      layout = wibox.layout.fixed.horizontal,
-      spacing = beautiful.wibox_spacing,
-      cpu_widget(),
-      temperature_widget(),
-      ram_widget(),
-      storage_widget(),
-      brightness_widget(),
-      volume_widget(),
-      mic_widget(),
-      battery_widget(),
-      wifi_widget(),
-      bluetooth_widget(),
-      clock_widget(),
-      logout_widget(),
-    },
+    bg = beautiful.transparent,
+    left = 2*beautiful.useless_gap,
+    right = 2*beautiful.useless_gap,
+    top = 2*beautiful.useless_gap,
+    widget = wibox.container.margin,
   })
 end)
 -- }}}
@@ -240,7 +253,6 @@ local function run_once(cmd)
   awful.util.spawn_with_shell("pgrep -u $USER -x " .. findme .. " > /dev/null || (" .. cmd .. ")")
 end
 
---awful.spawn.easy_async("autorandr --change")  -- Not sure this is needed, but it is slow to execute (2-3 seconds freeze)!!
 awful.spawn.easy_async("xset r rate 200 40")
 awful.spawn.easy_async("feh --randomize --bg-fill " .. vars.wallpapers)
 run_once(vars.compositor)

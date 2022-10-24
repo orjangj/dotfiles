@@ -1,4 +1,5 @@
 local beautiful = require("beautiful")
+local gears = require("gears")
 local watch = require("awful.widget.watch")
 local wibox = require("wibox")
 
@@ -6,24 +7,20 @@ local wifi = {}
 
 local function worker()
   local timeout = 5
-  local quality = {
-    ["off"] = { bg = beautiful.bg_normal, fg = beautiful.fg_critical, symbol = "" },
-    ["critical"] = { bg = beautiful.bg_normal, fg = beautiful.fg_critical, symbol = "" },
-    ["bad"] = { bg = beautiful.bg_normal, fg = beautiful.fg_urgent, symbol = "" },
-    ["good"] = { bg = beautiful.bg_normal, fg = beautiful.fg_focus, symbol = "" },
-    ["excellent"] = { bg = beautiful.bg_normal, fg = beautiful.fg_normal, symbol = "" },
-  }
 
   wifi = wibox.widget({
     {
-      markup = quality["off"].symbol .. "0%",
-      font = beautiful.font,
-      align = "center",
-      valign = "center",
-      widget = wibox.widget.textbox,
+      {
+        id = "text",
+        widget = wibox.widget.textbox,
+      },
+      left = 4,
+      right = 4,
+      layout = wibox.container.margin,
     },
-    fg = beautiful.fg_normal,
-    bg = beautiful.bg_normal,
+    shape = function(cr, width, height)
+      gears.shape.rounded_rect(cr, width, height, 4)
+    end,
     widget = wibox.container.background,
   })
 
@@ -44,8 +41,6 @@ local function worker()
       in_use = string.gsub(in_use, "[%s]+", "")
       signal = tonumber(signal)
 
---      show_warning(("name: %s, connected: (%s), bssid: %s"):format(ssid, in_use, bssid))
-
       if in_use == "*" then
         wifi.connected = true
         wifi.ssid = ssid
@@ -55,24 +50,21 @@ local function worker()
       end
     end
 
-    local type
+    local highlight
     if not wifi.connected then
-      type = quality["off"]
+      highlight = beautiful.fg_critical
     elseif wifi.signal > 88 then
-      type = quality["excellent"]
+      highlight = beautiful.fg_normal
     elseif wifi.signal > 70 then
-      type = quality["good"]
+      highlight = beautiful.fg_focus
     elseif wifi.signal > 30 then
-      type = quality["bad"]
+      highlight = beautiful.fg_urgent
     else
-      type = quality["critical"]
+      highlight = beautiful.fg_critical
     end
 
-    widget.widget.markup = ("%s %d%%"):format(type.symbol, wifi.signal)
-    widget.fg = type.fg
-    widget.bg = type.bg
-
-    -- TODO: What is the icon widget used for here?
+    widget:get_children_by_id("text")[1]:set_text((" %d%%"):format(wifi.signal))
+    widget:set_fg(highlight)
   end, wifi)
 
   return wifi

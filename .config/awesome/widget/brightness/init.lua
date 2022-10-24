@@ -10,10 +10,6 @@ local function SET_BRIGHTNESS_CMD(value)
   return "brightnessctl set " .. value .. "%"
 end
 
-local function GET_BRIGHTNESS_CMD()
-  return "brightnessctl get"
-end
-
 local function INC_BRIGHTNESS_CMD(step)
   return "brightnessctl set +" .. step .. "%"
 end
@@ -23,47 +19,44 @@ local function DEC_BRIGHTNESS_CMD(step)
 end
 
 local function worker()
-  spawn.easy_async("brightnessctl max", function(stdout)
-    brightness.max_value = tonumber(string.format("%.0f", stdout))
-  end)
-
   local timeout = 3600
   local base = 20
   local step = 5
-  local level = { -- Is this really necessary? :D
-    ["low"] = { bg = beautiful.bg_normal, fg = beautiful.fg_urgent, symbol = "" },
-    ["medium"] = { bg = beautiful.bg_normal, fg = beautiful.fg_normal, symbol = "" },
-    ["high"] = { bg = beautiful.bg_normal, fg = beautiful.fg_urgent, symbol = "" },
-  }
 
   brightness.widget = wibox.widget({
     {
-      markup = level["high"].symbol,
-      font = beautiful.font,
-      align = "center",
-      valign = "center",
-      widget = wibox.widget.textbox,
+      {
+        id = "text",
+        widget = wibox.widget.textbox,
+      },
+      left = 4,
+      right = 4,
+      layout = wibox.container.margin,
     },
-    fg = level["medium"].fg,
-    bg = level["medium"].bg,
+    shape = function(cr, width, height)
+      gears.shape.rounded_rect(cr, width, height, 4)
+    end,
     widget = wibox.container.background,
   })
 
-  _, brightness.watcher = watch(GET_BRIGHTNESS_CMD(), timeout, function(widget, stdout)
-    local percentage = 100 * tonumber(string.format("%.0f", stdout)) / brightness.max_value
-    local type
+  _, brightness.watcher = watch("bash -c 'brightnessctl max; brightnessctl get'", timeout, function(widget, stdout)
+    local max_value, current_level = stdout:match("(%d+)[\r\n]+(%d+)")
+    local percentage = 100 * tonumber(current_level) / tonumber(max_value)
+    local icon, highlight
 
-    if percentage < 10 then
-      type = level.low
+    if percentage < 15 then
+      icon = ""
+      highlight = beautiful.fg_urgent
     elseif percentage > 70 then
-      type = level.high
+      icon = ""
+      highlight = beautiful.fg_urgent
     else
-      type = level.medium
+      icon = ""
+      highlight = beautiful.fg_normal
     end
 
-    widget.widget.markup = ("%s %d%%"):format(type.symbol, percentage)
-    widget.fg = type.fg
-    widget.bg = type.bg
+    widget:get_children_by_id("text")[1]:set_text(string.format("%s %d%%", icon, percentage))
+    widget:set_fg(highlight)
   end, brightness.widget)
 
   function brightness:set(value)
@@ -83,9 +76,6 @@ local function worker()
       brightness.watcher:emit_signal("timeout")
     end)
   end
-
-  -- set the brightness_level before leaving
-  brightness:set(base)
 
   return brightness.widget
 end

@@ -1,4 +1,5 @@
 local beautiful = require("beautiful")
+local gears = require("gears")
 local naughty = require("naughty")
 local wibox = require("wibox")
 local watch = require("awful.widget.watch")
@@ -8,58 +9,43 @@ local temperature = {}
 local function worker()
   local timeout = 15
 
-  local level = {
-    ["low"] = { bg = beautiful.bg_normal, fg = beautiful.fg_normal, symbol = "" },
-    ["medium"] = { bg = beautiful.bg_normal, fg = beautiful.fg_normal, symbol = "" },
-    ["high"] = { bg = beautiful.bg_normal, fg = beautiful.fg_urgent, symbol = "" },
-    ["critical"] = { bg = beautiful.bg_normal, fg = beautiful.fg_critical, symbol = "" },
-  }
-
   temperature = wibox.widget({
     {
-      markup = level["medium"].symbol,
-      font = beautiful.font,
-      align = "center",
-      valign = "center",
-      widget = wibox.widget.textbox,
+      {
+        id = "text",
+        widget = wibox.widget.textbox,
+      },
+      left = 4,
+      right = 4,
+      layout = wibox.container.margin,
     },
-    fg = level["medium"].fg,
-    bg = level["medium"].bg,
+    shape = function(cr, width, height)
+      gears.shape.rounded_rect(cr, width, height, 4)
+    end,
     widget = wibox.container.background,
   })
-
-  local function show_warning(text)
-    naughty.notify({
-      text = text,
-      title = "",
-      timeout = timeout,
-      hover_timeout = 0.5,
-      position = "top_right",
-      bg = beautiful.red, -- Note: Make the background stand out
-      fg = beautiful.fg_normal,
-      width = 300,
-      screen = mouse.screen,
-    })
-  end
 
   watch("bash -c 'sensors'", timeout, function(widget, stdout)
     local cpu_temp = string.match(stdout, "Package id %d+:%s+[%+-](%d+)")
     cpu_temp = tonumber(cpu_temp)
 
-    local type
-    if cpu_temp <= 15 then
-      type = level["low"]
-    elseif cpu_temp <= 45 then
-      type = level["medium"]
-    elseif cpu_temp <= 80 then
-      type = level["high"]
+    local icon, highlight
+    if cpu_temp < 50 then
+      icon = ""
+      highlight = beautiful.fg_normal
+    elseif cpu_temp < 70 then
+      icon = ""
+      highlight = beautiful.fg_focus
+    elseif cpu_temp < 90 then
+      icon = ""
+      highlight = beautiful.fg_urgent
     else
-      type = level["critical"]
+      icon = ""
+      highlight = beautiful.fg_critical
     end
 
-    widget.widget.markup = string.format("%s %d°C", type.symbol, cpu_temp)
-    widget.fg = type.fg
-    widget.bg = type.bg
+    widget:get_children_by_id("text")[1]:set_text(("%s %d%%"):format(icon, cpu_temp))
+    widget:set_fg(highlight)
   end, temperature)
 
   return temperature

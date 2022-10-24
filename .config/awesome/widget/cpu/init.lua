@@ -1,35 +1,30 @@
+local beautiful = require("beautiful")
+local gears = require("gears")
 local watch = require("awful.widget.watch")
 local wibox = require("wibox")
-local beautiful = require("beautiful")
 
 local CPU_CMD = [[grep --max-count=1 '^cpu.' /proc/stat]]
 
-local cpu_widget = {}
+local cpu = {}
 
 -- TODO: Dropdown list with action buttons?
 
 local function worker()
   local timeout = 2
 
-  local load = {
-    ["good"] = { bg = beautiful.bg_normal, fg = beautiful.fg_normal, symbol = "" },
-    ["urgent"] = { bg = beautiful.bg_normal, fg = beautiful.fg_urgent, symbol = "" },
-    ["critical"] = { bg = beautiful.bg_normal, fg = beautiful.fg_critical, symbol = "" },
-  }
-
-  -- TODO: Spacing between other widgets
-  local textbox = wibox.widget({
-    markup = load["good"].symbol,
-    font = beautiful.font,
-    align = "center",
-    valign = "center",
-    widget = wibox.widget.textbox,
-  })
-
-  cpu_widget = wibox.widget({
-    textbox,
-    fg = load["good"].fg,
-    bg = load["good"].bg,
+  cpu = wibox.widget({
+    {
+      {
+        id = "text",
+        widget = wibox.widget.textbox,
+      },
+      left = 4,
+      right = 4,
+      layout = wibox.container.margin,
+    },
+    shape = function(cr, width, height)
+      gears.shape.rounded_rect(cr, width, height, 4)
+    end,
     widget = wibox.container.background,
   })
 
@@ -47,23 +42,24 @@ local function worker()
     maincpu["total_prev"] = total
     maincpu["idle_prev"] = idle
 
-    local type
-    if diff_usage >= 50 and diff_usage < 80 then
-      type = load["urgent"]
-    elseif diff_usage >= 80 then
-      type = load["critical"]
+    local highlight
+    if diff_usage > 80 then
+      highlight = beautiful.fg_critical
+    elseif diff_usage > 50 then
+      highlight = beautiful.fg_urgent
+    elseif diff_usage > 30 then
+      highlight = beautiful.fg_focus
     else
-      type = load["good"]
+      highlight = beautiful.fg_normal
     end
-    widget.widget.markup = type.symbol .. " " .. math.floor(diff_usage) .. "%"
-    widget.fg = type.fg
-    widget.bg = type.bg
-  end, cpu_widget)
+    widget:get_children_by_id("text")[1]:set_text(" " .. math.floor(diff_usage) .. "%")
+    widget:set_fg(highlight)
+  end, cpu)
 
-  return cpu_widget
+  return cpu
 end
 
-return setmetatable(cpu_widget, {
+return setmetatable(cpu, {
   __call = function(_, ...)
     return worker(...)
   end,

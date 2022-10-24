@@ -1,7 +1,8 @@
-local wibox = require("wibox")
-local spawn = require("awful.spawn")
 local beautiful = require("beautiful")
+local gears = require("gears")
+local spawn = require("awful.spawn")
 local watch = require("awful.widget.watch")
+local wibox = require("wibox")
 
 local function GET_MIC_CMD(device)
   return "amixer -D " .. device .. " sget Capture"
@@ -31,23 +32,19 @@ local function worker()
   local step = 5
   local device = "pulse"
 
-  local level = {
-    mute = { bg = beautiful.bg_normal, fg = beautiful.fg_critical, symbol = "" },
-    low = { bg = beautiful.bg_normal, fg = beautiful.fg_urgent, symbol = "" },
-    medium = { bg = beautiful.bg_normal, fg = beautiful.fg_normal, symbol = "" },
-    high = { bg = beautiful.bg_normal, fg = beautiful.fg_urgent, symbol = "" },
-  }
-
   mic.widget = wibox.widget({
     {
-      markup = level.medium.symbol,
-      font = beautiful.font,
-      align = "center",
-      valign = "center",
-      widget = wibox.widget.textbox,
+      {
+        id = "text",
+        widget = wibox.widget.textbox,
+      },
+      left = 4,
+      right = 4,
+      layout = wibox.container.margin,
     },
-    fg = level.medium.fg,
-    bg = level.medium.bg,
+    shape = function(cr, width, height)
+      gears.shape.rounded_rect(cr, width, height, 4)
+    end,
     widget = wibox.container.background,
   })
 
@@ -56,20 +53,21 @@ local function worker()
     local mic_level = string.match(stdout, "(%d?%d?%d)%%")
     mic_level = tonumber(string.format("% 3d", mic_level))
 
-    local type
+    local icon, highlight
     if mute == "off" or mic_level == 0 then
-      type = level.mute
-    elseif mic_level >= 90 then
-      type = level.high
-    elseif mic_level >= 30 then
-      type = level.medium
+      icon = ""
+      highlight = beautiful.fg_critical
     else
-      type = level.low
+      icon = ""
+      if mic_level > 90 or mic_level < 30 then
+        highlight = beautiful.fg_urgent
+      else
+        highlight = beautiful.fg_normal
+      end
     end
 
-    widget.widget.markup = ("%s %d%%"):format(type.symbol, mic_level)
-    widget.fg = type.fg
-    widget.bg = type.bg
+    widget:get_children_by_id("text")[1]:set_text(("%s %d%%"):format(icon, mic_level))
+    widget:set_fg(highlight)
   end, mic.widget)
 
   function mic:set(v)

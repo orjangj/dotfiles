@@ -1,7 +1,8 @@
-local wibox = require("wibox")
-local spawn = require("awful.spawn")
 local beautiful = require("beautiful")
+local gears = require("gears")
+local spawn = require("awful.spawn")
 local watch = require("awful.widget.watch")
+local wibox = require("wibox")
 
 local function GET_VOLUME_CMD(device)
   return "amixer -D " .. device .. " sget Master"
@@ -32,22 +33,19 @@ local function worker()
   local step = 5
   local device = "pulse"
 
-  local level = {
-    ["mute"] = { bg = beautiful.bg_normal, fg = beautiful.fg_urgent, symbol = "" },
-    ["good"] = { bg = beautiful.bg_normal, fg = beautiful.fg_normal, symbol = "" },
-    ["high"] = { bg = beautiful.bg_normal, fg = beautiful.fg_critical, symbol = "" },
-  }
-
   volume.widget = wibox.widget({
     {
-      markup = level["good"].symbol,
-      font = beautiful.font,
-      align = "center",
-      valign = "center",
-      widget = wibox.widget.textbox,
+      {
+        id = "text",
+        widget = wibox.widget.textbox,
+      },
+      left = 4,
+      right = 4,
+      layout = wibox.container.margin,
     },
-    fg = level["good"].fg,
-    bg = level["good"].bg,
+    shape = function(cr, width, height)
+      gears.shape.rounded_rect(cr, width, height, 4)
+    end,
     widget = wibox.container.background,
   })
 
@@ -56,18 +54,20 @@ local function worker()
     local volume_level = string.match(stdout, "(%d?%d?%d)%%")
     volume_level = tonumber(string.format("% 3d", volume_level))
 
-    local type
+    local icon, highlight
     if mute == "off" or volume_level == 0 then
-      type = level["mute"]
+      icon = ""
+      highlight = beautiful.fg_urgent
     elseif volume_level >= 70 then
-      type = level["high"]
+      icon = ""
+      highlight = beautiful.fg_critical
     else
-      type = level["good"]
+      icon = ""
+      highlight = beautiful.fg_normal
     end
 
-    widget.widget.markup = ("%s %d%%"):format(type.symbol, volume_level)
-    widget.fg = type.fg
-    widget.bg = type.bg
+    widget:get_children_by_id("text")[1]:set_text(("%s %d%%"):format(icon, volume_level))
+    widget:set_fg(highlight)
   end, volume.widget)
 
   function volume:set(v)

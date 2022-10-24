@@ -1,44 +1,36 @@
 local beautiful = require("beautiful")
+local gears = require("gears")
 local naughty = require("naughty")
 local watch = require("awful.widget.watch")
 local wibox = require("wibox")
 
-local battery_widget = {}
+local battery = {}
 
 local function worker()
   local timeout = 10
-  local discharging = {
-    [0] = { bg = beautiful.bg_normal, fg = beautiful.fg_critical, symbol = "" },
-    [25] = { bg = beautiful.bg_normal, fg = beautiful.fg_urgent, symbol = "" },
-    [50] = { bg = beautiful.bg_normal, fg = beautiful.fg_normal, symbol = "" },
-    [75] = { bg = beautiful.bg_normal, fg = beautiful.fg_normal, symbol = "" },
-    [100] = { bg = beautiful.bg_normal, fg = beautiful.fg_normal, symbol = "" },
-  }
-  local charging = {
-    bg = beautiful.bg_normal,
-    fg = beautiful.fg_normal,
-    symbol = "",
-  }
   local last_battery_check = os.time()
 
-  battery_widget = wibox.widget({
+  battery = wibox.widget({
     {
-      markup = discharging[100].symbol,
-      font = beautiful.font,
-      align = "center",
-      valign = "center",
-      widget = wibox.widget.textbox,
+      {
+        id = "text",
+        widget = wibox.widget.textbox,
+      },
+      left = 4,
+      right = 4,
+      layout = wibox.container.margin,
     },
-    fg = discharging[100].fg,
-    bg = discharging[100].bg,
+    shape = function(cr, width, height)
+      gears.shape.rounded_rect(cr, width, height, 4)
+    end,
     widget = wibox.container.background,
   })
 
-  local function show_battery_warning()
+  local function warning_notification(text)
     -- TODO: Fix border color
     naughty.notify({
-      text = "The battery is dying",
-      title = "WAAAH... We have a problem!!!",
+      title = "Low battery charge",
+      text = text,
       timeout = timeout,
       hover_timeout = 0.5,
       position = "top_right",
@@ -70,56 +62,70 @@ local function worker()
 
     local charge = 0
     local status
-    for i, battery in ipairs(battery_info) do
+    for i, bat in ipairs(battery_info) do
       if capacities[i] ~= nil then
-        if battery.charge >= charge then
-          status = battery.status -- use most charged battery status
+        if bat.charge >= charge then
+          -- use most charged battery status
           -- this is arbitrary, and maybe another metric should be used
+          status = bat.status
         end
 
-        charge = charge + battery.charge * capacities[i]
+        charge = charge + bat.charge * capacities[i]
       end
     end
     charge = charge / capacity
 
-    local type
+    local icon, highlight
     if status == "Charging" then
-      type = charging
+      icon = ""
+      highlight = beautiful.fg_normal
     else
-      if charge >= 0 and charge < 5 then
-        type = discharging[0]
-        if os.difftime(os.time(), last_battery_check) > timeout then
-          last_battery_check = os.time()
-          show_battery_warning()
-        end
-      elseif charge >= 5 and charge < 15 then
-        type = discharging[25]
-        if os.difftime(os.time(), last_battery_check) > 3 * timeout then
-          last_battery_check = os.time()
-          show_battery_warning()
-        end
-      elseif charge >= 15 and charge < 37 then
-        type = discharging[25]
-      elseif charge >= 37 and charge < 62 then
-        type = discharging[50]
-      elseif charge >= 62 and charge < 87 then
-        type = discharging[75]
+      if charge < 7 then
+        icon = ""
+        highlight = beautiful.fg_critical
+      elseif charge < 15 then
+        icon = ""
+        highlight = beautiful.fg_urgent
+      elseif charge < 37 then
+        icon = ""
+        highlight = beautiful.fg_focus
+      elseif charge < 62 then
+        icon = ""
+        highlight = beautiful.fg_normal
+      elseif charge < 87 then
+        icon = ""
+        highlight = beautiful.fg_normal
       else
-        type = discharging[100]
+        icon = ""
+        highlight = beautiful.fg_normal
       end
     end
 
-    widget.widget.markup = ("%s %d%%"):format(type.symbol, charge)
-    widget.fg = type.fg
-    widget.bg = type.bg
+    widget:get_children_by_id("text")[1]:set_text(("%s %d%%"):format(icon, charge))
+    widget:set_fg(highlight)
 
-    -- TODO: What is the icon widget used for here?
-  end, battery_widget)
+    if charge < 15 then
+      local message
+      local difftime = os.difftime(os.time(), last_battery_check)
+      last_battery_check = os.time()
+      if charge < 7 then
+        if difftime > timeout then
+          -- TODO: Maybe go into hibernate/suspend here?
+          message = "Please connect battery to a charger"
+        end
+      else
+        if difftime > 3 * timeout then
+          message = "Please connect battery to a charger"
+        end
+      end
+      warning_notification(message)
+    end
+  end, battery)
 
-  return battery_widget
+  return battery
 end
 
-return setmetatable(battery_widget, {
+return setmetatable(battery, {
   __call = function(_, ...)
     return worker(...)
   end,
