@@ -83,9 +83,20 @@ local function worker()
       if charge < 7 then
         icon = ""
         highlight = beautiful.fg_critical
+        local difftime = os.difftime(os.time(), last_battery_check)
+        if difftime > 3*timeout then
+          -- TODO: Consider entering hibernate/suspend
+          warning_notification("Connect battery to charger!")
+          last_battery_check = os.time()
+        end
       elseif charge < 15 then
         icon = ""
         highlight = beautiful.fg_urgent
+        local difftime = os.difftime(os.time(), last_battery_check)
+        if difftime > 6*timeout then
+          warning_notification("Connect battery to charger!")
+          last_battery_check = os.time()
+        end
       elseif charge < 37 then
         icon = ""
         highlight = beautiful.fg_focus
@@ -103,23 +114,6 @@ local function worker()
 
     widget:get_children_by_id("text")[1]:set_text(("%s %d%%"):format(icon, charge))
     widget:set_fg(highlight)
-
-    if charge < 15 then
-      local message
-      local difftime = os.difftime(os.time(), last_battery_check)
-      last_battery_check = os.time()
-      if charge < 7 then
-        if difftime > timeout then
-          -- TODO: Maybe go into hibernate/suspend here?
-          message = "Please connect battery to a charger"
-        end
-      else
-        if difftime > 3 * timeout then
-          message = "Please connect battery to a charger"
-        end
-      end
-      warning_notification(message)
-    end
   end, battery)
 
   return battery

@@ -1,5 +1,5 @@
 configuration {
-    font: "Ubuntu 10";
+    font: "Awesome Font 10";
     width: 20;
     line-margin: 20;
     lines: 10;

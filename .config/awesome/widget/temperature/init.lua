@@ -44,7 +44,7 @@ local function worker()
       highlight = beautiful.fg_critical
     end
 
-    widget:get_children_by_id("text")[1]:set_text(("%s %d%%"):format(icon, cpu_temp))
+    widget:get_children_by_id("text")[1]:set_text(("%s %d°C"):format(icon, cpu_temp))
     widget:set_fg(highlight)
   end, temperature)
 

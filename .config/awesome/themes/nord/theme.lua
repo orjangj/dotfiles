@@ -1,19 +1,37 @@
 local dpi = require("beautiful.xresources").apply_dpi
 
 local theme = {}
+
 theme.name = "nord"
 theme.font = "Ubuntu 10"
+
+-- For reference only
+theme.nord0 = "#2e3440"
+theme.nord1 = "#3b4252"
+theme.nord2 = "#434c5e"
+theme.nord3 = "#4c566a"
+theme.nord4 = "#d8dee9"
+theme.nord5 = "#e5e9f0"
+theme.nord6 = "#eceff4"
+theme.nord7 = "#8fbcbb"
+theme.nord8 = "#88c0d0"
+theme.nord9 = "#81a1c1"
+theme.nord10 = " #5e81ac"
+theme.nord11 = " #bf616a"
+theme.nord12 = " #d08770"
+theme.nord13 = " #ebcb8b"
+theme.nord14 = " #a3be8c"
+theme.nord15 = " #b48ead"
+
 theme.fg_normal = "#ECEFF4"
 theme.fg_focus = "#88C0D0"
 theme.fg_urgent = "#D08770"
-theme.fg_critical = "#BF616A" -- custom name
+theme.fg_critical = "#BF616A"
 theme.bg_normal = "#2E3440"
 theme.bg_focus = "#3B4252"
 theme.bg_urgent = "#3B4252"
 theme.bg_critical = "#3B4252"
 theme.bg_systray = theme.bg_normal
-theme.useless_gap = dpi(4)
-theme.border_width = dpi(1)
 theme.border_normal = "#3B4252"
 theme.border_focus = "#88C0D0"
 theme.border_marked = "#D08770"
@@ -21,6 +39,8 @@ theme.border_critical = "#BF616A"
 theme.titlebar_bg_focus = "#3B4252"
 theme.titlebar_bg_normal = "#2E3440"
 
+theme.useless_gap = dpi(4)
+theme.border_width = dpi(1)
 theme.wibox_spacing = dpi(8)
 
 -- There are other variable sets
