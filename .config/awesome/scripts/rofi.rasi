@@ -1,12 +1,9 @@
 configuration {
-    font: "Awesome Font 10";
-    width: 20;
-    line-margin: 20;
-    lines: 10;
+    font: "Ubuntu 10";
 
     display-ssh:    "";
     display-run:    "";
-    display-drun:   "";
+    display-drun:   "";
     display-window: "";
     display-combi:  "";
     show-icons:     false;

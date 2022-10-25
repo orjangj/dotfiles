@@ -1,106 +1,78 @@
 /**
- * Nordic rofi theme
- *
- * NOTE: Hackish solution to get it placed where I want
+ * Nordic color theme for rofi
  */
 
 * {
-	nord0: #2e3440;
-	nord1: #3b4252;
-	nord2: #434c5e;
-	nord3: #4c566a;
+    nord0: #2e3440;
+    nord1: #3b4252;
+    nord2: #434c5e;
+    nord3: #4c566a;
+    nord4: #d8dee9;
+    nord5: #e5e9f0;
+    nord6: #eceff4;
+    nord7: #8fbcbb;
+    nord8: #88c0d0;
+    nord9: #81a1c1;
+    nord10: #5e81ac;
+    nord11: #bf616a;
+    nord12: #d08770;
+    nord13: #ebcb8b;
+    nord14: #a3be8c;
+    nord15: #b48ead;
 
     nord0-transparent: rgba(46,52,64,0.9);
-
-	nord4: #d8dee9;
-	nord5: #e5e9f0;
-	nord6: #eceff4;
-
-	nord7: #8fbcbb;
-	nord8: #88c0d0;
-	nord9: #81a1c1;
-	nord10: #5e81ac;
-	nord11: #bf616a;
-
-	nord12: #d08770;
-	nord13: #ebcb8b;
-	nord14: #a3be8c;
-	nord15: #b48ead;
-
-    nord-border: @nord8;
-
-    foreground:  @nord8;
-    backlight:   #ccffeedd;
-    background-color:  transparent;
     
-    highlight:     underline bold #eceff4;
-
+    text-color: @nord6;
+    text-font: inherit;
+    background-color:  transparent;
     transparent: rgba(46,52,64,0);
 }
 
 window {
-    location: northwest;
     anchor:   northwest;
+    location: northwest;
     width: 75.2%;
     padding: 8px 138px;
+    children:  [horibox];
+}
 
-    background-color: @transparent;
-    children:  [mainbox];
+horibox {
     orientation: horizontal;
-}
-
-mainbox {
-    orientation: horizontal;
-    children: [ inputbar, message, listview ];
-}
-
-message {
-    color: @nord0;
-    border-color: @foreground;
-    background-color: @nord7;
-}
-
-inputbar {
-    color: @nord6;
-    padding: 4px;
-    background-color: @nord0-transparent;
-    border-radius: 4px;
-    border-color: @nord8;
-}
-
-entry {
-    text-color: @transparent;
+    children: [ prompt, entry, listview ];
 }
 
 prompt {
-    text-font: inherit;
-    text-color: inherit;
+    color: @nord6;
+    padding: 4px;
+    border-radius: 4px;
+    background-color: @nord0-transparent;
+}
+
+entry {
+    color: @nord6;
+    padding: 4px;
+    border-radius: 4px;
+    background-color: @nord0-transparent;
+    width: 10em;
+    expand: false;
 }
 
 listview {
-    padding: 3px;
     layout: horizontal;
+    spacing: 4px;
+    padding: 3px;
     border-radius: 4px;
     border-color: @nord8;
     background-color: @nord0-transparent;
 }
 
 element {
-    padding: 2px 4px;
-    vertical-align: 0.5;
+    padding: 1px 4px;
     border-radius: 4px;
-    background-color: transparent;
-    color: @foreground;
-    text-color: @nord6;
 }
 
 element selected.normal {
-	background-color: @nord8;
-	text-color: @nord0;
-}
-
-element-text, element-icon {
-    background-color: inherit;
-    text-color:       inherit;
+    background-color: @nord8;
+    text-color: @nord0;
 }
 

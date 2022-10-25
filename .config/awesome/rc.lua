@@ -10,6 +10,7 @@
 --          to have the same issue, although some flicker happen now and then.
 
 -- FIX:
+-- - rofi -- 1px added when typing in entry bar
 -- - theme -- remove unecessary bloat
 -- - Flickering -- See comment above. May want to check issues with awesome wm on github
 -- - Volume
