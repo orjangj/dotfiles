@@ -13,6 +13,13 @@
 -- - rofi -- 1px added when typing in entry bar
 -- - theme -- remove unecessary bloat
 -- - Flickering -- See comment above. May want to check issues with awesome wm on github
+--   - Might be solved in newer versions of awesome
+--   - Might be solved by using a different compositor (ie. picom?)
+-- - Battery
+--   - Automatically suspend when low battery.
+--   - Or maybe use TLP (+ Powertop) for battery life management
+--     - On fedora, power-profiles-daemon seems to be the best choice.. but only on fedora?
+--   - Calculate rate statistics (i.e. linear extrapolation), and display on hover
 -- - Volume
 --   -- Change symbol based on output source (i.e. headset vs speaker)
 --     -- Look into using "pactl subscribe" to listen for events on headset connect/disconnect
@@ -25,16 +32,14 @@
 -- - calendar -- simplify and use beatiful theme -- move to middle or left of wibar? if left, then maybe tags should be middle
 -- - logout -- simplify and use font glyphs instead of icon set
 -- - Fonts -- See https://github.com/ryanoasis/nerd-fonts
--- - Power management
---   - Maybe add functionality to battery widget?
 --
 -- TODO:
 -- - Cleanup unused/redundant code
 -- - Get list of all dependencies (i.e. xbacklight, pavucontrol, etc..)
 -- - keybindings (remove unused, apply better keys, etc.. ???)
--- - dmenu vs rofi?
--- - Use dmenu or rofi scripts to save keybindings?
+-- - Use rofi scripts to save keybindings?
 -- - Automatic screen lock (see sway config for ideas)
+--   - Could use a gears.timer to check inactivity?
 --   - Possible to use login manager?
 --   - Currently using i3lock
 
