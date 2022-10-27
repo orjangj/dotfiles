@@ -131,6 +131,7 @@ return packer.startup(function(use)
   -- Colorschemes
   use({ "shaunsingh/nord.nvim" })
   use({ "rmehri01/onenord.nvim" })
+  use({ "EdenEast/nightfox.nvim", run = ":NightfoxCompile" })
   use({ "norcalli/nvim-colorizer.lua" })
 
   -- Debugging and testing
