@@ -129,8 +129,6 @@ return packer.startup(function(use)
   use({ "lewis6991/gitsigns.nvim" })
 
   -- Colorschemes
-  use({ "shaunsingh/nord.nvim" })
-  use({ "rmehri01/onenord.nvim" })
   use({ "EdenEast/nightfox.nvim", run = ":NightfoxCompile" })
   use({ "norcalli/nvim-colorizer.lua" })
 

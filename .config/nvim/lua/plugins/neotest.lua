@@ -46,14 +46,4 @@ neotest.setup({
     skipped = " ",
     unknown = " ",
   },
-  -- TODO highlights -- Nord colorscheme isn't compatible with neotest at the moment
-  -- Should probably create a feature request from nord.nvim to add support for neotest.
---  highlights = {
---    passed = "healthSuccess",
---    failed = "healthError",
---    namespace = "Directory",
---    file = "NvimTreeRootFolder",
---    dir = "Directory",
---    adapter_name = "NvimTreeFolderName",
---  },
 })
