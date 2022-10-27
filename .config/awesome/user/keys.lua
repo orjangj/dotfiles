@@ -11,7 +11,7 @@ local mic = require("widget.mic")
 local brightness = require("widget.brightness")
 
 local globalkeys = gears.table.join(
--- Group "awesome"
+  -- Group "awesome"
   awful.key({ vars.modkey }, "s", hotkeys_popup.show_help, { description = "show help", group = "awesome" }),
   awful.key({ vars.modkey, "Control" }, "r", awesome.restart, { description = "reload awesome", group = "awesome" }),
   awful.key({ vars.modkey, "Shift" }, "q", awesome.quit, { description = "logout", group = "awesome" }),
@@ -27,9 +27,7 @@ local globalkeys = gears.table.join(
     awful.spawn(vars.browser)
   end, { description = "open a browser", group = "launcher" }),
   awful.key({ vars.modkey }, "d", function()
-    awful.spawn(
-      "rofi -no-lazy-grab -show drun -theme " .. gears.filesystem.get_configuration_dir() .. "scripts/rofi.rasi"
-    )
+    awful.spawn("rofi -no-lazy-grab -show drun -theme " .. gears.filesystem.get_configuration_dir() .. "scripts/rofi.rasi")
   end, { description = "launch rofi", group = "launcher" }),
   awful.key({ vars.modkey }, "p", function()
     menubar.show()
@@ -60,16 +58,16 @@ local globalkeys = gears.table.join(
   end, { description = "focus the previous screen", group = "screen" }),
 
   -- Group "client"
-  awful.key({ vars.modkey }, "h", function()
+  awful.key({ vars.modkey }, "j", function()
     awful.client.focus.byidx(1)
   end, { description = "focus next by index", group = "client" }),
-  awful.key({ vars.modkey }, "l", function()
+  awful.key({ vars.modkey }, "k", function()
     awful.client.focus.byidx(-1)
   end, { description = "focus previous by index", group = "client" }),
-  awful.key({ vars.modkey, "Shift" }, "h", function()
+  awful.key({ vars.modkey, "Shift" }, "j", function()
     awful.client.swap.byidx(1)
   end, { description = "swap with next client by index", group = "client" }),
-  awful.key({ vars.modkey, "Shift" }, "l", function()
+  awful.key({ vars.modkey, "Shift" }, "k", function()
     awful.client.swap.byidx(-1)
   end, { description = "swap with previous client by index", group = "client" }),
   awful.key(
@@ -93,22 +91,22 @@ local globalkeys = gears.table.join(
   end, { description = "restore minimized", group = "client" }),
 
   -- Group "layout"
-  awful.key({ vars.modkey }, "k", function()
+  awful.key({ vars.modkey }, "l", function()
     awful.tag.incmwfact(0.05)
   end, { description = "increase master width factor", group = "layout" }),
-  awful.key({ vars.modkey }, "j", function()
+  awful.key({ vars.modkey }, "h", function()
     awful.tag.incmwfact(-0.05)
   end, { description = "decrease master width factor", group = "layout" }),
-  awful.key({ vars.modkey, "Shift" }, "j", function()
+  awful.key({ vars.modkey, "Shift" }, "h", function()
     awful.tag.incnmaster(1, nil, true)
   end, { description = "increase the number of master clients", group = "layout" }),
-  awful.key({ vars.modkey, "Shift" }, "k", function()
+  awful.key({ vars.modkey, "Shift" }, "l", function()
     awful.tag.incnmaster(-1, nil, true)
   end, { description = "decrease the number of master clients", group = "layout" }),
-  awful.key({ vars.modkey, "Control" }, "j", function()
+  awful.key({ vars.modkey, "Control" }, "h", function()
     awful.tag.incncol(1, nil, true)
   end, { description = "increase the number of columns", group = "layout" }),
-  awful.key({ vars.modkey, "Control" }, "k", function()
+  awful.key({ vars.modkey, "Control" }, "l", function()
     awful.tag.incncol(-1, nil, true)
   end, { description = "decrease the number of columns", group = "layout" }),
   awful.key({ vars.modkey }, "space", function()
