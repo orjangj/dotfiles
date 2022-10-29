@@ -3,34 +3,42 @@ if not status_ok then
   return
 end
 
-bufferline.setup({
-  options = {
-    numbers = "none",
-    close_command = "Bdelete! %d",
-    right_mouse_command = "Bdelete! %d",
-    left_mouse_command = "buffer %d",
-    middle_mouse_command = nil,
-    indicator = { icon = "▎", style = "icon" },
-    buffer_close_icon = "",
-    modified_icon = "●",
-    close_icon = "",
-    left_trunc_marker = "",
-    right_trunc_marker = "",
-    max_name_length = 30,
-    max_prefix_length = 30,
-    tab_size = 21,
-    diagnostics = false,
-    diagnostics_update_in_insert = false,
-    offsets = { { filetype = "NvimTree", text = "", padding = 1 } },
-    show_buffer_icons = true,
-    show_buffer_close_icons = true,
-    show_close_icon = true,
-    show_tab_indicators = true,
-    persist_buffer_sort = true,
-    separator_style = "thin",
-    enforce_regular_tabs = true,
-    always_show_bufferline = true,
-  },
+local options = {
+  numbers = "none",
+  close_command = "Bdelete! %d",
+  right_mouse_command = "Bdelete! %d",
+  left_mouse_command = "buffer %d",
+  middle_mouse_command = nil,
+  indicator = { icon = "▎", style = "icon" },
+  buffer_close_icon = "",
+  modified_icon = "●",
+  close_icon = "",
+  left_trunc_marker = "",
+  right_trunc_marker = "",
+  max_name_length = 30,
+  max_prefix_length = 30,
+  tab_size = 21,
+  diagnostics = false,
+  diagnostics_update_in_insert = false,
+  offsets = { { filetype = "NvimTree", text = "", padding = 1 } },
+  show_buffer_icons = true,
+  show_buffer_close_icons = true,
+  show_close_icon = true,
+  show_tab_indicators = true,
+  persist_buffer_sort = true,
+  separator_style = "slim",
+  enforce_regular_tabs = true,
+  always_show_bufferline = true,
+}
+
+local highlights
+
+if vim.g.colors_name == "nord" then
+  highlights = require("nord").bufferline.highlights({
+    italic = true,
+    bold = true,
+  })
+else
   highlights = {
     -- fg/bg color for tabline area
     fill = {
@@ -97,49 +105,7 @@ bufferline.setup({
     indicator_selected = {
       bg = { attribute = "bg", highlight = "TabLine" },
     },
-    -- Not sure if these are necessary
-    -- separator_selected = { }
-    -- separator_visible = { }
-    -- tab = { }
-    -- tab_selected = { }
-    -- pick = { }
-    -- pick_visible = { }
-    -- offset_separator = { }
-    -- duplicate = { }
-    -- duplicate_selected = { }
-    -- duplicate_visible = { }
+  }
+end
 
-    -- Other highlights that are currently disabled due to option settings
-    -- See options.numbers = "none" and options.diagnostics = false
-    -- numbers = { }
-    -- numbers_visible = { }
-    -- numbers_selected = { }
-    -- diagnostic = { }
-    -- diagnostic_visible = { }
-    -- diagnostic_selected_ = { }
-    -- hint = { }
-    -- hint_visible = { }
-    -- hint_selected = { }
-    -- hint_diagnostic = { }
-    -- hint_diagnostic_visible = { }
-    -- hint_diagnostic_selected = { }
-    -- info = { }
-    -- info_visible = { }
-    -- info_selected = { }
-    -- info_diagnostic = { }
-    -- info_diagnostic_visible = { }
-    -- info_diagnostic_selected = { }
-    -- warning = { }
-    -- warning_visible = { }
-    -- warning_selected = { }
-    -- warning_diagnostic = { }
-    -- warning_diagnostic_visible = { }
-    -- warning_diagnostic_selected = { }
-    -- error = { }
-    -- error_visible = { }
-    -- error_selected = { }
-    -- error_diagnostic = { }
-    -- error_diagnostic_visible = { }
-    -- error_diagnostic_selected = { }
-  },
-})
+bufferline.setup({ options = options, highlights = highlights })

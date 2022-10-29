@@ -53,7 +53,7 @@ return packer.startup(function(use)
 
   use({ "wbthomason/packer.nvim" }) -- Allow packer to manage itself
   use({ "nvim-lua/plenary.nvim" }) -- Required by most plugins
-  use({ "nvim-treesitter/nvim-treesitter" }) -- Required by most plugins
+  use({ "nvim-treesitter/nvim-treesitter", run = "TSUpdate" }) -- Required by most plugins
 
   -- Speed up loading time
   use({ "lewis6991/impatient.nvim" })
@@ -129,6 +129,7 @@ return packer.startup(function(use)
   use({ "lewis6991/gitsigns.nvim" })
 
   -- Colorschemes
+  use({ "shaunsingh/nord.nvim" })
   use({ "EdenEast/nightfox.nvim", run = ":NightfoxCompile" })
   use({ "norcalli/nvim-colorizer.lua" })
 
@@ -156,6 +157,7 @@ return packer.startup(function(use)
   })
 
   -- Organizational tools
+  use({ "lukas-reineke/headlines.nvim" })
   use({
     "nvim-neorg/neorg",
     requires = {
