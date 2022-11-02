@@ -48,9 +48,6 @@ return packer.startup(function(use)
     use(plugin)
   end
 
-  -- Local plugins
-  local_use({ "neotest-ctest" })
-
   use({ "wbthomason/packer.nvim" }) -- Allow packer to manage itself
   use({ "nvim-lua/plenary.nvim" }) -- Required by most plugins
   use({ "nvim-treesitter/nvim-treesitter", run = "TSUpdate" }) -- Required by most plugins
@@ -129,8 +126,7 @@ return packer.startup(function(use)
   use({ "lewis6991/gitsigns.nvim" })
 
   -- Colorschemes
-  use({ "shaunsingh/nord.nvim" })
-  use({ "EdenEast/nightfox.nvim", run = ":NightfoxCompile" })
+  local_use({ "polar.nvim" })
   use({ "norcalli/nvim-colorizer.lua" })
 
   -- Debugging and testing
@@ -144,6 +140,7 @@ return packer.startup(function(use)
       { "jbyuki/one-small-step-for-vimkind" },
     },
   })
+  local_use({ "neotest-ctest" })
   use({
     "nvim-neotest/neotest",
     requires = {
