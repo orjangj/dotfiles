@@ -17,9 +17,9 @@ local options = {
   cursorline = true,                       -- highlight the current line
   cmdheight = 2,                           -- more space in the command line for displaying messages
   number = true,                           -- set numbered lines
-  numberwidth = 4,                         -- set number column width to 2 {default 4}
+  numberwidth = 2,                         -- set number column width {default 4}
   relativenumber = true,                   -- set relative numbered lines
-  signcolumn = "yes",                      -- always show the sign column, otherwise it would shift the text each time
+  signcolumn = "yes:1",                    -- always show the sign column, otherwise it would shift the text each time
   showmode = false,                        -- we don't need to see things like -- INSERT -- anymore
   -- Searching
   hlsearch = true,                         -- highlight all matches on previous search pattern
