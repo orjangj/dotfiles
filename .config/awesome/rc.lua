@@ -83,8 +83,13 @@ awful.layout.layouts = {
 menubar.utils.terminal = vars.terminal -- Set the terminal for applications that require it
 -- }}}
 -- {{{ Wibar
--- Create a wibox for each screen and add it
 
+local taglist_buttons = gears.table.join(
+  awful.button({}, 1, function(t) t:view_only() end),
+  awful.button({}, 3, awful.tag.viewtoggle)
+)
+
+-- Create a wibox for each screen and add it
 awful.screen.connect_for_each_screen(function(s)
   -- Each screen has its own tag table.
   awful.tag(vars.tags.glyphs, s, awful.layout.layouts[1])
@@ -93,6 +98,7 @@ awful.screen.connect_for_each_screen(function(s)
   s.mytaglist = awful.widget.taglist({
     screen = s,
     filter = awful.widget.taglist.filter.all,
+    buttons = taglist_buttons,
     style = {
       spacing = 6,
       shape = function(cr, w, h)
