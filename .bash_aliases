@@ -9,7 +9,6 @@ alias l='ls -CF'
 alias grep='grep --color=auto'
 alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
-alias cat='bat'
 alias rm='rm -I'
 
 # Workarounds for older machines where terminfo or termcap for xterm-kitty or
