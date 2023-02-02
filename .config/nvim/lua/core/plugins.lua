@@ -51,6 +51,7 @@ return packer.startup(function(use)
   use({ "wbthomason/packer.nvim" }) -- Allow packer to manage itself
   use({ "nvim-lua/plenary.nvim" }) -- Required by most plugins
   use({ "nvim-treesitter/nvim-treesitter", run = "TSUpdate" }) -- Required by most plugins
+  use({ "nvim-treesitter/playground" })
 
   -- Speed up loading time
   use({ "lewis6991/impatient.nvim" })
@@ -64,9 +65,15 @@ return packer.startup(function(use)
     }
   })
   use({ "lukas-reineke/indent-blankline.nvim" })
+  use({
+    "iamcco/markdown-preview.nvim",
+    run = function() vim.fn["mkdp#util#install"]() end,
+  })
+  use({ "lukas-reineke/headlines.nvim" })
 
   -- Terminal integrations
   use({ "akinsho/toggleterm.nvim" })
+  use 'shaunsingh/nord.nvim'
 
   -- Keybindings and navigation helpers
   use({ "goolord/alpha-nvim" })
@@ -154,7 +161,6 @@ return packer.startup(function(use)
   })
 
   -- Organizational tools
-  use({ "lukas-reineke/headlines.nvim" })
   use({
     "nvim-neorg/neorg",
     requires = {
