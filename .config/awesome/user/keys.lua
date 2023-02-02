@@ -35,6 +35,7 @@ local globalkeys = gears.table.join(
   awful.key({ vars.modkey }, "a", function()
     awful.spawn(vars.terminal .. " -e " .. vars.file_manager .. " " .. os.getenv("HOME"))
   end, { description = "open " .. vars.file_manager, group = "launcher" }),
+  awful.key({ vars.modkey, "Control" }, "f", function() awful.spawn("flameshot gui") end, { description = "Run flameshot", group = "launcher" }),
 
   -- Group "tag"
   awful.key({ vars.modkey }, "Left", awful.tag.viewprev, { description = "view previous", group = "tag" }),
