@@ -169,19 +169,19 @@ export EDITOR="$VISUAL"
 #    neofetch
 #fi
 
-export PYENV_ROOT="$HOME/.pyenv"
-
-if [ -d "$PYENV_ROOT" ]; then
-    path_prepend "$PYENV_ROOT/bin"
-    if [ -n "$(type -t pyenv)" ] && [ "$(type -t pyenv)" = function ]; then
-        #    echo "pyenv is already initialized"
-        true
-    else
-        if type pyenv &> /dev/null; then
-            eval "$(pyenv init --path)"
-            eval "$(pyenv init -)"
-            eval "$(pyenv virtualenv-init -)"
-        fi
-    fi
-fi
+#export PYENV_ROOT="$HOME/.pyenv"
+#
+#if [ -d "$PYENV_ROOT" ]; then
+#    path_prepend "$PYENV_ROOT/bin"
+#    if [ -n "$(type -t pyenv)" ] && [ "$(type -t pyenv)" = function ]; then
+#        #    echo "pyenv is already initialized"
+#        true
+#    else
+#        if type pyenv &> /dev/null; then
+#            eval "$(pyenv init --path)"
+#            eval "$(pyenv init -)"
+#            eval "$(pyenv virtualenv-init -)"
+#        fi
+#    fi
+#fi
 
