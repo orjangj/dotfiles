@@ -43,9 +43,12 @@ return packer.startup(function(use)
   -- Can be called like use({ ... }), but expects local plugin to be
   -- available in path "~/projects/git/"
   local local_use = function(plugin)
-    assert(vim.fn.isdirectory(vim.fn.expand("~/projects/git/" .. plugin[1])) == 1)
-    plugin[1] = vim.fn.expand("~/projects/git/" .. plugin[1])
-    use(plugin)
+    if vim.fn.isdirectory(vim.fn.expand("~/projects/git/" .. plugin[1])) == 1 then
+      plugin[1] = vim.fn.expand("~/projects/git/" .. plugin[1])
+      use(plugin)
+    else
+      vim.notify("Could not find " .. plugin[1], vim.log.levels.WARN)
+    end
   end
 
   use({ "wbthomason/packer.nvim" }) -- Allow packer to manage itself
