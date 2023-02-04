@@ -2,7 +2,7 @@ local name = "polar" -- "nord", "nightfox", "polar"
 local status_ok, colorscheme = pcall(require, name)
 
 if not status_ok then
-  vim.notify(string.format("failed to load colorscheme: %s", name))
+  vim.notify("Failed to load colorscheme " .. name, vim.log.levels.WARN)
   vim.cmd([[
   colorscheme default
   set background=dark
