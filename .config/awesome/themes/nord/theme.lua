@@ -3,7 +3,7 @@ local dpi = require("beautiful.xresources").apply_dpi
 local theme = {}
 
 theme.name = "nord"
-theme.font = "Ubuntu 10"
+theme.font = "JetBrainsMono 9"
 
 -- For reference only
 theme.nord0 = "#2e3440"
