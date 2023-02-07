@@ -30,7 +30,7 @@ local function worker()
   local timeout = 3600
   local base = 80
   local step = 5
-  local device = "pulse"
+  local device = "default"
 
   mic.widget = wibox.widget({
     {

@@ -1,7 +1,7 @@
 local variables = {
   altkey = "Mod1",
   browser = "firefox",
-  compositor = "compton -b",
+  compositor = "picom -b",
   editor = os.getenv("EDITOR") or "nvim",
   file_manager = "ranger",
   modkey = "Mod4",

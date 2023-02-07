@@ -44,6 +44,8 @@ def get_distro():
     name = distro.name()
     if name == "Arch Linux":
         return "Arch_checkupdates"
+    if name == "Fedora Linux":
+        return "Fedora"
     return name
 
 
