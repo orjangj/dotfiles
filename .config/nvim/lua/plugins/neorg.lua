@@ -21,15 +21,5 @@ neorg.setup({
         engine = "nvim-cmp",
       },
     },
-    ["core.norg.dirman"] = {
-      config = {
-        autochdir = false,
-        workspaces = {
-          work = "~/notes/work",
-          personal = "~/notes/personal",
-          gtd = "~/notes/gtd",
-        },
-      },
-    },
   },
 })
