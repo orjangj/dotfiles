@@ -265,6 +265,6 @@ local function run_once(cmd)
   awful.spawn.with_shell("pgrep -u $USER -x " .. findme .. " > /dev/null || (" .. cmd .. ")")
 end
 
-awful.spawn.easy_async("xset r rate 200 40")
-awful.spawn.easy_async("feh --randomize --bg-fill " .. vars.wallpapers)
+awful.spawn.with_shell("xset r rate 200 40")
+awful.spawn.with_shell("feh --randomize --bg-fill " .. vars.wallpapers)
 run_once(vars.compositor)

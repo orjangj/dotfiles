@@ -27,7 +27,7 @@ local globalkeys = gears.table.join(
     awful.spawn(vars.browser)
   end, { description = "open a browser", group = "launcher" }),
   awful.key({ vars.modkey }, "d", function()
-    awful.spawn("rofi -no-lazy-grab -show drun -theme " .. gears.filesystem.get_configuration_dir() .. "scripts/rofi.rasi")
+    awful.spawn("rofi -no-lazy-grab -show drun")
   end, { description = "launch rofi", group = "launcher" }),
   awful.key({ vars.modkey }, "p", function()
     menubar.show()
