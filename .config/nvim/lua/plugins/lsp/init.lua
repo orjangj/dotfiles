@@ -1,8 +1,3 @@
-local neodev_exists, neodev = pcall(require, "neodev")
-if neodev_exists then
-  neodev.setup({}) -- use defaults
-end
-
 local status_ok, _ = pcall(require, "lspconfig")
 if not status_ok then
   return

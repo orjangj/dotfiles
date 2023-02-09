@@ -1,33 +1,29 @@
-local status_ok, lsp_installer = pcall(require, "nvim-lsp-installer")
+local status_ok, mason_lspconfig = pcall(require, "mason-lspconfig")
 if not status_ok then
   return
 end
 
-local lspconfig = require("lspconfig")
-
 local servers = {
---  "ansiblels",  -- requires node
---  "bashls",  -- requires node
-  "clangd",
-  "cmake",
---  "dockerls",  -- requires node
---  "jsonls", -- requires node
---  "pyright", -- requires node
-  "sumneko_lua",
+  clangd = {},
+  cmake = {},
+  sumneko_lua = require("plugins.lsp.settings.sumneko_lua")[1]
 }
+-- Setup neovim lua configuration
+require("neodev").setup()
 
-lsp_installer.setup({
-  ensure_installed = servers,
+-- Setup mason so it can manage external tooling
+require("mason").setup()
+
+mason_lspconfig.setup({
+  ensure_installed = vim.tbl_keys(servers),
 })
 
-for _, server in pairs(servers) do
-  local opts = {
-    on_attach = require("plugins.lsp.handlers").on_attach,
-    capabilities = require("plugins.lsp.handlers").capabilities,
-  }
-  local has_custom_opts, server_custom_opts = pcall(require, "plugins.lsp.settings." .. server)
-  if has_custom_opts then
-    opts = vim.tbl_deep_extend("force", opts, server_custom_opts)
-  end
-  lspconfig[server].setup(opts)
-end
+mason_lspconfig.setup_handlers({
+  function(server)
+    require("lspconfig")[server].setup({
+      on_attach = require("plugins.lsp.handlers").on_attach,
+      capabilities = require("plugins.lsp.handlers").capabilities,
+      settings = servers[server],
+    })
+  end,
+})

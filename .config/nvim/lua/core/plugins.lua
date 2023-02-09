@@ -111,15 +111,17 @@ return packer.startup(function(use)
   })
   use({ "L3MON4D3/LuaSnip" })
   use({ "rafamadriz/friendly-snippets" })
-  use({ "folke/neodev.nvim" })
 
   -- LSP and diagnostics
   use({ "folke/trouble.nvim" })
+  -- NOTE: the order of plugin install matters for mason
   use({
     "neovim/nvim-lspconfig",
     requires = {
-      { "williamboman/nvim-lsp-installer" },
+      { "williamboman/mason.nvim" },
+      { "williamboman/mason-lspconfig.nvim" },
       { "jose-elias-alvarez/null-ls.nvim" },
+      { "folke/neodev.nvim" },
     },
   })
 
