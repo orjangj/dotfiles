@@ -6,7 +6,15 @@ end
 local servers = {
   clangd = {},
   cmake = {},
-  sumneko_lua = require("plugins.lsp.settings.sumneko_lua")[1]
+  sumneko_lua = {
+    Lua = {
+		  diagnostics = {
+		  	globals = { "vim", "describe", "it" },
+		  },
+      telemetry = { enable = false },
+		  workspace = { checkThirdParty = false },
+	  },
+  },
 }
 -- Setup neovim lua configuration
 require("neodev").setup()
