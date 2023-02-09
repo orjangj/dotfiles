@@ -122,6 +122,7 @@ return packer.startup(function(use)
       { "williamboman/mason-lspconfig.nvim" },
       { "jose-elias-alvarez/null-ls.nvim" },
       { "folke/neodev.nvim" },
+      { "j-hui/fidget.nvim" },
     },
   })
 

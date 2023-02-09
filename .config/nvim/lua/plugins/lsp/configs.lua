@@ -35,3 +35,6 @@ mason_lspconfig.setup_handlers({
     })
   end,
 })
+
+-- Setup fidget to show lsp server progress report
+require("fidget").setup()
