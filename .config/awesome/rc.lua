@@ -1,20 +1,17 @@
---       █████╗ ██╗    ██╗███████╗███████╗ ██████╗ ███╗   ███╗███████╗
---      ██╔══██╗██║    ██║██╔════╝██╔════╝██╔═══██╗████╗ ████║██╔════╝
---      ███████║██║ █╗ ██║█████╗  ███████╗██║   ██║██╔████╔██║█████╗
---      ██╔══██║██║███╗██║██╔══╝  ╚════██║██║   ██║██║╚██╔╝██║██╔══╝
---      ██║  ██║╚███╔███╔╝███████╗███████║╚██████╔╝██║ ╚═╝ ██║███████╗
---      ╚═╝  ╚═╝ ╚══╝╚══╝ ╚══════╝╚══════╝ ╚═════╝ ╚═╝     ╚═╝╚══════╝
+--[[
 
--- WARNING: Using chrome/chromium seem to cause a lot of flicker. Often occurring
---          while using BLE headset and listening on youtube. Firefox does not seem
---          to have the same issue, although some flicker happen now and then.
+ █████╗ ██╗    ██╗███████╗███████╗ ██████╗ ███╗   ███╗███████╗    ██╗    ██╗███╗   ███╗
+██╔══██╗██║    ██║██╔════╝██╔════╝██╔═══██╗████╗ ████║██╔════╝    ██║    ██║████╗ ████║
+███████║██║ █╗ ██║█████╗  ███████╗██║   ██║██╔████╔██║█████╗      ██║ █╗ ██║██╔████╔██║
+██╔══██║██║███╗██║██╔══╝  ╚════██║██║   ██║██║╚██╔╝██║██╔══╝      ██║███╗██║██║╚██╔╝██║
+██║  ██║╚███╔███╔╝███████╗███████║╚██████╔╝██║ ╚═╝ ██║███████╗    ╚███╔███╔╝██║ ╚═╝ ██║
+╚═╝  ╚═╝ ╚══╝╚══╝ ╚══════╝╚══════╝ ╚═════╝ ╚═╝     ╚═╝╚══════╝     ╚══╝╚══╝ ╚═╝     ╚═╝
+
+--]]
 
 -- FIX:
--- - rofi -- 1px added when typing in entry bar
+-- - Font -- Need a good font for the wibar
 -- - theme -- remove unecessary bloat
--- - Flickering -- See comment above. May want to check issues with awesome wm on github
---   - Might be solved in newer versions of awesome
---   - Might be solved by using a different compositor (ie. picom?)
 -- - Battery
 --   - Automatically suspend when low battery.
 --   - Or maybe use TLP (+ Powertop) for battery life management
@@ -26,16 +23,11 @@
 -- - Wifi
 --   - on hover, show the network name (SSID), BSSID, rate and security protocol
 --   - on click, add options to connect to network
--- - Bluetooth
---   - on hover, show connected devices
---   - on click, add options to add new devices etc..
 -- - calendar -- simplify and use beatiful theme -- move to middle or left of wibar? if left, then maybe tags should be middle
 -- - logout -- simplify and use font glyphs instead of icon set
--- - Fonts -- See https://github.com/ryanoasis/nerd-fonts
 --
 -- TODO:
 -- - Cleanup unused/redundant code
--- - Get list of all dependencies (i.e. xbacklight, pavucontrol, etc..)
 -- - keybindings (remove unused, apply better keys, etc.. ???)
 -- - Use rofi scripts to save keybindings?
 -- - Automatic screen lock (see sway config for ideas)
@@ -46,13 +38,46 @@
 -- Awesome libraries
 local gears = require("gears")
 local awful = require("awful")
-require("awful.autofocus")
+              require("awful.autofocus")
 local wibox = require("wibox")
 local beautiful = require("beautiful")
 local naughty = require("naughty")
 local menubar = require("menubar")
 
--- User specific settings
+-- {{{ Error handling
+
+-- Check if awesome encountered an error during startup and fell back to
+-- another config (This code will only ever execute for the fallback config)
+if awesome.startup_errors then
+    naughty.notify {
+        preset = naughty.config.presets.critical,
+        title = "Oops, there were errors during startup!",
+        text = awesome.startup_errors
+    }
+end
+
+-- Handle runtime errors after startup
+do
+    local in_error = false
+
+    awesome.connect_signal("debug::error", function (err)
+        if in_error then return end
+
+        in_error = true
+
+        naughty.notify {
+            preset = naughty.config.presets.critical,
+            title = "Oops, an error happened!",
+            text = tostring(err)
+        }
+
+        in_error = false
+    end)
+end
+
+--}}}
+--{{{ User specific settings & theme
+
 local keys = require("user.keys")
 local vars = require("user.variables")
 
@@ -60,9 +85,10 @@ local vars = require("user.variables")
 -- as they might depend on the color theme
 beautiful.init(string.format("%s/.config/awesome/themes/%s/theme.lua", os.getenv("HOME"), vars.theme))
 
+--}}} 
 -- {{{ User specific widgets
+
 local battery_widget = require("widget.battery")
-local bluetooth_widget = require("widget.bluetooth")
 local brightness_widget = require("widget.brightness")
 local clock_widget = require("widget.clock")
 local cpu_widget = require("widget.cpu")
@@ -73,14 +99,19 @@ local storage_widget = require("widget.storage")
 local volume_widget = require("widget.volume")
 local temperature_widget = require("widget.temperature")
 local wifi_widget = require("widget.wifi")
+
 -- }}}
 -- {{{ Layout
+
 awful.layout.layouts = {
   awful.layout.suit.tile,
 }
+
 -- }}}
 -- {{{ Menu
+
 menubar.utils.terminal = vars.terminal -- Set the terminal for applications that require it
+
 -- }}}
 -- {{{ Wibar
 
@@ -88,6 +119,30 @@ local taglist_buttons = gears.table.join(
   awful.button({}, 1, function(t) t:view_only() end),
   awful.button({}, 3, awful.tag.viewtoggle)
 )
+
+local function right_tri(cr, width, height, degree)
+    cr:move_to(18, 0)
+    cr:line_to(0, 25)
+    cr:line_to(18, 25)
+    cr:close_path()
+end
+
+local function left_tri(cr, width, height, degree)
+    cr:line_to(0, 25)
+    cr:line_to(18, 0)
+    cr:line_to(0, 0)
+    cr:close_path()
+end
+
+local function mysep(color, shape)
+    return wibox.widget {
+        shape        = shape,
+        color        = color,
+        border_width = 0,
+        forced_width = 18,
+        widget       = wibox.widget.separator,
+    }
+end
 
 -- Create a wibox for each screen and add it
 awful.screen.connect_for_each_screen(function(s)
@@ -101,20 +156,17 @@ awful.screen.connect_for_each_screen(function(s)
     buttons = taglist_buttons,
     style = {
       spacing = 6,
-      shape = function(cr, w, h)
-        gears.shape.rounded_rect(cr, w, h, 4)
-      end,
     },
   })
 
+  -- Make the wibar look like it's floating
   s.mywibox = awful.wibar({
     position = "top",
     screen = s,
-    height = 8 * beautiful.useless_gap, -- adjust for margins in the setup root container
+    height = 8 * beautiful.useless_gap,
     bg = beautiful.transparent,
   })
-
-  -- Add widgets to the wibox
+  -- And now we add widgets to the wibox
   s.mywibox:setup({
     {
       layout = wibox.layout.align.horizontal,
@@ -124,39 +176,45 @@ awful.screen.connect_for_each_screen(function(s)
           s.mytaglist,
         },
         bg = beautiful.bg_normal .. "EF",
-        border_width = 10,
-        border_color = beautiful.fg_focus,
-        shape = function(cr, w, h)
-          gears.shape.rounded_rect(cr, w, h, 4)
-        end,
         widget = wibox.container.background,
       },
-      nil, -- center widgets
+      { -- Center widgets
+        {
+          layout = wibox.layout.fixed.horizontal,
+        },
+        bg = beautiful.bg_normal .. "EF",
+        widget = wibox.container.background,
+      },
       { -- Right widgets
         {
           layout = wibox.layout.fixed.horizontal,
+          wibox.container.background(mysep(beautiful.bg_critical, right_tri), beautiful.transparent),
           cpu_widget(),
+          wibox.container.background(mysep(beautiful.bg_critical, right_tri), beautiful.bg_critical),
           temperature_widget(),
+          wibox.container.background(mysep(beautiful.bg_critical, right_tri), beautiful.bg_critical),
           ram_widget(),
+          wibox.container.background(mysep(beautiful.bg_critical, right_tri), beautiful.bg_critical),
           storage_widget(),
+          wibox.container.background(mysep(beautiful.bg_critical, right_tri), beautiful.bg_critical),
           brightness_widget(),
+          wibox.container.background(mysep(beautiful.bg_critical, right_tri), beautiful.bg_critical),
           volume_widget(),
+          wibox.container.background(mysep(beautiful.bg_critical, right_tri), beautiful.bg_critical),
           mic_widget(),
+          wibox.container.background(mysep(beautiful.bg_critical, right_tri), beautiful.bg_critical),
           battery_widget(),
+          wibox.container.background(mysep(beautiful.bg_critical, right_tri), beautiful.bg_critical),
           wifi_widget(),
-          bluetooth_widget(),
+          wibox.container.background(mysep(beautiful.bg_critical, left_tri), beautiful.transparent),
           clock_widget(),
+          wibox.container.background(mysep(beautiful.bg_critical, right_tri), beautiful.transparent),
           logout_widget(),
         },
         bg = beautiful.bg_normal .. "EF",
-        border_color = beautiful.bg_focus,
-        shape = function(cr, w, h)
-          gears.shape.rounded_rect(cr, w, h, 4)
-        end,
         widget = wibox.container.background,
       },
     },
-    bg = beautiful.transparent,
     left = 2 * beautiful.useless_gap,
     right = 2 * beautiful.useless_gap,
     top = 2 * beautiful.useless_gap,
@@ -255,6 +313,7 @@ client.connect_signal("unfocus", function(c)
   c.border_color = beautiful.border_normal
 end)
 -- }}}
+
 -- Autostart
 local function run_once(cmd)
   local findme = cmd

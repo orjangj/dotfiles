@@ -25,9 +25,7 @@ local logout_menu_widget = wibox.widget({
     margins = 4,
     layout = wibox.container.margin,
   },
-  shape = function(cr, width, height)
-    gears.shape.rounded_rect(cr, width, height, 4)
-  end,
+  bg = beautiful.bg_critical,
   widget = wibox.container.background,
 })
 

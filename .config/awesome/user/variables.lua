@@ -5,7 +5,7 @@ local variables = {
   editor = os.getenv("EDITOR") or "nvim",
   file_manager = "ranger",
   modkey = "Mod4",
-  tags = { count = 5, glyphs = { "", "", "", "", "" } },
+  tags = { count = 7, glyphs = { "", "", "", "", "", "", "" } },
   terminal = "kitty",
   terminal_opacity = 0.95,
   theme = "nord",

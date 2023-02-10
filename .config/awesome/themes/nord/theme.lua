@@ -27,10 +27,10 @@ theme.fg_normal = "#ECEFF4"
 theme.fg_focus = "#88C0D0"
 theme.fg_urgent = "#D08770"
 theme.fg_critical = "#BF616A"
-theme.bg_normal = "#2E3440"
-theme.bg_focus = "#3B4252"
-theme.bg_urgent = "#3B4252"
-theme.bg_critical = "#3B4252"
+theme.bg_normal = "#2e3440"
+theme.bg_focus = "#3b4252"
+theme.bg_urgent = "#434c5e"
+theme.bg_critical = "#4c566a"
 theme.bg_systray = theme.bg_normal
 theme.border_normal = "#3B4252"
 theme.border_focus = "#88C0D0"
@@ -50,7 +50,7 @@ theme.wibox_spacing = dpi(8)
 -- titlebar_[normal|focus]
 -- tooltip_[font|opacity|fg_color|bg_color|border_width|border_color]
 -- Example:
-theme.taglist_fg_empty = theme.bg_focus
+theme.taglist_fg_empty = theme.bg_urgent
 
 -- You can add as many variables as
 -- you wish and access them by using
