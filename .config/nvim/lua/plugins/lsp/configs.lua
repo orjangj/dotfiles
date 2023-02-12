@@ -6,7 +6,8 @@ end
 local servers = {
   clangd = {},
   cmake = {},
-  sumneko_lua = {
+  ltex = {},
+  lua_ls = {
     Lua = {
 		  diagnostics = {
 		  	globals = { "vim", "describe", "it" },

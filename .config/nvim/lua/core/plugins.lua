@@ -60,6 +60,7 @@ return packer.startup(function(use)
   use({ "lewis6991/impatient.nvim" })
 
   -- Editing helpers
+  use({ "gpanders/editorconfig.nvim" }) -- TODO: remove when nvim 0.9 is released (builtin)
   use({ "windwp/nvim-autopairs" })
   use({
     "numToStr/Comment.nvim",

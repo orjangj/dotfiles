@@ -142,7 +142,7 @@ local mappings = {
     A = { "<cmd>lua vim.lsp.codelens.run()<cr>", "CodeLens Action" },
     f = { "<cmd>lua vim.lsp.buf.format{ async = true }<cr>", "Format Buffer" },
     i = { "<cmd>LspInfo<cr>", "List Clients" },
-    I = { "<cmd>LspInstallInfo<cr>", "Installer Info" },
+    I = { "<cmd>Mason<cr>", "Installer Info" },
     r = { "<cmd>lua vim.lsp.buf.rename()<cr>", "Rename" },
     s = { "<cmd>Telescope lsp_document_symbols<cr>", "Document Symbols" },
     S = { "<cmd>Telescope lsp_dynamic_workspace_symbols<cr>", "Workspace Symbols" },
