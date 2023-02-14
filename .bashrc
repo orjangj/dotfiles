@@ -8,7 +8,7 @@ case $- in
       *) return;;
 esac
 
-### History configuration 
+### History configuration
 HISTCONTROL=ignoreboth:erasedups
 HISTSIZE=1000
 HISTFILESIZE=2000
@@ -68,7 +68,7 @@ git_prompt() {
         diverged=$(git rev-list origin/$branch --not $branch 2>/dev/null | wc -l)
 
         # Build the git prompt
-        prompt="(git:$branch"
+        prompt="(:$branch"
         if [ "$detached" = true ] ; then
             prompt="$prompt|detached|"
         else
@@ -91,12 +91,18 @@ virtual_prompt() {
     local venv
     if [[ ! -z "${VIRTUAL_ENV}" ]]; then
         venv=$(basename "$VIRTUAL_ENV")
-        prompt="(venv:${venv})"
+        prompt="(:${venv})"
     fi
     echo $prompt
 }
 
-PS1="${GREEN_BOLD}┌ ${USERNAME}@${HOSTNAME}${BLUE_BOLD} ➜ ${WORKDIR} ${YELLOW_BOLD}\$(git_prompt) ${MAGENTA_BOLD}\$(virtual_prompt)\n${GREEN_BOLD}└┄ ${RESET}"
+PS1="${GREEN_BOLD}┌  ${USERNAME}"
+PS1="${PS1} ${CYAN_BOLD} ${HOSTNAME}"
+PS1="${PS1} ${BLUE_BOLD} ${WORKDIR}"
+PS1="${PS1} ${YELLOW_BOLD}\$(git_prompt)"
+PS1="${PS1} ${MAGENTA_BOLD}\$(virtual_prompt)"
+PS1="${PS1}\n${GREEN_BOLD}└┄ ${RESET}"
+
 PS2="${YELLOW_BOLD}➜ ${RESET}"
 
 # Source aliases
@@ -165,7 +171,7 @@ else
 fi
 export EDITOR="$VISUAL"
 
-# NOTE: This is really slow if printing GPU information
+# NOTE: This is really slow if printing GPU information on my current machine
 #if type neofetch &> /dev/null; then
 #    neofetch
 #fi
