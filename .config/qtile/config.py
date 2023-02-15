@@ -96,14 +96,14 @@ keys = [
         ),
 
     # Misc
-    Key([], "XF86AudioRaiseVolume", lazy.spawncmd("amixer -D pulse sset Master 5 %+"), desc="Increase volume"),
-    Key([], "XF86AudioLowerVolume", lazy.spawncmd("amixer -D pulse sset Master 5 %-"), desc="Decrease volume"),
-    Key([], "XF86AudioMute", lazy.spawncmd("amixer -D pulse sset Master toggle"), desc="Toggle volume"),
-    Key([mod], "XF86AudioRaiseVolume", lazy.spawncmd("amixer -D pulse sset Capture %+"), desc="Increase mic volume"),
-    Key([mod], "XF86AudioLowerVolume", lazy.spawncmd("amixer -D pulse sset Capture 5 %-"), desc="Decrease mic volume"),
-    Key([], "XF86AudioMicMute", lazy.spawncmd("amixer -D pulse sset Capture toggle"), desc="Toggle mic"),
-    Key([], "XF86MonBrightnessDown", lazy.spawncmd("brightnessctl set 5%-"), desc="Decrease brightness"),
-    Key([], "XF86MonBrightnessUp", lazy.spawncmd("brightnessctl set +5%"), desc="Increase brightness"),
+    Key([], "XF86AudioRaiseVolume", lazy.spawn("amixer -D default sset Master 5%+"), desc="Increase volume"),
+    Key([], "XF86AudioLowerVolume", lazy.spawn("amixer -D default sset Master 5%-"), desc="Decrease volume"),
+    Key([], "XF86AudioMute", lazy.spawn("amixer -D default sset Master toggle"), desc="Toggle volume"),
+    Key([mod], "XF86AudioRaiseVolume", lazy.spawn("amixer -D default sset Capture 5%+"), desc="Increase mic volume"),
+    Key([mod], "XF86AudioLowerVolume", lazy.spawn("amixer -D default sset Capture 5%-"), desc="Decrease mic volume"),
+    Key([], "XF86AudioMicMute", lazy.spawn("amixer -D pulse sset Capture toggle"), desc="Toggle mic"),
+    Key([], "XF86MonBrightnessDown", lazy.spawn("brightnessctl set 5%-"), desc="Decrease brightness"),
+    Key([], "XF86MonBrightnessUp", lazy.spawn("brightnessctl set +5%"), desc="Increase brightness"),
 ]
 
 groups = [
@@ -289,20 +289,22 @@ auto_fullscreen = True
 focus_on_window_activation = "smart"
 reconfigure_screens = True
 
+# TODO: Should I remove the pycache?
+# @hook.subscribe.restart
+# def cleanup():
+#     shutil.rmtree(os.path.expanduser("~/.config/qtile/__pycache__"))
+#
+#
+# @hook.subscribe.shutdown
+# def killall():
+#     shutil.rmtree(os.path.expanduser("~/.config/qtile/__pycache__"))
+#     # TODO -- Popen shutdown processes
 
-@hook.subscribe.restart
-def cleanup():
-    shutil.rmtree(os.path.expanduser("~/.config/qtile/__pycache__"))
 
-
-@hook.subscribe.shutdown
-def killall():
-    shutil.rmtree(os.path.expanduser("~/.config/qtile/__pycache__"))
-    # TODO -- Popen shutdown processes
-
-
-# @hook.subscribe.startup_once
-# def start_once():
+# TODO: Consider using autostart.sh?
+@hook.subscribe.startup_once
+def start_once():
+    subprocess.Popen(["picom", "-b"])
 #     home = os.path.expanduser('~')
 #     subprocess.call([home + '/.config/qtile/autostart.sh'])
 
