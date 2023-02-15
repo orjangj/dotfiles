@@ -19,8 +19,6 @@ shopt -s checkwinsize
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 
 ### Prompt configuration
-USERNAME="\u"
-HOSTNAME="\h"
 WORKDIR="\W"
 RESET="\[\033[0m"
 RED="\[\033[00;31m\]"
@@ -96,8 +94,8 @@ virtual_prompt() {
     echo $prompt
 }
 
-PS1="${GREEN_BOLD}┌  ${USERNAME}"
-PS1="${PS1} ${CYAN_BOLD} ${HOSTNAME}"
+PS1="${GREEN_BOLD}┌  \u"
+PS1="${PS1} ${CYAN_BOLD} \h"
 PS1="${PS1} ${BLUE_BOLD} ${WORKDIR}"
 PS1="${PS1} ${YELLOW_BOLD}\$(git_prompt)"
 PS1="${PS1} ${MAGENTA_BOLD}\$(virtual_prompt)"
