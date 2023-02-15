@@ -55,11 +55,9 @@ keys = [
     # Essentials
     Key([mod], "Return", lazy.spawn(terminal), desc="Launch terminal"),
     Key([mod], "r", lazy.spawncmd(), desc="Spawn a command using a prompt widget"),
-    Key([mod], "d", lazy.spawn(
-        f'rofi -no-lazy-grab -show drun -display-drun "" -font "{theme.font} {theme.fontsize}" -theme {config}/qtile/assets/nord.rasi'),
-        desc="Run application launcher"
-        ),
+    Key([mod], "d", lazy.spawn("rofi -no-lazy-grab -show drun"), desc="Run application launcher"),
     Key([mod, "control"], "r", lazy.reload_config(), desc="Reload configuration"),
+    Key([mod], "q", lazy.spawn("i3lock -c 000000"), desc="Lock screen"),
     Key([mod, "control"], "q", lazy.shutdown(), desc="Shutdown Qtile"),
 
     # Applications
@@ -129,7 +127,7 @@ layouts = [
     # layout.Stack(num_stacks=2, **layout_theme),
     layout.Bsp(**theme.layout),
     layout.Matrix(**theme.layout),
-    layout.MonadTall(**theme.layout),
+    layout.MonadTall(**theme.layout, new_client_position="top"),
     layout.MonadWide(**theme.layout),
     layout.RatioTile(**theme.layout),
     layout.Tile(**theme.layout),
@@ -149,7 +147,7 @@ layouts = [
 widget_defaults = dict(
     font=theme.font,
     fontsize=theme.fontsize,
-    #  padding=theme.padding,
+    padding=theme.padding,
     background=theme.bg_normal,
     foreground=theme.fg_focus
 )
@@ -208,10 +206,10 @@ screens = [
                     background=theme.bg_focus,
                 ),
                 widget.Battery(
-                    charge_char="",
-                    discharge_char="",
-                    full_char="",
-                    empty_char="",
+                    charge_char="",
+                    discharge_char="",
+                    full_char="",
+                    empty_char="",
                     # unknown_char="", ???
                     low_foreground=theme.fg_urgent,
                     # notify_below=, ???
@@ -242,10 +240,11 @@ screens = [
                 ),
                 widget.CheckUpdates(
                     colour_have_updates=theme.fg_focus,
-                    colour_no_updates=theme.bg_focus,
-                    update_interval=1800,
+                    colour_no_updates=theme.fg_focus,
+                    update_interval=600,  # Every 10 minutes
                     distro=check_updates_distro,
                     display_format=" {updates}",
+                    no_update_string=" 0",
                     background=theme.bg_focus,
                 ),
                 widget.Sep(
@@ -254,7 +253,7 @@ screens = [
                     linewidth=5,
                 ),
             ],
-            22,
+            25,
             margin=[theme.useless_gap, theme.useless_gap, 0, theme.useless_gap],
             opacity=0.9,
         ),

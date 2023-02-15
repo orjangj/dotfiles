@@ -12,8 +12,8 @@ class Nord:
             self.wallpaper = wallpaper_path
 
         # TODO: Make these configurable
-        self.font = "Hack Nerd Font"
-        self.fontsize = 12
+        self.font = "NotoSans Nerd Font"
+        self.fontsize = 14
 
         self.nord0 = "#2e3440"
         self.nord1 = "#3b4252"
