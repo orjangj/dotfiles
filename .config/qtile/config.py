@@ -14,6 +14,7 @@ from theme import Nord
 
 home = os.path.expanduser("~")
 config = f"{home}/.config"
+scripts = f"{config}/qtile/scripts"
 wallpapers = f"{home}/.local/share/backgrounds/wallpapers"
 
 mod = "mod4"
@@ -58,7 +59,7 @@ keys = [
     Key([mod], "d", lazy.spawn("rofi -no-lazy-grab -show drun"), desc="Run application launcher"),
     Key([mod, "control"], "r", lazy.reload_config(), desc="Reload configuration"),
     Key([mod], "q", lazy.spawn("i3lock -c 000000"), desc="Lock screen"),
-    Key([mod, "control"], "q", lazy.shutdown(), desc="Shutdown Qtile"),
+    Key([mod, "control"], "q", lazy.spawn(f"{scripts}/power_menu.sh"), desc="Logout"),
 
     # Applications
     Key([mod], "b", lazy.spawn(browser), desc="Launch browser"),
