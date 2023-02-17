@@ -11,7 +11,7 @@ null_ls.setup({
   debug = false,
   sources = {
     code_actions.gitsigns,
-    diagnostics.flake8,
+    diagnostics.flake8.with({ extra_args = {"--max-line-length", "120" } }),
     formatting.prettier.with({
       filetypes = {
         "json",
