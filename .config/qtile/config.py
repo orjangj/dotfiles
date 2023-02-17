@@ -56,10 +56,9 @@ keys = [
     # Essentials
     Key([mod], "Return", lazy.spawn(terminal), desc="Launch terminal"),
     Key([mod], "r", lazy.spawncmd(), desc="Spawn a command using a prompt widget"),
-    Key([mod], "d", lazy.spawn("rofi -no-lazy-grab -show drun"), desc="Run application launcher"),
     Key([mod, "control"], "r", lazy.reload_config(), desc="Reload configuration"),
-    Key([mod], "q", lazy.spawn("i3lock -c 000000"), desc="Lock screen"),
-    Key([mod, "control"], "q", lazy.spawn(f"{scripts}/power_menu.sh"), desc="Logout"),
+    Key([mod], "d", lazy.spawn("rofi -no-lazy-grab -show drun"), desc="Run application launcher"),
+    Key([mod], "q", lazy.spawn(f"{scripts}/power_menu.sh"), desc="Logout"),
 
     # Applications
     Key([mod], "b", lazy.spawn(browser), desc="Launch browser"),
@@ -107,12 +106,12 @@ keys = [
 
 groups = [
     Group("", layout="monadtall"),
-    Group("", layout="max", matches=[Match(wm_class=["firefox", "chromium", "brave"])]),
+    Group("", layout="monadtall", matches=[Match(wm_class=["firefox", "chromium", "brave"])]),
     Group("", layout="monadtall", matches=[Match(wm_class=["emacs", "code"])]),
     Group("", layout="monadtall", matches=[Match(wm_class=["qpdfview", "thunar", "pcmanfm", "nautilus"])]),
     Group("", layout="max"),
     Group("", layout="max", matches=[Match(wm_class=["spotify"])]),
-    Group("", layout="max"),  # virtualbox?
+    Group("", layout="max"),  # virtualbox? KVM/QEMU?
 ]
 
 for i, g in zip(["1", "2", "3", "4", "5", "6", "7"], groups):
@@ -195,6 +194,7 @@ screens = [
                     fmt=" {}",
                     update_interval=5,
                     background=theme.bg_focus,
+                    foreground_alert=theme.fg_critical,
                 ),
                 widget.Memory(
                     format=" {MemPercent}%",
@@ -211,9 +211,12 @@ screens = [
                     discharge_char="",
                     full_char="",
                     empty_char="",
-                    # unknown_char="", ???
-                    low_foreground=theme.fg_urgent,
-                    # notify_below=, ???
+                    unknown_char="",
+                    show_short_text=False,
+                    low_percentage=0.15,
+                    low_background=theme.fg_critical,
+                    low_foreground=theme.bg_normal,
+                    notify_below=15,  # percent
                     format="{char} {percent:2.0%}",
                     background=theme.bg_focus,
                 ),
