@@ -90,6 +90,10 @@ virtual_prompt() {
     if [[ ! -z "${VIRTUAL_ENV}" ]]; then
         venv=$(basename "$VIRTUAL_ENV")
         prompt="(:${venv})"
+    elif [[ ! -z "${VM_ENV}" ]]; then
+        # This is purely for my "custom" setup of virtual machines,
+        # and does not relate to any particular tool.
+        prompt="(:${VM_ENV})"
     fi
     echo $prompt
 }
@@ -167,7 +171,9 @@ if type nvim &> /dev/null; then
 else
     export VISUAL=vim
 fi
+
 export EDITOR="$VISUAL"
+export VAGRANT_DEFAULT_PROVIDER="libvirt"
 
 # NOTE: This is really slow if printing GPU information on my current machine
 #if type neofetch &> /dev/null; then
