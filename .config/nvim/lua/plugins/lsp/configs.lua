@@ -4,9 +4,10 @@ if not status_ok then
 end
 
 local servers = {
+  ansiblels = {},
   clangd = {},
   cmake = {},
-  ltex = {},
+--  ltex = {},
   lua_ls = {
     Lua = {
 		  diagnostics = {

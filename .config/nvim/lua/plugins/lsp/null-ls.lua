@@ -21,7 +21,7 @@ null_ls.setup({
         "txt",
       },
     }),
-    formatting.black.with({ extra_args = { "--fast" } }),
+    formatting.black.with({ extra_args = { "--fast", "--line-length", "120" } }),
     formatting.stylua.with({ extra_args = { "--indent-type", "Spaces", "--indent-width", "2" } }),
   },
 })
