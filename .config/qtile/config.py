@@ -1,12 +1,11 @@
 import distro
 import os
-import shutil
 import subprocess
 
+from libqtile import qtile
 from libqtile import bar, hook, layout, widget
-from libqtile.config import Click, Drag, Group, Key, Match, Screen
+from libqtile.config import Click, Drag, Group, Key, Match, Screen, ScratchPad, DropDown
 from libqtile.lazy import lazy
-# from libqtile.log_utils import logger
 
 # Custom modules
 from theme import Nord
@@ -19,25 +18,16 @@ wallpapers = f"{home}/.local/share/backgrounds/wallpapers"
 
 mod = "mod4"
 terminal = "kitty"
-browser = "firefox"  # qutebrowser?
+browser = "firefox"
+editor = f"{terminal} -e nvim"
+file_manager = f"{terminal} -e ranger"
+edit_config = f"{editor} -c ':cd {config}/qtile' -c ':edit config.py'"
+edit_todo = f"{editor} -c ':edit TODO.md'"
+screen_shot = "flameshot gui"
 theme = Nord(f"{wallpapers}/nord")
 
 # TODO
-# 0) Notification server
-# 1) Keybinding
-#    - Screen lock
-# 4) bar layout and widgets
-#   - Go through list of supported widgets
-#   - uniform spacing
-#   - Logout/shutdown widget? Or dmenu script?
-# 6) Some apps should not be tiled, eg. VirtualBox, ++
-# 8) Theme
-#    - put colorscheme and stuff here
-#    - rounded corners (need qtile-extras for that)
-#    - layout
-#    - font
-# 9) Widgets
-#    - Storage (show used storage in percent)
+# - Notification server
 
 
 # Used by CheckUpdates widget
@@ -50,6 +40,17 @@ def get_distro():
     return name
 
 
+def get_update_command():
+    name = distro.name()
+    if name == "Arch Linux":
+        return "sudo pacman -Syu"
+    if name == "Fedora Linux":
+        return "sudo dnf update"
+    if name == "Ubuntu" or name == "Debian":
+        return "sudo apt update"
+    return ""
+
+
 # A list of available commands that can be bound to keys can be found
 # at https://docs.qtile.org/en/latest/manual/config/lazy.html
 keys = [
@@ -59,10 +60,15 @@ keys = [
     Key([mod, "control"], "r", lazy.reload_config(), desc="Reload configuration"),
     Key([mod], "d", lazy.spawn("rofi -no-lazy-grab -show drun"), desc="Run application launcher"),
     Key([mod], "q", lazy.spawn(f"{scripts}/power_menu.sh"), desc="Logout"),
-
     # Applications
     Key([mod], "b", lazy.spawn(browser), desc="Launch browser"),
-
+    Key([mod], "c", lazy.spawn(edit_config), desc="Open Qtile config"),
+    Key([mod], "e", lazy.spawn(editor), desc="Launch editor"),
+    Key([mod], "f", lazy.spawn(file_manager), desc="Launch file manager"),
+    Key([mod, "shift"], "f", lazy.spawn(screen_shot), desc="Screen shot"),
+    # ScratchPad
+    Key([mod], "t", lazy.group["scratchpad"].dropdown_toggle("todo"), desc="Todo"),
+    Key([mod, "shift"], "t", lazy.group["scratchpad"].dropdown_toggle("khal"), desc="Calendar"),
     # Window management
     Key([mod], "h", lazy.layout.left(), desc="Move focus to left"),
     Key([mod], "l", lazy.layout.right(), desc="Move focus to right"),
@@ -79,20 +85,20 @@ keys = [
     Key([mod], "n", lazy.layout.normalize(), desc="Reset all window sizes"),
     Key([mod], "space", lazy.layout.next(), desc="Move window focus to other window"),
     Key([mod, "shift"], "c", lazy.window.kill(), desc="Kill focused window"),
-    Key([mod], "f", lazy.window.toggle_fullscreen(), desc="Toggle fullscreen mode for focused window"),
+    Key([mod], "m", lazy.window.toggle_fullscreen(), desc="Toggle fullscreen mode for focused window"),
     # TODO: Screen/monitor management
     # - Move focused window to other screen and focus that window
     # - Move focus to other screen
     # - Minimize/hide focused window (and reset)
-
     # Layout management
     Key([mod], "Tab", lazy.next_layout(), desc="Toggle between layouts"),
     # multiple stack panes ... what's this?
-    Key([mod, "shift"], "Return",
+    Key(
+        [mod, "shift"],
+        "Return",
         lazy.layout.toggle_split(),
         desc="Toggle between split and unsplit sides of stack",
-        ),
-
+    ),
     # Misc
     Key([], "XF86AudioRaiseVolume", lazy.spawn("amixer -D default sset Master 5%+"), desc="Increase volume"),
     Key([], "XF86AudioLowerVolume", lazy.spawn("amixer -D default sset Master 5%-"), desc="Decrease volume"),
@@ -105,26 +111,49 @@ keys = [
 ]
 
 groups = [
-    Group("", layout="monadtall"),
+    Group("", layout="monadtall"),
     Group("", layout="monadtall", matches=[Match(wm_class=["firefox", "chromium", "brave"])]),
+    Group("", layout="monadtall", matches=[Match(wm_class=["virt-manager", "virt-viewer", "remote-viewer"])]),
     Group("", layout="monadtall", matches=[Match(wm_class=["emacs", "code"])]),
-    Group("", layout="monadtall", matches=[Match(wm_class=["qpdfview", "thunar", "pcmanfm", "nautilus"])]),
-    Group("", layout="max"),
-    Group("", layout="max", matches=[Match(wm_class=["spotify"])]),
-    Group("", layout="max"),  # virtualbox? KVM/QEMU?
+    Group("", layout="monadtall"),
+    Group("", layout="monadtall", matches=[Match(wm_class=["spotify"])]),
+    ScratchPad("scratchpad", [
+        DropDown(
+            'khal',
+            [terminal, "-e", "ikhal"],
+            x=0.6785,
+            width=0.32,
+            opacity=1,
+        ),
+        DropDown(
+            'todo',
+            [terminal, "-e", "nvim", home + "/TODO.md"],
+            height=0.8,
+            y=0.1,
+            opacity=1,
+        ),
+    ])
 ]
 
-for i, g in zip(["1", "2", "3", "4", "5", "6", "7"], groups):
+for i, g in zip(["1", "2", "3", "4", "5", "6"], groups):
     keys.append(Key([mod], i, lazy.group[g.name].toscreen(), desc=f"Switch to group {g.name}"))
-    keys.append(Key([mod, "shift"], i, lazy.window.togroup(g.name, switch_group=True), desc=f"Switch to & move focused window to group {g.name}"))
+    keys.append(
+        Key(
+            [mod, "shift"],
+            i,
+            lazy.window.togroup(g.name, switch_group=True),
+            desc=f"Switch to & move focused window to group {g.name}",
+        )
+    )
 
 
 check_updates_distro = get_distro()
+check_updates_command = get_update_command()
 
 layouts = [
-    # layout.Columns(**theme.layout),
+    layout.Columns(**theme.layout),
     layout.Max(**theme.layout),
-    # layout.Stack(num_stacks=2, **layout_theme),
+    layout.Stack(num_stacks=2, **theme.layout),
     layout.Bsp(**theme.layout),
     layout.Matrix(**theme.layout),
     layout.MonadTall(**theme.layout, new_client_position="top"),
@@ -148,8 +177,8 @@ widget_defaults = dict(
     font=theme.font,
     fontsize=theme.fontsize,
     padding=theme.padding,
-    background=theme.bg_normal,
-    foreground=theme.fg_focus
+    background=theme.bg_focus,
+    foreground=theme.fg_focus,
 )
 extension_defaults = widget_defaults.copy()
 
@@ -164,6 +193,7 @@ screens = [
                     inactive=theme.bg_focus,
                     block_highlight_text_color=theme.fg_focus,
                     this_current_screen_border=theme.fg_focus,
+                    background=theme.bg_normal,
                     highlight_color=[theme.bg_normal, theme.bg_focus],  # when using "line" method
                     highlight_method="line",
                     urgent_border=theme.border_urgent,
@@ -177,34 +207,40 @@ screens = [
                     borderwidth=2,
                     disable_drag=True,
                 ),
-                widget.Prompt(),  # What's this for?
-                widget.Spacer(),
+                widget.Prompt(
+                    background=theme.bg_normal,
+                ),
+                widget.Spacer(
+                    background=theme.bg_normal,
+                ),
                 widget.TextBox(
                     text="◢",
                     padding=0,
                     fontsize=50,
+                    background=theme.bg_normal,
                     foreground=theme.bg_focus,
                 ),
                 widget.CPU(
                     format=" {load_percent}%",
                     update_interval=2,
-                    background=theme.bg_focus,
                 ),
                 widget.ThermalSensor(
                     fmt=" {}",
                     update_interval=5,
-                    background=theme.bg_focus,
+                    foreground=theme.fg_focus,
                     foreground_alert=theme.fg_critical,
                 ),
                 widget.Memory(
                     format=" {MemPercent}%",
                     update_interval=2,
-                    background=theme.bg_focus,
                 ),
-                # Mic?
+                widget.DF(
+                    format=" {r:.1f}%",
+                    visible_on_warn=False,
+                    warn_color=theme.fg_urgent,
+                ),
                 widget.Volume(
-                    fmt=' {}',
-                    background=theme.bg_focus,
+                    fmt=" {}",
                 ),
                 widget.Battery(
                     charge_char="",
@@ -218,12 +254,10 @@ screens = [
                     low_foreground=theme.bg_normal,
                     notify_below=15,  # percent
                     format="{char} {percent:2.0%}",
-                    background=theme.bg_focus,
                 ),
                 widget.Net(
                     format=" {down} ↓↑{up}",
                     interface="all",
-                    background=theme.bg_focus,
                     prefix="M"
                 ),
                 widget.TextBox(
@@ -233,14 +267,25 @@ screens = [
                     background=theme.bg_focus,
                     foreground=theme.bg_normal,
                 ),
+                #widget.KhalCalendar(
+                #    background=theme.bg_normal,
+                #    ),
                 widget.Clock(
-                    format="%a %b %d, %H:%M",
+                    format="  %a %b %d, %H:%M",
+                    background=theme.bg_normal,
+                    mouse_callbacks={"Button1": lazy.group["scratchpad"].dropdown_toggle('khal')}
                 ),
                 widget.TextBox(
                     text="◢",
                     padding=0,
                     fontsize=50,
+                    background=theme.bg_normal,
                     foreground=theme.bg_focus,
+                ),
+                widget.KeyboardLayout(
+                    fmt="  {}",
+                    configured_keyboards=["no", "us"],
+                    display_map={"us": "us", "no": "no"},
                 ),
                 widget.CheckUpdates(
                     colour_have_updates=theme.fg_focus,
@@ -249,11 +294,12 @@ screens = [
                     distro=check_updates_distro,
                     display_format=" {updates}",
                     no_update_string=" 0",
-                    background=theme.bg_focus,
+                    mouse_callbacks={
+                        'Button1': lambda: qtile.cmd_spawn(f"{terminal} -e {check_updates_command}"),
+                    },
                 ),
                 widget.Sep(
                     foreground=theme.bg_focus,
-                    background=theme.bg_focus,
                     linewidth=5,
                 ),
             ],
@@ -277,6 +323,7 @@ follow_mouse_focus = True
 bring_front_click = False
 cursor_warp = False
 floating_layout = layout.Floating(
+    **theme.layout,
     float_rules=[
         # Run the utility of `xprop` to see the wm class and name of an X client.
         *layout.Floating.default_float_rules,
@@ -308,6 +355,8 @@ reconfigure_screens = True
 @hook.subscribe.startup_once
 def start_once():
     subprocess.Popen(["picom", "-b"])
+
+
 #     home = os.path.expanduser('~')
 #     subprocess.call([home + '/.config/qtile/autostart.sh'])
 
