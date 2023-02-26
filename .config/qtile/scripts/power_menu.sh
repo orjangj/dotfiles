@@ -33,7 +33,7 @@ selected=$(echo -en "${messages[@]}" | tr -d ' ' | rofi -dmenu -show-icons -p Sy
 # TODO: Add confirmation on irreversible actions?
 case $selected in
 	logout)
-        qtile cmd-obj -o cmd shutdown ;;
+        qtile cmd-obj -o cmd -f shutdown ;;
 	lock)
         i3lock -c 000000 ;;
 	reboot)

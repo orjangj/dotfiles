@@ -111,26 +111,18 @@ keys = [
 ]
 
 groups = [
-    Group("", layout="monadtall"),
-    Group("", layout="monadtall", matches=[Match(wm_class=["firefox", "chromium", "brave"])]),
+    Group("", layout="monadtall", spawn=terminal),
+    Group("", layout="monadtall", matches=[Match(wm_class=["firefox", "chromium", "brave"])], spawn=browser),
     Group("", layout="monadtall", matches=[Match(wm_class=["virt-manager", "virt-viewer", "remote-viewer"])]),
     Group("", layout="monadtall", matches=[Match(wm_class=["emacs", "code"])]),
     Group("", layout="monadtall"),
     Group("", layout="monadtall", matches=[Match(wm_class=["spotify"])]),
     ScratchPad("scratchpad", [
         DropDown(
-            'khal',
-            [terminal, "-e", "ikhal"],
-            x=0.6785,
-            width=0.32,
-            opacity=1,
+            'khal', [terminal, "-e", "ikhal"], x=0.6785, width=0.32, opacity=1
         ),
         DropDown(
-            'todo',
-            [terminal, "-e", "nvim", home + "/TODO.md"],
-            height=0.8,
-            y=0.1,
-            opacity=1,
+            'todo', [terminal, "-e", "nvim", home + "/TODO.md"], height=0.8, y=0.1, opacity=1,
         ),
     ])
 ]
@@ -139,8 +131,7 @@ for i, g in zip(["1", "2", "3", "4", "5", "6"], groups):
     keys.append(Key([mod], i, lazy.group[g.name].toscreen(), desc=f"Switch to group {g.name}"))
     keys.append(
         Key(
-            [mod, "shift"],
-            i,
+            [mod, "shift"], i,
             lazy.window.togroup(g.name, switch_group=True),
             desc=f"Switch to & move focused window to group {g.name}",
         )
@@ -180,6 +171,7 @@ widget_defaults = dict(
     background=theme.bg_focus,
     foreground=theme.fg_focus,
 )
+
 extension_defaults = widget_defaults.copy()
 
 screens = [
@@ -351,14 +343,9 @@ reconfigure_screens = True
 #     # TODO -- Popen shutdown processes
 
 
-# TODO: Consider using autostart.sh?
 @hook.subscribe.startup_once
 def start_once():
     subprocess.Popen(["picom", "-b"])
-
-
-#     home = os.path.expanduser('~')
-#     subprocess.call([home + '/.config/qtile/autostart.sh'])
 
 
 @hook.subscribe.startup
