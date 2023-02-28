@@ -13,3 +13,10 @@ autocmd('Filetype', {
   },
   command = 'setlocal shiftwidth=2 tabstop=2'
 })
+
+augroup('norgConceal', { clear = true })
+autocmd('Filetype', {
+  group = 'norgConceal',
+  pattern = { 'norg' },
+  command = 'setlocal conceallevel=2 foldlevel=1'
+})

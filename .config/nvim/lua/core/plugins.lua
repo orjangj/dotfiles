@@ -53,7 +53,7 @@ return packer.startup(function(use)
 
   use({ "wbthomason/packer.nvim" }) -- Allow packer to manage itself
   use({ "nvim-lua/plenary.nvim" }) -- Required by most plugins
-  use({ "nvim-treesitter/nvim-treesitter", run = "TSUpdate" }) -- Required by most plugins
+  use({ "nvim-treesitter/nvim-treesitter", run = ":TSUpdate" }) -- Required by most plugins
   use({ "nvim-treesitter/playground" })
 
   -- Speed up loading time
@@ -174,7 +174,7 @@ return packer.startup(function(use)
       { "folke/zen-mode.nvim" },
       { "folke/twilight.nvim" },
     },
-    --run = ":Neorg sync-parsers",
+    run = ":Neorg sync-parsers",
   })
   -- Automatically set up your configuration after cloning packer.nvim
   -- Put this at the end after all plugins

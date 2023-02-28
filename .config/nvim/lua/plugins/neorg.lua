@@ -6,11 +6,7 @@ end
 neorg.setup({
   load = {
     ["core.defaults"] = {},
-    ["core.norg.concealer"] = {
-      config = {
-        folds = false, -- doesn't play nicely with presenter mode
-      },
-    },
+    ["core.norg.concealer"] = {},
     ["core.presenter"] = {
       config = {
         zen_mode = "zen-mode",
@@ -19,6 +15,15 @@ neorg.setup({
     ["core.norg.completion"] = {
       config = {
         engine = "nvim-cmp",
+      },
+    },
+    ["core.norg.dirman"] = {
+      config = {
+        workspaces = {
+          notes = "~/notes",
+          cookbook = "~/projects/git/cookbook",
+        },
+        default_workspace = "notes",
       },
     },
   },
