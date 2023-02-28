@@ -26,9 +26,6 @@ edit_todo = f"{editor} -c ':edit TODO.md'"
 screen_shot = "flameshot gui"
 theme = Nord(f"{wallpapers}/nord")
 
-# TODO
-# - Notification server
-
 
 # Used by CheckUpdates widget
 def get_distro():
