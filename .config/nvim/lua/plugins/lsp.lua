@@ -25,136 +25,75 @@ return {
   config = function()
     local lsp = require("lsp-zero").preset({
       name = "minimal",
-      set_lsp_keymaps = false, -- TODO: set true?
-      manage_nvim_cmp = false,  -- TODO: set true??
+      set_lsp_keymaps = true,
+      manage_nvim_cmp = true,
       suggest_lsp_servers = false,
+      sign_icons = {
+        error="",
+        warn="",
+        hint="ﴞ",
+        info="",
+      }
     })
+
+    local servers = {
+      clangd = {},
+      cmake = {},
+      ltex = {},
+      lua_ls = {
+        Lua = {
+          diagnostics = {
+            globals = { "vim", "describe", "it" },
+          },
+          telemetry = { enable = false },
+          workspace = { checkThirdParty = false },
+        },
+      },
+    }
+
+    lsp.ensure_installed( vim.tbl_keys(servers) )
+
+    for server, settings in pairs(servers) do
+      lsp.configure(server, {
+        --on_attach = require("plugins.lsp.handlers").on_attach,
+        --capabilities = require("plugins.lsp.handlers").capabilities,
+        settings = settings,
+      })
+    end
+
     lsp.nvim_workspace()
     lsp.setup()
 
-    local luasnip = require("luasnip")
-    require("luasnip/loaders/from_vscode").lazy_load()
+    local null_ls = require("null-ls")
+    local null_opts = lsp.build_options("null-ls", {})
+    local formatting = null_ls.builtins.formatting
+    local diagnostics = null_ls.builtins.diagnostics
+    local code_actions = null_ls.builtins.code_actions
 
-    local check_backspace = function()
-      local col = vim.fn.col(".") - 1
-      return col == 0 or vim.fn.getline("."):sub(col, col):match("%s")
-    end
-
-    --   פּ ﯟ   some other good icons
-    local kind_icons = {
-      Text = "",
-      Method = "m",
-      Function = "",
-      Constructor = "",
-      Field = "",
-      Variable = "",
-      Class = "",
-      Interface = "",
-      Module = "",
-      Property = "",
-      Unit = "",
-      Value = "",
-      Enum = "",
-      Keyword = "",
-      Snippet = "",
-      Color = "",
-      File = "",
-      Reference = "",
-      Folder = "",
-      EnumMember = "",
-      Constant = "",
-      Struct = "",
-      Event = "",
-      Operator = "",
-      TypeParameter = "",
-    }
-    -- find more here: https://www.nerdfonts.com/cheat-sheet
-    local cmp = require("cmp")
-    cmp.setup({
-      snippet = {
-        expand = function(args)
-          luasnip.lsp_expand(args.body) -- For `luasnip` users.
-        end,
-      },
-      mapping = {
-        ["<C-k>"] = cmp.mapping.select_prev_item(),
-        ["<C-j>"] = cmp.mapping.select_next_item(),
-        ["<C-b>"] = cmp.mapping(cmp.mapping.scroll_docs(-1), { "i", "c" }),
-        ["<C-f>"] = cmp.mapping(cmp.mapping.scroll_docs(1), { "i", "c" }),
-        ["<C-Space>"] = cmp.mapping(cmp.mapping.complete(), { "i", "c" }),
-        ["<C-y>"] = cmp.config.disable, -- Specify `cmp.config.disable` if you want to remove the default `<C-y>` mapping.
-        ["<C-e>"] = cmp.mapping({
-          i = cmp.mapping.abort(),
-          c = cmp.mapping.close(),
-        }),
-        -- Accept currently selected item. If none selected, `select` first item.
-        -- Set `select` to `false` to only confirm explicitly selected items.
-        ["<CR>"] = cmp.mapping.confirm({ select = false }),
-        ["<Tab>"] = cmp.mapping(function(fallback)
-          if cmp.visible() then
-            cmp.select_next_item()
-          elseif luasnip.expandable() then
-            luasnip.expand()
-          elseif luasnip.expand_or_jumpable() then
-            luasnip.expand_or_jump()
-          elseif check_backspace() then
-            fallback()
-          else
-            fallback()
-          end
-        end, {
-          "i",
-          "s",
-        }),
-        ["<S-Tab>"] = cmp.mapping(function(fallback)
-          if cmp.visible() then
-            cmp.select_prev_item()
-          elseif luasnip.jumpable(-1) then
-            luasnip.jump(-1)
-          else
-            fallback()
-          end
-        end, {
-          "i",
-          "s",
-        }),
-      },
-      formatting = {
-        fields = { "kind", "abbr", "menu" },
-        format = function(entry, vim_item)
-          -- Kind icons
-          vim_item.kind = string.format("%s", kind_icons[vim_item.kind])
-          -- vim_item.kind = string.format('%s %s', kind_icons[vim_item.kind], vim_item.kind) -- This concatonates the icons with the name of the item kind
-          vim_item.menu = ({
-            nvim_lsp = "[LSP]",
-            luasnip = "[Snippet]",
-            buffer = "[Buffer]",
-            path = "[Path]",
-          })[entry.source.name]
-          return vim_item
-        end,
-      },
+    null_ls.setup({
+      on_attach = function (client, bufnr)
+        null_opts.on_attach(client, bufnr)
+      end,
+      debug = false,
       sources = {
-        { name = "nvim_lsp" },
-        { name = "luasnip" },
-        { name = "buffer" },
-        { name = "path" },
-      },
-      confirm_opts = {
-        behavior = cmp.ConfirmBehavior.Replace,
-        select = false,
-      },
-      window = {
-        documentation = {
-          border = { "╭", "─", "╮", "│", "╯", "─", "╰", "│" },
-        },
-      },
-      experimental = {
-        ghost_text = false,
-        native_menu = false,
+        code_actions.gitsigns,
+        diagnostics.flake8.with({ extra_args = { "--max-line-length", "120" } }),
+        formatting.prettier.with({
+          filetypes = {
+            "json",
+            "yaml",
+            "markdown",
+            "md",
+            "txt",
+          },
+        }),
+        formatting.black.with({ extra_args = { "--fast", "--line-length", "120" } }),
+        formatting.stylua.with({ extra_args = { "--indent-type", "Spaces", "--indent-width", "2" } }),
       },
     })
 
+    require("neodev").setup()
+    require("fidget").setup()
     require("trouble").setup()
   end,
 }
