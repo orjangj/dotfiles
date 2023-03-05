@@ -4,6 +4,9 @@ return {
     { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
     { "ghassan0/telescope-glyph.nvim" },
     { "smartpde/telescope-recent-files" },
+    { "nvim-telescope/telescope-media-files.nvim" },
+    { "nvim-lua/popup.nvim" },
+    { "nvim-lua/plenary.nvim" },
   },
   config = function()
     local telescope = require("telescope")
@@ -94,6 +97,9 @@ return {
         recent_files = {
           only_cwd = true,
         },
+        media_files = {
+          find_cmd = "rg",
+        },
       },
     })
 
@@ -102,5 +108,6 @@ return {
     require("telescope").load_extension("fzf")
     require("telescope").load_extension("glyph")
     require("telescope").load_extension("recent_files")
+    require("telescope").load_extension("media_files")
   end,
 }

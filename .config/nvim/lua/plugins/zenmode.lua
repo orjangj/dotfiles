@@ -3,12 +3,12 @@ return {
   config = function()
     require("zen-mode").setup({
       window = {
-        backdrop = 1, -- shade the backdrop of the Zen window. Set to 1 to keep the same as Normal
+        backdrop = 1,
         -- height and width can be:
         -- * an absolute number of cells when > 1
         -- * a percentage of the width / height of the editor when <= 1
         -- * a function that returns the width or the height
-        width = 80, -- width of the Zen window in number of characters
+        width = 120, -- width of the Zen window in number of characters
         height = 35, -- height of the Zen window in number of lines
         -- by default, no options are changed for the Zen window
         -- uncomment any of the options below, or add other vim.wo options you want to apply
@@ -33,14 +33,6 @@ return {
         twilight = { enabled = true }, -- enable to start Twilight when zen mode opens
         gitsigns = { enabled = false }, -- disables git signs
         tmux = { enabled = false }, -- disables the tmux statusline
-        -- this will change the font size on kitty when in zen mode
-        -- to make this work, you need to set the following kitty options:
-        -- - allow_remote_control socket-only
-        -- - listen_on unix:/tmp/kitty
-        kitty = {
-          enabled = true,
-          font = "+3", -- font size increment
-        },
       },
       -- callback where you can add custom code when the Zen window opens
       on_open = function(win) end,

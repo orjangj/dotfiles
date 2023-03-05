@@ -23,17 +23,20 @@ return {
     { "rafamadriz/friendly-snippets" },
   },
   config = function()
+    -- IMPORTANT: make sure to setup neodev BEFORE lspconfig
+    require("neodev").setup()
+
     local lsp = require("lsp-zero").preset({
       name = "minimal",
       set_lsp_keymaps = true,
       manage_nvim_cmp = true,
       suggest_lsp_servers = false,
       sign_icons = {
-        error="",
-        warn="",
-        hint="ﴞ",
-        info="",
-      }
+        error = "",
+        warn = "",
+        hint = "ﴞ",
+        info = "",
+      },
     })
 
     local servers = {
@@ -51,7 +54,7 @@ return {
       },
     }
 
-    lsp.ensure_installed( vim.tbl_keys(servers) )
+    lsp.ensure_installed(vim.tbl_keys(servers))
 
     for server, settings in pairs(servers) do
       lsp.configure(server, {
@@ -71,7 +74,7 @@ return {
     local code_actions = null_ls.builtins.code_actions
 
     null_ls.setup({
-      on_attach = function (client, bufnr)
+      on_attach = function(client, bufnr)
         null_opts.on_attach(client, bufnr)
       end,
       debug = false,
@@ -92,7 +95,6 @@ return {
       },
     })
 
-    require("neodev").setup()
     require("fidget").setup()
     require("trouble").setup()
   end,

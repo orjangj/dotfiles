@@ -1,5 +1,8 @@
 return {
   "akinsho/bufferline.nvim",
+  dependencies = {
+    "nvim-tree/nvim-web-devicons",
+  },
   config = function()
     local options = {
       numbers = "none",
@@ -29,82 +32,73 @@ return {
       always_show_bufferline = true,
     }
 
-    local highlights
-
-    if vim.g.colors_name == "nord" then
-      highlights = require("nord").bufferline.highlights({
-        italic = true,
-        bold = true,
-      })
-    else
-      highlights = {
-        -- fg/bg color for tabline area
-        fill = {
-          bg = { attribute = "bg", highlight = "Normal" },
-        },
-        -- fg/bg color of a buffer when not focused
-        background = {
-          fg = { attribute = "fg", highlight = "Normal" },
-          bg = { attribute = "bg", highlight = "Normal" },
-        },
-        -- fg/bg color of main close button (most right button)
-        tab_close = {
-          fg = { attribute = "fg", highlight = "Normal" },
-          bg = { attribute = "bg", highlight = "Normal" },
-        },
-        -- fg/bg color of close button for unfocused buffers
-        close_button = {
-          fg = { attribute = "fg", highlight = "Normal" },
-          bg = { attribute = "bg", highlight = "Normal" },
-        },
-        -- fg/bg color for close button of current buffer when another window/tab is focused
-        close_button_visible = {
-          fg = { attribute = "fg", highlight = "Normal" },
-          bg = { attribute = "bg", highlight = "Normal" },
-        },
-        -- fg/bg color for close button of current buffer when focused
-        close_button_selected = {
-          fg = { attribute = "fg", highlight = "TabLine" },
-          bg = { attribute = "bg", highlight = "TabLine" },
-        },
-        -- fg/bg color of current buffer when another window/tab is focused
-        buffer_visible = {
-          fg = { attribute = "fg", highlight = "Normal" },
-          bg = { attribute = "bg", highlight = "Normal" },
-        },
-        -- fg/bg color of current buffer
-        buffer_selected = {
-          fg = { attribute = "fg", highlight = "TabLine" },
-          bg = { attribute = "bg", highlight = "TabLine" },
-        },
-        -- fg/bg color of close button for unfocused (modified) buffer
-        modified = {
-          bg = { attribute = "bg", highlight = "Normal" },
-        },
-        -- fg/bg color of close button for current (modified) buffer when another window/tab is focused
-        modified_visible = {
-          bg = { attribute = "bg", highlight = "TabLine" },
-        },
-        -- fg/bg color of close button for current (modified) buffer
-        modified_selected = {
-          bg = { attribute = "bg", highlight = "TabLine" },
-        },
-        -- fg/bg color of separator area between buffers
-        separator = {
-          fg = { attribute = "bg", highlight = "Normal" },
-          bg = { attribute = "bg", highlight = "Normal" },
-        },
-        -- fg/bg color of indicator area when not focused
-        indicator_visible = {
-          fg = { attribute = "bg", highlight = "Normal" },
-          bg = { attribute = "bg", highlight = "Normal" },
-        },
-        -- fg/bg color of indicator area when focused
-        indicator_selected = {
-          bg = { attribute = "bg", highlight = "TabLine" },
-        },
-      }
-    end
+    local highlights = {
+      -- fg/bg color for tabline area
+      fill = {
+        bg = { attribute = "bg", highlight = "Normal" },
+      },
+      -- fg/bg color of a buffer when not focused
+      background = {
+        fg = { attribute = "fg", highlight = "Normal" },
+        bg = { attribute = "bg", highlight = "Normal" },
+      },
+      -- fg/bg color of main close button (most right button)
+      tab_close = {
+        fg = { attribute = "fg", highlight = "Normal" },
+        bg = { attribute = "bg", highlight = "Normal" },
+      },
+      -- fg/bg color of close button for unfocused buffers
+      close_button = {
+        fg = { attribute = "fg", highlight = "Normal" },
+        bg = { attribute = "bg", highlight = "Normal" },
+      },
+      -- fg/bg color for close button of current buffer when another window/tab is focused
+      close_button_visible = {
+        fg = { attribute = "fg", highlight = "Normal" },
+        bg = { attribute = "bg", highlight = "Normal" },
+      },
+      -- fg/bg color for close button of current buffer when focused
+      close_button_selected = {
+        fg = { attribute = "fg", highlight = "TabLine" },
+        bg = { attribute = "bg", highlight = "TabLine" },
+      },
+      -- fg/bg color of current buffer when another window/tab is focused
+      buffer_visible = {
+        fg = { attribute = "fg", highlight = "Normal" },
+        bg = { attribute = "bg", highlight = "Normal" },
+      },
+      -- fg/bg color of current buffer
+      buffer_selected = {
+        fg = { attribute = "fg", highlight = "TabLine" },
+        bg = { attribute = "bg", highlight = "TabLine" },
+      },
+      -- fg/bg color of close button for unfocused (modified) buffer
+      modified = {
+        bg = { attribute = "bg", highlight = "Normal" },
+      },
+      -- fg/bg color of close button for current (modified) buffer when another window/tab is focused
+      modified_visible = {
+        bg = { attribute = "bg", highlight = "TabLine" },
+      },
+      -- fg/bg color of close button for current (modified) buffer
+      modified_selected = {
+        bg = { attribute = "bg", highlight = "TabLine" },
+      },
+      -- fg/bg color of separator area between buffers
+      separator = {
+        fg = { attribute = "bg", highlight = "Normal" },
+        bg = { attribute = "bg", highlight = "Normal" },
+      },
+      -- fg/bg color of indicator area when not focused
+      indicator_visible = {
+        fg = { attribute = "bg", highlight = "Normal" },
+        bg = { attribute = "bg", highlight = "Normal" },
+      },
+      -- fg/bg color of indicator area when focused
+      indicator_selected = {
+        bg = { attribute = "bg", highlight = "TabLine" },
+      },
+    }
 
     require("bufferline").setup({ options = options, highlights = highlights })
   end,
