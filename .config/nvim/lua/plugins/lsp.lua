@@ -67,6 +67,8 @@ return {
     lsp.nvim_workspace()
     lsp.setup()
 
+    vim.diagnostic.config({ virtual_text = true })
+
     local null_ls = require("null-ls")
     local null_opts = lsp.build_options("null-ls", {})
     local formatting = null_ls.builtins.formatting

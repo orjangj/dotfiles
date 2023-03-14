@@ -5,6 +5,7 @@ return {
     { "ghassan0/telescope-glyph.nvim" },
     { "smartpde/telescope-recent-files" },
     { "nvim-telescope/telescope-media-files.nvim" },
+    { "nvim-telescope/telescope-symbols.nvim" },
     { "nvim-lua/popup.nvim" },
     { "nvim-lua/plenary.nvim" },
   },

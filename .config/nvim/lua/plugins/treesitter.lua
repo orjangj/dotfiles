@@ -11,6 +11,7 @@ return {
         "bash",
         "c",
         "cmake",
+        "comment",
         "cpp",
         "dockerfile",
         "help",

@@ -24,7 +24,7 @@ return {
       ["c"] = { "<cmd>Bdelete!<cr>", "Close Buffer" },
       ["e"] = { "<cmd>NvimTreeToggle<cr>", "Explorer" },
       ["h"] = { "<cmd>nohlsearch<cr>", "No Highlight" },
-      ["p"] = { "<cmd>Lazy<cr>", "Plugin"},
+      ["p"] = { "<cmd>Lazy<cr>", "Plugin" },
       ["q"] = { "<cmd>q!<cr>", "Quit" },
       ["w"] = { "<cmd>w!<cr>", "Save Buffer" },
       ["z"] = { "<cmd>ZenMode<cr>", "Zen Mode" },
@@ -33,6 +33,7 @@ return {
         b = { "<cmd>Telescope git_branches<cr>", "Checkout branch" },
         c = { "<cmd>Telescope git_commits<cr>", "Checkout commit" },
         d = { "<cmd>Gitsigns diffthis HEAD<cr>", "Diff" },
+        g = { "<cmd>Neogit<cr>", "Neogit" },
         j = { "<cmd>lua require 'gitsigns'.next_hunk()<cr>", "Next Hunk" },
         k = { "<cmd>lua require 'gitsigns'.prev_hunk()<cr>", "Prev Hunk" },
         l = { "<cmd>lua require 'gitsigns'.blame_line()<cr>", "Blame Line" },
@@ -64,6 +65,7 @@ return {
         s = { "<cmd>Telescope live_grep<cr>", "Workspace Search" },
         S = { "<cmd>Telescope current_buffer_fuzzy_find theme=ivy<cr>", "Buffer Search" },
         t = { "<cmd>Telescope treesitter<cr>", "Treesitter" },
+        z = { "<cmd>Telescope symbols<cr>", "Symbols" },
       },
       l = {
         name = "LSP/Diagnostics",
@@ -83,6 +85,11 @@ return {
         t = { "<cmd>TroubleToggle<cr>", "Trouble Diagnostics" },
         z = { "<cmd>Telescope spell_suggest<cr>", "Spelling Suggestions" },
       },
+      --      n = {
+      --        name = "Neorg",
+      --        -- n -- Open Neorg index file
+      --        p = { "<cmd>Neorg presenter start<cr>", "Start Presentation"},
+      --      },
       t = {
         name = "Test",
         -- TODO: Is there a way to specify test suite (namespace)?

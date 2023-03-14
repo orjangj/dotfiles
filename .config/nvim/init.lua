@@ -1,6 +1,6 @@
-require("options")
-require("keymaps")
-require("autocommands")
+require("core.options")
+require("core.keymaps")
+require("core.autocommands")
 
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 
@@ -23,4 +23,11 @@ if not status_ok then
   return
 end
 
-return lazy.setup("plugins")
+return lazy.setup("plugins", {
+  ui = {
+    border = "rounded",
+  },
+  dev = {
+    path = "~/projects/git"
+  }
+})

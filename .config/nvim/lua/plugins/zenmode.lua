@@ -8,8 +8,8 @@ return {
         -- * an absolute number of cells when > 1
         -- * a percentage of the width / height of the editor when <= 1
         -- * a function that returns the width or the height
-        width = 120, -- width of the Zen window in number of characters
-        height = 35, -- height of the Zen window in number of lines
+        width = 0.70, -- width of the Zen window in number of characters
+        height = 0.85, -- height of the Zen window in number of lines
         -- by default, no options are changed for the Zen window
         -- uncomment any of the options below, or add other vim.wo options you want to apply
         options = {
@@ -33,6 +33,10 @@ return {
         twilight = { enabled = true }, -- enable to start Twilight when zen mode opens
         gitsigns = { enabled = false }, -- disables git signs
         tmux = { enabled = false }, -- disables the tmux statusline
+        kitty = {
+          enabled = true,
+          font = "+3",
+        },
       },
       -- callback where you can add custom code when the Zen window opens
       on_open = function(win) end,

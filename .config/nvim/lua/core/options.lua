@@ -35,7 +35,7 @@ local options = {
   completeopt = { "menuone", "noselect" }, -- mostly just for cmp
   pumheight = 10,                          -- pop up menu height
   updatetime = 300,                        -- faster completion (4000ms default)
-  timeoutlen = 100,                        -- time to wait for a mapped sequence to complete (in milliseconds)
+  timeoutlen = 1000,                        -- time to wait for a mapped sequence to complete (in milliseconds)
   -- Other
   clipboard = "unnamedplus",               -- allows neovim to access the system clipboard
   guifont = "monospace:h17",               -- the font used in graphical neovim applications
