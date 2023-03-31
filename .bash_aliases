@@ -1,7 +1,4 @@
 # General
-alias q='exit'
-alias c='clear'
-alias h='history'
 alias ls='ls --color=auto'
 alias ll='ls -alF'
 alias la='ls -A'

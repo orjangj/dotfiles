@@ -173,6 +173,10 @@ if type fzf &> /dev/null; then
   if [ -f /usr/share/fzf/shell/key-bindings.bash ]; then
     . /usr/share/fzf/shell/key-bindings.bash
   fi
+
+  export FZF_CTRL_T_OPTS="--select-1 --exit-0 --preview '(bat {} || tree -C {}) 2> /dev/null | head -200'"
+  export FZF_CTRL_R_OPTS="--preview 'echo {}' --preview-window down:3:hidden:wrap --bind '?:toggle-preview'"
+  export FZF_ALT_C_OPTS="--select-1 --exit-0 --preview 'tree -C {} | head -200'"
 fi
 
 if type nvim &> /dev/null; then
