@@ -161,9 +161,18 @@ path_prepend ~/bin
 export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 export SSL_CERT_DIR=/etc/ssl/certs
 
-if type rg &> /dev/null; then
-  export FZF_DEFAULT_COMMAND='rg --files --hidden --glob '!.git''
+if type fzf &> /dev/null; then
+  if type fd &> /dev/null; then
+    export FZF_DEFAULT_COMMAND='fd --type file --hidden --no-ignore'
+  elif type rg &> /dev/null; then
+    export FZF_DEFAULT_COMMAND='rg --files --hidden --follow --glob "!{.git,node_modules,venv}/*" 2> /dev/null'
+  fi
+
   export FZF_DEFAULT_OPTS='-m --height 50% --border'
+
+  if [ -f /usr/share/fzf/shell/key-bindings.bash ]; then
+    . /usr/share/fzf/shell/key-bindings.bash
+  fi
 fi
 
 if type nvim &> /dev/null; then
