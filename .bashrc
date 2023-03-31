@@ -168,7 +168,7 @@ if type fzf &> /dev/null; then
     export FZF_DEFAULT_COMMAND='rg --files --hidden --follow --glob "!{.git,node_modules,venv}/*" 2> /dev/null'
   fi
 
-  export FZF_DEFAULT_OPTS='-m --height 50% --border'
+  export FZF_DEFAULT_OPTS='-m --height 50% --border --color=16'
 
   if [ -f /usr/share/fzf/shell/key-bindings.bash ]; then
     . /usr/share/fzf/shell/key-bindings.bash
