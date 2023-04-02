@@ -90,10 +90,6 @@ virtual_prompt() {
     if [[ ! -z "${VIRTUAL_ENV}" ]]; then
         venv=$(basename "$VIRTUAL_ENV")
         prompt="(:${venv})"
-    elif [[ ! -z "${VM_ENV}" ]]; then
-        # This is purely for my "custom" setup of virtual machines,
-        # and does not relate to any particular tool.
-        prompt="(:${VM_ENV})"
     fi
     echo $prompt
 }
