@@ -7,10 +7,8 @@ end_of_line = lf
 charset = utf-8
 trim_trailing_whitespace = true
 insert_final_newline = true
-curly_bracket_next_line = false
-spaces_around_operators = true
 
-[*.{md,txt}]
+[*.{md,txt,norg}]
 trim_trailing_whitespace = false
 max_line_length = 100
 
