@@ -76,7 +76,6 @@ keys = [
     Key([mod, "shift"], "f", lazy.spawn(screen_shot), desc="Screen shot"),
     # ScratchPad
     Key([mod], "t", lazy.group["scratchpad"].dropdown_toggle("todo"), desc="Todo"),
-    Key([mod, "shift"], "t", lazy.group["scratchpad"].dropdown_toggle("khal"), desc="Calendar"),
     # Window management
     Key([mod], "h", lazy.layout.left(), desc="Move focus to left"),
     Key([mod], "l", lazy.layout.right(), desc="Move focus to right"),
@@ -129,7 +128,6 @@ groups = [
     ScratchPad(
         "scratchpad",
         [
-            DropDown("khal", [terminal, "-e", "ikhal"], x=0.6785, width=0.32, opacity=1),
             DropDown(
                 "todo",
                 edit_todo,
@@ -271,9 +269,8 @@ screens = [
                     foreground=theme.bg_normal,
                 ),
                 widget.Clock(
-                    format="  %a %b %d, %H:%M",
+                    format="  %a %b %d   %H:%M",
                     background=theme.bg_normal,
-                    mouse_callbacks={"Button1": lazy.group["scratchpad"].dropdown_toggle("khal")},
                 ),
                 widget.TextBox(
                     text="◢",
