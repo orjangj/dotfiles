@@ -22,7 +22,7 @@ browser = "firefox"
 editor = f"{terminal} -e nvim"
 file_manager = f"{terminal} -e ranger"
 edit_config = f"{editor} -c ':cd {config}/qtile' -c ':edit config.py'"
-edit_todo = f"{editor} -c ':edit TODO.md'"
+edit_todo = f"{editor} -c ':cd {home}/notes' -c ':edit ~/notes/todo.norg'"
 screen_shot = "flameshot gui"
 theme = Nord(f"{wallpapers}/nord")
 
@@ -46,6 +46,17 @@ def get_update_command():
     if name == "Ubuntu" or name == "Debian":
         return "sudo apt update"
     return ""
+
+
+@lazy.function
+def unminimize_next(qtile, focus=False):
+    group = qtile.current_screen.group
+    for win in group.windows:
+        if win.minimized:
+            win.toggle_minimize()
+            if focus:
+                group.focus(win)
+            return
 
 
 # A list of available commands that can be bound to keys can be found
@@ -79,14 +90,15 @@ keys = [
     Key([mod, "control"], "l", lazy.layout.grow_right(), desc="Grow window to the right"),
     Key([mod, "control"], "j", lazy.layout.grow_down(), desc="Grow window down"),
     Key([mod, "control"], "k", lazy.layout.grow_up(), desc="Grow window up"),
-    Key([mod], "n", lazy.layout.normalize(), desc="Reset all window sizes"),
+    Key([mod, "control"], "n", lazy.layout.normalize(), desc="Reset all window sizes"),
     Key([mod], "space", lazy.layout.next(), desc="Move window focus to other window"),
     Key([mod, "shift"], "c", lazy.window.kill(), desc="Kill focused window"),
     Key([mod], "m", lazy.window.toggle_fullscreen(), desc="Toggle fullscreen mode for focused window"),
+    Key([mod], "n", lazy.window.toggle_minimize(), desc="Toggle minimize mode for focused window"),
+    Key([mod, "shift"], "n", unminimize_next(focus=True), desc="Unminimize next window in group"),
     # TODO: Screen/monitor management
     # - Move focused window to other screen and focus that window
     # - Move focus to other screen
-    # - Minimize/hide focused window (and reset)
     # Layout management
     Key([mod], "Tab", lazy.next_layout(), desc="Toggle between layouts"),
     # multiple stack panes ... what's this?
@@ -109,26 +121,32 @@ keys = [
 
 groups = [
     Group("", layout="monadtall", spawn=terminal),
-    Group("", layout="monadtall", matches=[Match(wm_class=["firefox", "chromium", "brave"])], spawn=browser),
+    Group("", layout="monadtall", matches=[Match(wm_class=["firefox", "chromium", "brave"])]),
     Group("", layout="monadtall", matches=[Match(wm_class=["virt-manager", "virt-viewer", "remote-viewer"])]),
     Group("", layout="monadtall", matches=[Match(wm_class=["emacs", "code"])]),
     Group("", layout="monadtall"),
     Group("", layout="monadtall", matches=[Match(wm_class=["spotify"])]),
-    ScratchPad("scratchpad", [
-        DropDown(
-            'khal', [terminal, "-e", "ikhal"], x=0.6785, width=0.32, opacity=1
-        ),
-        DropDown(
-            'todo', [terminal, "-e", "nvim", home + "/TODO.md"], height=0.8, y=0.1, opacity=1,
-        ),
-    ])
+    ScratchPad(
+        "scratchpad",
+        [
+            DropDown("khal", [terminal, "-e", "ikhal"], x=0.6785, width=0.32, opacity=1),
+            DropDown(
+                "todo",
+                edit_todo,
+                height=0.8,
+                y=0.1,
+                opacity=1,
+            ),
+        ],
+    ),
 ]
 
 for i, g in zip(["1", "2", "3", "4", "5", "6"], groups):
     keys.append(Key([mod], i, lazy.group[g.name].toscreen(), desc=f"Switch to group {g.name}"))
     keys.append(
         Key(
-            [mod, "shift"], i,
+            [mod, "shift"],
+            i,
             lazy.window.togroup(g.name, switch_group=True),
             desc=f"Switch to & move focused window to group {g.name}",
         )
@@ -244,11 +262,7 @@ screens = [
                     notify_below=15,  # percent
                     format="{char} {percent:2.0%}",
                 ),
-                widget.Net(
-                    format=" {down} ↓↑{up}",
-                    interface="all",
-                    prefix="M"
-                ),
+                widget.Net(format=" {down} ↓↑{up}", interface="all", prefix="M"),
                 widget.TextBox(
                     text="◢",
                     padding=0,
@@ -256,13 +270,10 @@ screens = [
                     background=theme.bg_focus,
                     foreground=theme.bg_normal,
                 ),
-                #widget.KhalCalendar(
-                #    background=theme.bg_normal,
-                #    ),
                 widget.Clock(
                     format="  %a %b %d, %H:%M",
                     background=theme.bg_normal,
-                    mouse_callbacks={"Button1": lazy.group["scratchpad"].dropdown_toggle('khal')}
+                    mouse_callbacks={"Button1": lazy.group["scratchpad"].dropdown_toggle("khal")},
                 ),
                 widget.TextBox(
                     text="◢",
@@ -284,7 +295,7 @@ screens = [
                     display_format=" {updates}",
                     no_update_string=" 0",
                     mouse_callbacks={
-                        'Button1': lambda: qtile.cmd_spawn(f"{terminal} -e {check_updates_command}"),
+                        "Button1": lambda: qtile.cmd_spawn(f"{terminal} -e {check_updates_command}"),
                     },
                 ),
                 widget.Sep(
@@ -322,7 +333,7 @@ floating_layout = layout.Floating(
         Match(wm_class="ssh-askpass"),  # ssh-askpass
         Match(title="branchdialog"),  # gitk
         Match(title="pinentry"),  # GPG key password entry
-    ]
+    ],
 )
 auto_fullscreen = True
 focus_on_window_activation = "smart"
@@ -345,6 +356,8 @@ def start_once():
     subprocess.Popen(["picom", "-b"])
 
 
+# Note: xset command can be removed if using Xorg v1.21+ and a xorg configlet
+# with AutoRepeat
 @hook.subscribe.startup
 def start_always():
     subprocess.Popen(["/usr/bin/xset", "r", "rate", "200", "40"])
