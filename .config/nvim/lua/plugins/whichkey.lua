@@ -29,6 +29,13 @@ return {
       ["q"] = { "<cmd>q!<cr>", "Quit" },
       ["w"] = { "<cmd>w!<cr>", "Save Buffer" },
       ["z"] = { "<cmd>ZenMode<cr>", "Zen Mode" },
+      b = {
+        name = "Build",
+        b = { "<cmd>lua require('neobuild').build()<cr>", "Build"},
+        c = { "<cmd>lua require('neobuild').configure()<cr>", "Configure"},
+        d = { "<cmd>lua require('neobuild').clean()<cr>", "Clean"},
+        f = { "<cmd>lua require('neobuild').build(vim.fn.expand('%'))<cr>", "Build File" },
+      },
       g = {
         name = "Git",
         b = { "<cmd>Telescope git_branches<cr>", "Checkout branch" },

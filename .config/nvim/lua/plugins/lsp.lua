@@ -26,6 +26,12 @@ return {
     -- IMPORTANT: make sure to setup neodev BEFORE lspconfig
     require("neodev").setup()
 
+    require("mason.settings").set({
+      ui = {
+        border = "rounded",
+      },
+    })
+
     local lsp = require("lsp-zero").preset({
       name = "minimal",
       set_lsp_keymaps = true,
@@ -42,7 +48,7 @@ return {
     local servers = {
       clangd = {},
       cmake = {},
-      ltex = {},
+      --ltex = {},
       lua_ls = {
         Lua = {
           diagnostics = {
@@ -68,6 +74,7 @@ return {
     lsp.setup()
 
     vim.diagnostic.config({ virtual_text = true })
+    require('lspconfig.ui.windows').default_options.border = 'rounded' -- TODO other ways to do this?
 
     local null_ls = require("null-ls")
     local null_opts = lsp.build_options("null-ls", {})
