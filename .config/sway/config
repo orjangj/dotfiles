@@ -14,16 +14,10 @@ set $menu dmenu_path | dmenu | xargs swaymsg exec --
 
 ### Display
 
-output * background '~/.wallpaper.png' fill
+output * background `find ~/.local/share/backgrounds/wallpapers/nord/ -type f | shuf -n 1` fill
 
 gaps inner 6
 default_border pixel 2
-
-workspace 3
-exec chromium
-
-workspace 2
-exec firefox
 
 workspace 1
 exec $term
@@ -39,10 +33,10 @@ exec swayidle -w \
 ### Input configuration
 
 input "type:keyboard" {
-    repeat_delay 210
+    repeat_delay 200
     repeat_rate 40
     xkb_options caps:escape
-    xkb_layout "no"
+    xkb_layout "no,us"
 }
 
 input "type:touchpad" {
@@ -64,7 +58,7 @@ bindsym $mod+Shift+q kill
 bindsym $mod+d exec $menu
 floating_modifier $mod normal
 bindsym $mod+Shift+c reload
-bindsym $mod+Shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -b 'Yes, exit sway' 'swaymsg exit'
+bindsym $mod+Shift+e exec swaynag -t warning -m 'Do you really want to exit sway? This will end your Wayland session.' -b 'Yes, exit sway' 'swaymsg exit'
 
 # Navigation
 bindsym $mod+$left focus left
