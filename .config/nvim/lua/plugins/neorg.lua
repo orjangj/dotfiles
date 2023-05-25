@@ -9,7 +9,7 @@ return {
     require("neorg").setup({
       load = {
         ["core.defaults"] = {},
-        ["core.norg.concealer"] = {},
+        ["core.concealer"] = {},
         ["core.keybinds"] = { -- Configure core.keybinds
           config = {
             default_keybinds = true,
@@ -23,12 +23,12 @@ return {
             zen_mode = "zen-mode",
           },
         },
-        ["core.norg.completion"] = {
+        ["core.completion"] = {
           config = {
             engine = "nvim-cmp",
           },
         },
-        ["core.norg.dirman"] = {
+        ["core.dirman"] = {
           config = {
             workspaces = {
               notes = "~/notes",

@@ -3,7 +3,6 @@
 return {
   { "nvim-lua/plenary.nvim" }, -- Needed by most plugins
   { "MunifTanjim/nui.nvim" },
-  { "gpanders/editorconfig.nvim" }, -- Can be removed if nvim >=v0.9
   {
     "norcalli/nvim-colorizer.lua",
     config = function()

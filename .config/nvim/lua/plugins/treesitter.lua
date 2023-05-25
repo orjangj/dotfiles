@@ -14,7 +14,7 @@ return {
         "comment",
         "cpp",
         "dockerfile",
-        "help",
+        "vimdoc",
         "json",
         "lua",
         "make",
