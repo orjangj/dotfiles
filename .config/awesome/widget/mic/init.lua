@@ -1,5 +1,4 @@
 local beautiful = require("beautiful")
-local gears = require("gears")
 local spawn = require("awful.spawn")
 local watch = require("awful.widget.watch")
 local wibox = require("wibox")

@@ -2,7 +2,6 @@ local wibox = require("wibox")
 local spawn = require("awful.spawn")
 local beautiful = require("beautiful")
 local watch = require("awful.widget.watch")
-local gears = require("gears")
 
 local brightness = {}
 

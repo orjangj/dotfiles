@@ -80,7 +80,7 @@ local function worker()
         icon = ""
         highlight = beautiful.fg_critical
         local difftime = os.difftime(os.time(), last_battery_check)
-        if difftime > 3*timeout then
+        if difftime > 3 * timeout then
           -- TODO: Consider entering hibernate/suspend
           warning_notification("Connect battery to charger!")
           last_battery_check = os.time()
@@ -89,7 +89,7 @@ local function worker()
         icon = ""
         highlight = beautiful.fg_urgent
         local difftime = os.difftime(os.time(), last_battery_check)
-        if difftime > 6*timeout then
+        if difftime > 6 * timeout then
           warning_notification("Connect battery to charger!")
           last_battery_check = os.time()
         end

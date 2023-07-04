@@ -11,7 +11,7 @@ local mic = require("widget.mic")
 local brightness = require("widget.brightness")
 
 local globalkeys = gears.table.join(
-  -- Group "awesome"
+-- Group "awesome"
   awful.key({ vars.modkey }, "s", hotkeys_popup.show_help, { description = "show help", group = "awesome" }),
   awful.key({ vars.modkey, "Control" }, "r", awesome.restart, { description = "reload awesome", group = "awesome" }),
   awful.key({ vars.modkey, "Shift" }, "q", awesome.quit, { description = "logout", group = "awesome" }),
@@ -35,7 +35,9 @@ local globalkeys = gears.table.join(
   awful.key({ vars.modkey }, "a", function()
     awful.spawn(vars.terminal .. " -e " .. vars.file_manager .. " " .. os.getenv("HOME"))
   end, { description = "open " .. vars.file_manager, group = "launcher" }),
-  awful.key({ vars.modkey, "Control" }, "f", function() awful.spawn("flameshot gui") end, { description = "Run flameshot", group = "launcher" }),
+  awful.key({ vars.modkey, "Control" }, "f", function()
+    awful.spawn("flameshot gui")
+  end, { description = "Run flameshot", group = "launcher" }),
 
   -- Group "tag"
   awful.key({ vars.modkey }, "Left", awful.tag.viewprev, { description = "view previous", group = "tag" }),

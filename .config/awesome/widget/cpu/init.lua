@@ -1,5 +1,4 @@
 local beautiful = require("beautiful")
-local gears = require("gears")
 local watch = require("awful.widget.watch")
 local wibox = require("wibox")
 
@@ -27,7 +26,7 @@ local function worker()
   local maincpu = {}
   watch(CPU_CMD, timeout, function(widget, stdout)
     local _, user, nice, system, idle, iowait, irq, softirq, steal, _, _ =
-    stdout:match("(%w+)%s+(%d+)%s(%d+)%s(%d+)%s(%d+)%s(%d+)%s(%d+)%s(%d+)%s(%d+)%s(%d+)%s(%d+)")
+      stdout:match("(%w+)%s+(%d+)%s(%d+)%s(%d+)%s(%d+)%s(%d+)%s(%d+)%s(%d+)%s(%d+)%s(%d+)%s(%d+)")
 
     local total = user + nice + system + idle + iowait + irq + softirq + steal
 

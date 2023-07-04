@@ -27,6 +27,7 @@
 -- - logout -- simplify and use font glyphs instead of icon set
 --
 -- TODO:
+-- - Add scratchpad support
 -- - Cleanup unused/redundant code
 -- - keybindings (remove unused, apply better keys, etc.. ???)
 -- - Use rofi scripts to save keybindings?
@@ -38,7 +39,7 @@
 -- Awesome libraries
 local gears = require("gears")
 local awful = require("awful")
-              require("awful.autofocus")
+local _ = require("awful.autofocus")
 local wibox = require("wibox")
 local beautiful = require("beautiful")
 local naughty = require("naughty")
@@ -49,30 +50,32 @@ local menubar = require("menubar")
 -- Check if awesome encountered an error during startup and fell back to
 -- another config (This code will only ever execute for the fallback config)
 if awesome.startup_errors then
-    naughty.notify {
-        preset = naughty.config.presets.critical,
-        title = "Oops, there were errors during startup!",
-        text = awesome.startup_errors
-    }
+  naughty.notify({
+    preset = naughty.config.presets.critical,
+    title = "Oops, there were errors during startup!",
+    text = awesome.startup_errors,
+  })
 end
 
 -- Handle runtime errors after startup
 do
-    local in_error = false
+  local in_error = false
 
-    awesome.connect_signal("debug::error", function (err)
-        if in_error then return end
+  awesome.connect_signal("debug::error", function(err)
+    if in_error then
+      return
+    end
 
-        in_error = true
+    in_error = true
 
-        naughty.notify {
-            preset = naughty.config.presets.critical,
-            title = "Oops, an error happened!",
-            text = tostring(err)
-        }
+    naughty.notify({
+      preset = naughty.config.presets.critical,
+      title = "Oops, an error happened!",
+      text = tostring(err),
+    })
 
-        in_error = false
-    end)
+    in_error = false
+  end)
 end
 
 --}}}
@@ -85,7 +88,7 @@ local vars = require("user.variables")
 -- as they might depend on the color theme
 beautiful.init(string.format("%s/.config/awesome/themes/%s/theme.lua", os.getenv("HOME"), vars.theme))
 
---}}} 
+--}}}
 -- {{{ User specific widgets
 
 local battery_widget = require("widget.battery")
@@ -116,32 +119,34 @@ menubar.utils.terminal = vars.terminal -- Set the terminal for applications that
 -- {{{ Wibar
 
 local taglist_buttons = gears.table.join(
-  awful.button({}, 1, function(t) t:view_only() end),
+  awful.button({}, 1, function(t)
+    t:view_only()
+  end),
   awful.button({}, 3, awful.tag.viewtoggle)
 )
 
 local function right_tri(cr, width, height, degree)
-    cr:move_to(18, 0)
-    cr:line_to(0, 25)
-    cr:line_to(18, 25)
-    cr:close_path()
+  cr:move_to(18, 0)
+  cr:line_to(0, 25)
+  cr:line_to(18, 25)
+  cr:close_path()
 end
 
 local function left_tri(cr, width, height, degree)
-    cr:line_to(0, 25)
-    cr:line_to(18, 0)
-    cr:line_to(0, 0)
-    cr:close_path()
+  cr:line_to(0, 25)
+  cr:line_to(18, 0)
+  cr:line_to(0, 0)
+  cr:close_path()
 end
 
 local function mysep(color, shape)
-    return wibox.widget {
-        shape        = shape,
-        color        = color,
-        border_width = 0,
-        forced_width = 18,
-        widget       = wibox.widget.separator,
-    }
+  return wibox.widget({
+    shape = shape,
+    color = color,
+    border_width = 0,
+    forced_width = 18,
+    widget = wibox.widget.separator,
+  })
 end
 
 -- Create a wibox for each screen and add it

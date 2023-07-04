@@ -94,7 +94,8 @@ end
 local state = { cid = nil }
 
 local function naughty_destroy_callback(reason)
-  if reason == naughty.notificationClosedReason.expired
+  if
+      reason == naughty.notificationClosedReason.expired
       or reason == naughty.notificationClosedReason.dismissedByUser
   then
     local action = state.index and state.menu[state.index - 1][2]
