@@ -30,6 +30,7 @@
 
 /* Nord */
 @define-color bg #353C4A;
+@define-color border #434c5e;
 @define-color light #eceff4;
 @define-color dark #2e3440;
 @define-color warning #ebcb8b;
@@ -52,27 +53,32 @@
 /* Reset all styles */
 * {
     border: none;
-    border-radius: 0;
-    min-height: 0;
-    margin: 0;
-    padding: 0;
+    border-radius: 10px;
+    font-family: NotoSans Nerd Font;
+    font-weight: bold;
+    font-size: 14px;
+    min-height: 10px;
 }
 
 /* The whole bar */
-#waybar {
-    background: @bg;
-    color: @light;
-    font-family: Noto Sans;
-    font-size: 11px;
-    font-weight: bold;
+window#waybar {
+    background: transparent;
 }
 
-/* Each module */
+tooltip {
+    background: @bg;
+    border-width: 2px;
+    border-style: solid;
+    border-color: @border;
+}
+
+/* Apply sensible defaults to each module */
 #battery,
 #clock,
 #cpu,
 #custom-layout,
 #memory,
+#disk,
 #mode,
 #network,
 #pulseaudio,
@@ -80,8 +86,9 @@
 #custom-alsa,
 #tray,
 #backlight {
-    padding-left: 10px;
-    padding-right: 10px;
+  background: @bg;
+  padding: 0px 10px;
+  margin-left: 10px;
 }
 
 /* Each module that should blink */
@@ -89,9 +96,9 @@
 #memory,
 #temperature,
 #battery {
-    animation-timing-function: linear;
-    animation-iteration-count: infinite;
-    animation-direction: alternate;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
 }
 
 /* Each critical module */
@@ -99,7 +106,7 @@
 #cpu.critical,
 #temperature.critical,
 #battery.critical {
-    color: @critical;
+  color: @critical;
 }
 
 /* Each critical that should blink */
@@ -107,8 +114,8 @@
 #memory.critical,
 #temperature.critical,
 #battery.critical.discharging {
-    animation-name: blink-critical;
-    animation-duration: 2s;
+  animation-name: blink-critical;
+  animation-duration: 2s;
 }
 
 /* Each warning */
@@ -117,13 +124,13 @@
 #cpu.warning,
 #temperature.warning,
 #battery.warning {
-    color: @warning;
+  color: @warning;
 }
 
 /* Each warning that should blink */
 #battery.warning.discharging {
-    animation-name: blink-warning;
-    animation-duration: 3s;
+  animation-name: blink-warning;
+  animation-duration: 3s;
 }
 
 /* And now modules themselves in their respective order */
@@ -135,10 +142,10 @@
 
 /* Workspaces stuff */
 
+#window,
 #workspaces {
-    margin-right: 10px;
+  margin: 0 5px;
 }
-
 
 #workspaces button {
 	font-weight: bold; /* Somewhy the bar-wide setting is ignored*/
@@ -148,8 +155,12 @@
 	background: @workspaces;
 }
 
+#workspaces button.active {
+  background: @layout;
+}
+
 #workspaces button.focused {
-    background: @workspacesfocused;
+  background: @workspacesfocused;
 }
 
 #workspaces button.urgent {
@@ -167,23 +178,27 @@
 }
 
 #network {
-    background: @network;
+  background: @network;
 }
 
 #memory {
-    background: @memory;
+  background: @memory;
+}
+
+#disk {
+  background: @memory;  /* TODO */
 }
 
 #cpu {
-    background: @cpu;
+  background: @cpu;
 }
 
 #temperature {
-    background: @temp;
+  background: @temp;
 }
 
 #custom-layout {
-    background: @layout;
+  background: @layout;
 }
 
 #battery {
@@ -195,19 +210,19 @@
 }
 
 #clock.date {
-    background: @date;
+  background: @date;
 }
 
 #clock.time {
-    background: @time;
+  background: @time;
 }
 
 #pulseaudio { /* Unsused but kept for those who needs it */
-    background: @sound;
+  background: @sound;
 }
 
 #pulseaudio.muted {
-    /* No styles */
+  /* No styles */
 }
 
 #tray {
