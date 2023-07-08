@@ -16,6 +16,9 @@
 @define-color nord14 #a3be8c;
 @define-color nord15 #b48ead;
 
+@define-color black   @nord0;
+@define-color grey    #7b88a1;
+@define-color white   @nord4;
 @define-color teal    @nord7;
 @define-color cyan    @nord8;
 @define-color blue    @nord9;

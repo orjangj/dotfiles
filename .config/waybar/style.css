@@ -11,22 +11,30 @@ window#waybar {
   background: transparent;
 }
 
-#workspaces {
+.modules-left,
+.modules-center,
+.modules-right {
   background-color: @bg0;
-  border-radius: 1rem;
   border: 2px solid @blue;
+  border-radius: 1rem;
 }
 
 #workspaces button {
-  color: @bg1;
+  color: @grey;
   border-radius: 1rem;
   box-shadow: inset 0 -3px transparent;
   transition: all 0.5s cubic-bezier(.55,-0.68,.48,1.68);
-  background-color: transparent;
 }
 
 #workspaces button.active {
   color: @cyan;
+  border-radius: 1rem;
+}
+
+/* Note: This will emulate the behavior of occupied + unfocused workspace,
+ * which waybar doesn't seem to have yet.*/
+#workspaces button.persistent {
+  color: @bg1;
   border-radius: 1rem;
 }
 
@@ -45,11 +53,9 @@ tooltip label {
     color: @text;
 }
 
+
 #clock {
-  background-color: @bg0;
-  color: @magenta;
-  border: 2px solid @magenta;
-  border-radius: 1rem;
+  color: @blue;
   padding-left: 15px;
   padding-right: 15px;
 }
@@ -62,46 +68,32 @@ tooltip label {
 #pulseaudio,
 #backlight,
 #battery {
-  background-color: @bg0;
   padding-left: 10px;
   padding-right: 10px;
-  border: 2px solid @blue;
 }
 
 #network {
-  border-radius: 1rem 0rem 0rem 1rem;
-  border-right-style: none;
   padding-left: 15px;
   color: @teal;
 }
 
 #cpu {
-  border-right-style: none;
-  border-left-style: none;
   color: @cyan;
 }
 
 #memory {
-  border-right-style: none;
-  border-left-style: none;
   color: @blue;
 }
 
 #disk {
-  border-right-style: none;
-  border-left-style: none;
   color: @orange;
 }
 
 #temperature {
-  border-right-style: none;
-  border-left-style: none;
   color: @magenta;
 }
 
 #pulseaudio {
-  border-right-style: none;
-  border-left-style: none;
   color: @cyan;
 }
 
@@ -110,16 +102,12 @@ tooltip label {
 }
 
 #backlight {
-  border-right-style: none;
-  border-left-style: none;
   color: @yellow;
 }
 
 #battery {
   color: @green;
   padding-right: 15px;
-  border-radius: 0rem 1rem 1rem 0rem;
-  border-left-style: none;
 }
 
 #battery.charging {
@@ -129,9 +117,3 @@ tooltip label {
 #battery.warning:not(.charging) {
   color: @red;
 }
-
-#tray {
-  background-color: @bg0;
-  border-radius: 1rem;
-}
-
