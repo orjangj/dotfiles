@@ -1,230 +1,137 @@
+@import "nord.css";
 
-@keyframes blink-warning {
-    70% {
-        color: @light;
-    }
-
-    to {
-        color: @light;
-        background-color: @warning;
-    }
-}
-
-@keyframes blink-critical {
-    70% {
-      color: @light;
-    }
-
-    to {
-        color: @light;
-        background-color: @critical;
-    }
-}
-
-
-/* -----------------------------------------------------------------------------
- * Styles
- * -------------------------------------------------------------------------- */
-
-/* COLORS */
-
-/* Nord */
-@define-color bg #353C4A;
-@define-color border #434c5e;
-@define-color light #eceff4;
-@define-color dark #2e3440;
-@define-color warning #ebcb8b;
-@define-color critical #d08770;
-@define-color mode #4c566a;
-@define-color workspaces @bg;
-@define-color workspacesfocused #434C5E;
-@define-color tray @workspacesfocused;
-@define-color sound #46536A;
-@define-color network #5D7096;
-@define-color memory #546484;
-@define-color cpu #596A8D;
-@define-color temp #4D5C78;
-@define-color layout #5e81ac;
-@define-color battery #88c0d0;
-@define-color date #2e3440;
-@define-color time #3A4253;
-@define-color backlight #3F495D;
-
-/* Reset all styles */
 * {
-    border: none;
-    border-radius: 10px;
-    font-family: NotoSans Nerd Font;
-    font-weight: bold;
-    font-size: 14px;
-    min-height: 10px;
+  font-family: NotoSans Nerd Font;
+  font-size: 14px;
+  font-weight: bold;
+  min-height: 0;
 }
 
-/* The whole bar */
 window#waybar {
-    background: transparent;
+  background: transparent;
 }
 
-tooltip {
-    background: @bg;
-    border-width: 2px;
-    border-style: solid;
-    border-color: @border;
-}
-
-/* Apply sensible defaults to each module */
-#battery,
-#clock,
-#cpu,
-#custom-layout,
-#memory,
-#disk,
-#mode,
-#network,
-#pulseaudio,
-#temperature,
-#custom-alsa,
-#tray,
-#backlight {
-  background: @bg;
-  padding: 0px 10px;
-  margin-left: 10px;
-}
-
-/* Each module that should blink */
-#mode,
-#memory,
-#temperature,
-#battery {
-  animation-timing-function: linear;
-  animation-iteration-count: infinite;
-  animation-direction: alternate;
-}
-
-/* Each critical module */
-#memory.critical,
-#cpu.critical,
-#temperature.critical,
-#battery.critical {
-  color: @critical;
-}
-
-/* Each critical that should blink */
-#mode,
-#memory.critical,
-#temperature.critical,
-#battery.critical.discharging {
-  animation-name: blink-critical;
-  animation-duration: 2s;
-}
-
-/* Each warning */
-#network.disconnected,
-#memory.warning,
-#cpu.warning,
-#temperature.warning,
-#battery.warning {
-  color: @warning;
-}
-
-/* Each warning that should blink */
-#battery.warning.discharging {
-  animation-name: blink-warning;
-  animation-duration: 3s;
-}
-
-/* And now modules themselves in their respective order */
-
-#mode { /* Shown current Sway mode (resize etc.) */
-	color: @light;
-	background: @mode;
-}
-
-/* Workspaces stuff */
-
-#window,
 #workspaces {
-  margin: 0 5px;
+  background-color: @bg0;
+  border-radius: 1rem;
+  border: 2px solid @blue;
 }
 
 #workspaces button {
-	font-weight: bold; /* Somewhy the bar-wide setting is ignored*/
-	padding-left: 5px;
-	padding-right: 5px;
-	color: @light;
-	background: @workspaces;
+  color: @bg1;
+  border-radius: 1rem;
+  box-shadow: inset 0 -3px transparent;
+  transition: all 0.5s cubic-bezier(.55,-0.68,.48,1.68);
+  background-color: transparent;
 }
 
 #workspaces button.active {
-  background: @layout;
+  color: @cyan;
+  border-radius: 1rem;
 }
 
-#workspaces button.focused {
-  background: @workspacesfocused;
+#workspaces button:hover {
+  color: @text;
+  border-radius: 1rem;
+  border: 2px solid @cyan;
 }
 
-#workspaces button.urgent {
-	border-color: #c9545d;
-	color: #c9545d;
+tooltip {
+    background: @bg0;
+    border: 2px solid @cyan;
 }
 
-#window {
-	margin-right: 40px;
-	margin-left: 40px;
+tooltip label {
+    color: @text;
 }
 
-#custom-alsa {
-	background: @sound;
+#clock {
+  background-color: @bg0;
+  color: @magenta;
+  border: 2px solid @magenta;
+  border-radius: 1rem;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+#network,
+#cpu,
+#memory,
+#disk,
+#temperature,
+#pulseaudio,
+#backlight,
+#battery {
+  background-color: @bg0;
+  padding-left: 10px;
+  padding-right: 10px;
+  border: 2px solid @blue;
 }
 
 #network {
-  background: @network;
-}
-
-#memory {
-  background: @memory;
-}
-
-#disk {
-  background: @memory;  /* TODO */
+  border-radius: 1rem 0rem 0rem 1rem;
+  border-right-style: none;
+  padding-left: 15px;
+  color: @teal;
 }
 
 #cpu {
-  background: @cpu;
+  border-right-style: none;
+  border-left-style: none;
+  color: @cyan;
+}
+
+#memory {
+  border-right-style: none;
+  border-left-style: none;
+  color: @blue;
+}
+
+#disk {
+  border-right-style: none;
+  border-left-style: none;
+  color: @orange;
 }
 
 #temperature {
-  background: @temp;
+  border-right-style: none;
+  border-left-style: none;
+  color: @magenta;
 }
 
-#custom-layout {
-  background: @layout;
-}
-
-#battery {
-    background: @battery;
-}
-
-#backlight {
-	background: @backlight;
-}
-
-#clock.date {
-  background: @date;
-}
-
-#clock.time {
-  background: @time;
-}
-
-#pulseaudio { /* Unsused but kept for those who needs it */
-  background: @sound;
+#pulseaudio {
+  border-right-style: none;
+  border-left-style: none;
+  color: @cyan;
 }
 
 #pulseaudio.muted {
-  /* No styles */
+    color: @red;
+}
+
+#backlight {
+  border-right-style: none;
+  border-left-style: none;
+  color: @yellow;
+}
+
+#battery {
+  color: @green;
+  padding-right: 15px;
+  border-radius: 0rem 1rem 1rem 0rem;
+  border-left-style: none;
+}
+
+#battery.charging {
+  color: @green;
+}
+
+#battery.warning:not(.charging) {
+  color: @red;
 }
 
 #tray {
-	background: @tray;
+  background-color: @bg0;
+  border-radius: 1rem;
 }
+
