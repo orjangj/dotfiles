@@ -26,6 +26,13 @@ window#waybar {
   transition: all 0.5s cubic-bezier(.55,-0.68,.48,1.68);
 }
 
+/* sway */
+#workspaces button.focused {
+  color: @cyan;
+  border-radius: 1rem;
+}
+
+/* wlr */
 #workspaces button.active {
   color: @cyan;
   border-radius: 1rem;

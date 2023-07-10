@@ -5,10 +5,30 @@
     "margin-left": 5,
     "margin-right": 5,
     "margin-top": 5,
-    "modules-left": ["wlr/workspaces"],
+    "modules-left": ["wlr/workspaces", "sway/workspaces"],
     "modules-center": ["clock"],
     "modules-right": ["network", "cpu", "memory", "disk", "temperature", "pulseaudio", "backlight", "battery"],
     "wlr/workspaces": {
+        "disable-scroll": true,
+        "format": "{icon}",
+        "format-icons": {
+            "1": "",
+            "2": "",
+            "3": "",
+            "4": "",
+            "5": "",
+            "6": ""
+        },
+        "persistent_workspaces": {
+            "1": [],
+            "2": [],
+            "3": [],
+            "4": [],
+            "5": [],
+            "6": []
+        }
+    },
+    "sway/workspaces": {
         "disable-scroll": true,
         "format": "{icon}",
         "format-icons": {
