@@ -6,6 +6,7 @@
 
 window {
   border-radius: 1rem;
+  border: 2px solid #4c566a;
   background: #2e3440;
   color: white;
   padding: 1rem;
