@@ -27,14 +27,14 @@
 -- - logout -- simplify and use font glyphs instead of icon set
 --
 -- TODO:
+-- - Learn XResources and what not
 -- - Add scratchpad support
 -- - Cleanup unused/redundant code
 -- - keybindings (remove unused, apply better keys, etc.. ???)
 -- - Use rofi scripts to save keybindings?
 -- - Automatic screen lock (see sway config for ideas)
 --   - Could use a gears.timer to check inactivity?
---   - Possible to use login manager?
---   - Currently using i3lock
+--   - Customize i3lock
 
 -- Awesome libraries
 local gears = require("gears")
@@ -309,6 +309,10 @@ client.connect_signal("manage", function(c)
     -- Prevent clients from being unreachable after screen count changes.
     awful.placement.no_offscreen(c)
   end
+
+  --c.shape = function(cr, w, h)
+  --  gears.shape.rounded_rect(cr, w, h, 8)
+  --end
 end)
 
 client.connect_signal("focus", function(c)
@@ -318,8 +322,7 @@ client.connect_signal("unfocus", function(c)
   c.border_color = beautiful.border_normal
 end)
 -- }}}
-
--- Autostart
+-- Autostart {{{
 local function run_once(cmd)
   local findme = cmd
   local firstspace = cmd:find(" ")
@@ -332,3 +335,4 @@ end
 awful.spawn.with_shell("xset r rate 200 40")
 awful.spawn.with_shell("feh --randomize --bg-fill " .. vars.wallpapers)
 run_once(vars.compositor)
+-- }}}

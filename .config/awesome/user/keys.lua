@@ -23,6 +23,9 @@ local globalkeys = gears.table.join(
   awful.key({ vars.modkey }, "Return", function()
     awful.spawn(vars.terminal)
   end, { description = "open a terminal", group = "launcher" }),
+  awful.key({ vars.modkey }, "e", function()
+    awful.spawn(vars.terminal .. " -e nvim")
+  end, { description = "open editor", group = "launcher" }),
   awful.key({ vars.modkey }, "b", function()
     awful.spawn(vars.browser)
   end, { description = "open a browser", group = "launcher" }),

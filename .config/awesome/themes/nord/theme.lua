@@ -40,7 +40,7 @@ theme.titlebar_bg_focus = "#3B4252"
 theme.titlebar_bg_normal = "#2E3440"
 
 theme.useless_gap = dpi(4)
-theme.border_width = dpi(1)
+theme.border_width = dpi(2)
 theme.wibox_spacing = dpi(8)
 
 -- There are other variable sets
