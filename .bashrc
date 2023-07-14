@@ -1,24 +1,63 @@
+# vim:ft=bash
+
 # ~/.bashrc: executed by bash(1) for non-login shells.
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
 
-# Non-interactive guard
+# If not running interactively, don't do anything
 case $- in
     *i*) ;;
       *) return;;
 esac
 
-### History configuration
-HISTCONTROL=ignoreboth:erasedups
-HISTSIZE=1000
-HISTFILESIZE=2000
-shopt -s histappend
+# General
+# -----------------------------------------------------------------------------
+
 shopt -s checkwinsize
+shopt -s histappend
+
+set -o noclobber
+
+if [[ -n $SSH_CONNECTION ]]; then
+    export VISUAL=vim
+elif type nvim &> /dev/null; then
+    export VISUAL=nvim
+else
+    export VISUAL=vim
+fi
+export EDITOR="$VISUAL"
+
+# Configure less:
+#   F: automatically exit if the entire file can be displayed in first screen.
+#   I: case-insensitive search.
+#   R: Show ANSI colors.
+#   S: Truncate long lines.
+#   X: Prevent clearing the screen when exiting.
+export LESS="FIRSX"
 
 # make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 
-### Prompt configuration
+# History
+# -----------------------------------------------------------------------------
+
+HISTCONTROL=ignoreboth:erasedups
+HISTSIZE=1024
+HISTFILESIZE=2048
+
+# Colors
+# -----------------------------------------------------------------------------
+
+# Enable color support for ls
+if [ -x /usr/bin/dircolors ]; then
+    test -r "$HOME"/.dircolors && eval "$(dircolors -b "$HOME"/.dircolors)" || eval "$(dircolors -b)"
+fi
+
+export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
+
+# Prompt
+# -----------------------------------------------------------------------------
+
 WORKDIR="\W"
 RESET="\[\033[0m"
 RED="\[\033[00;31m\]"
@@ -37,10 +76,6 @@ WHITE="\[\033[00;97m\]"
 WHITE_BOLD="\[\033[01;97m\]"
 
 export VIRTUAL_ENV_DISABLE_PROMPT=1
-
-#parse_git_branch() {
-#    git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
-#}
 
 git_prompt() {
     # Check if we're inside a git repository
@@ -103,29 +138,20 @@ PS1="${PS1}\n${GREEN_BOLD}└┄ ${RESET}"
 
 PS2="${YELLOW_BOLD}➜ ${RESET}"
 
-# Source aliases
+# Includes
+# -----------------------------------------------------------------------------
+
 if [ -f ~/.bash_aliases ]; then
     . ~/.bash_aliases
 fi
-# Any alias that is not part of source control.
-# This file should mostly include aliases that are relevant in the short term,
-# but not important for source control. Such as work/project related aliases.
-if [ -f ~/.bash_aliases_extras ]; then
-    . ~/.bash_aliases_extras
-fi
 
-# Source functions
 if [ -f ~/.bash_functions ]; then
     . ~/.bash_functions
 fi
-# Any function that is not part of source control.
-# This file should mostly include functions that are relevant in the short term,
-# but not important for source control. Such as work/project related functions.
-if [ -f ~/.bash_functions_extras ]; then
-    . ~/.bash_aliases_extras
-fi
 
-# Source programmable completion
+# Completion
+# -----------------------------------------------------------------------------
+
 if ! shopt -oq posix; then
   if [ -f /usr/share/bash-completion/bash_completion ]; then
     . /usr/share/bash-completion/bash_completion
@@ -134,7 +160,9 @@ if ! shopt -oq posix; then
   fi
 fi
 
-# Add paths
+# Path
+# -----------------------------------------------------------------------------
+
 path_prepend() {
     # Only adds path if it exists and isn't already included in PATH
     if [ -d "$1" ] && [[ ":$PATH:" != *":$1:"* ]]; then
@@ -153,9 +181,15 @@ path_prepend ~/node_modules/.bin
 path_prepend ~/.local/bin
 path_prepend ~/bin
 
-# Environment variables
-export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
-export SSL_CERT_DIR=/etc/ssl/certs
+# Various
+# -----------------------------------------------------------------------------
+
+#export SSL_CERT_DIR=/etc/ssl/certs
+
+# Integrations
+# -----------------------------------------------------------------------------
+
+export VAGRANT_DEFAULT_PROVIDER="libvirt"
 
 if type fzf &> /dev/null; then
   if type fd &> /dev/null; then
@@ -175,15 +209,6 @@ if type fzf &> /dev/null; then
   export FZF_ALT_C_OPTS="--select-1 --exit-0 --preview 'tree -C {} | head -200'"
 fi
 
-if type nvim &> /dev/null; then
-    export VISUAL=nvim
-else
-    export VISUAL=vim
-fi
-
-export EDITOR="$VISUAL"
-export VAGRANT_DEFAULT_PROVIDER="libvirt"
-
 if type nnn &> /dev/null; then
   export NNN_OPTS="HP"
   export NNN_FCOLORS="0B0B04060006060009060B06"
@@ -191,25 +216,3 @@ if type nnn &> /dev/null; then
   export NNN_PLUG="p:preview-tui;d:fzcd"
   export NNN_SPLIT="v"
 fi
-
-# NOTE: This is really slow if printing GPU information on my current machine
-#if type neofetch &> /dev/null; then
-#    neofetch
-#fi
-
-#export PYENV_ROOT="$HOME/.pyenv"
-#
-#if [ -d "$PYENV_ROOT" ]; then
-#    path_prepend "$PYENV_ROOT/bin"
-#    if [ -n "$(type -t pyenv)" ] && [ "$(type -t pyenv)" = function ]; then
-#        #    echo "pyenv is already initialized"
-#        true
-#    else
-#        if type pyenv &> /dev/null; then
-#            eval "$(pyenv init --path)"
-#            eval "$(pyenv init -)"
-#            eval "$(pyenv virtualenv-init -)"
-#        fi
-#    fi
-#fi
-
