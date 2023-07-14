@@ -17,10 +17,9 @@ return {
 
     local mappings = {
       ["1"] = { "<cmd>ToggleTerm direction=float<cr>", "Terminal (float)" },
-      ["2"] = { "<cmd>ToggleTerm size=80 direction=vertical<cr>", "Terminal (vertical)" },
-      ["3"] = { "<cmd>lua _LAZYGIT_TOGGLE()<cr>", "Lazygit" },
-      ["4"] = { "<cmd>lua _PYTHON_TOGGLE()<cr>", "Python" },
-      ["5"] = { "<cmd>lua _HTOP_TOGGLE()<cr>", "Htop" },
+      ["2"] = { "<cmd>ToggleTerm size=90 direction=vertical<cr>", "Terminal (vertical)" },
+      ["3"] = { "<cmd>lua _PYTHON_TOGGLE()<cr>", "Python" },
+      ["4"] = { "<cmd>lua _HTOP_TOGGLE()<cr>", "Htop" },
       ["a"] = { "<cmd>Alpha<cr>", "Alpha" },
       ["c"] = { "<cmd>Bdelete!<cr>", "Close Buffer" },
       ["e"] = { "<cmd>NvimTreeToggle<cr>", "Explorer" },
@@ -41,7 +40,7 @@ return {
         b = { "<cmd>Telescope git_branches<cr>", "Checkout branch" },
         c = { "<cmd>Telescope git_commits<cr>", "Checkout commit" },
         d = { "<cmd>Gitsigns diffthis HEAD<cr>", "Diff" },
-        g = { "<cmd>Neogit<cr>", "Neogit" },
+        g = { "<cmd>LazyGit<cr>", "LazyGit" },
         j = { "<cmd>lua require 'gitsigns'.next_hunk()<cr>", "Next Hunk" },
         k = { "<cmd>lua require 'gitsigns'.prev_hunk()<cr>", "Prev Hunk" },
         l = { "<cmd>lua require 'gitsigns'.blame_line()<cr>", "Blame Line" },

@@ -41,7 +41,6 @@ return {
 
     local htop = Terminal:new({ cmd = "htop", hidden = true })
     local python = Terminal:new({ cmd = "python", hidden = true })
-    local lazygit = Terminal:new({ cmd = "lazygit", hidden = true })
 
     function _HTOP_TOGGLE()
       htop:toggle()
@@ -49,10 +48,6 @@ return {
 
     function _PYTHON_TOGGLE()
       python:toggle()
-    end
-
-    function _LAZYGIT_TOGGLE()
-      lazygit:toggle()
     end
   end,
 }
