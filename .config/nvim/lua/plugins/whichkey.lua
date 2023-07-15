@@ -19,7 +19,6 @@ return {
       ["1"] = { "<cmd>ToggleTerm direction=float<cr>", "Terminal (float)" },
       ["2"] = { "<cmd>ToggleTerm size=90 direction=vertical<cr>", "Terminal (vertical)" },
       ["3"] = { "<cmd>lua _PYTHON_TOGGLE()<cr>", "Python" },
-      ["4"] = { "<cmd>lua _HTOP_TOGGLE()<cr>", "Htop" },
       ["a"] = { "<cmd>Alpha<cr>", "Alpha" },
       ["c"] = { "<cmd>Bdelete!<cr>", "Close Buffer" },
       ["e"] = { "<cmd>NvimTreeToggle<cr>", "Explorer" },

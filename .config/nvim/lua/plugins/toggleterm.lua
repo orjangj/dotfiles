@@ -39,12 +39,7 @@ return {
 
     local Terminal = require("toggleterm.terminal").Terminal
 
-    local htop = Terminal:new({ cmd = "htop", hidden = true })
     local python = Terminal:new({ cmd = "python", hidden = true })
-
-    function _HTOP_TOGGLE()
-      htop:toggle()
-    end
 
     function _PYTHON_TOGGLE()
       python:toggle()
