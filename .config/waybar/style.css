@@ -16,7 +16,7 @@ window#waybar {
 .modules-right {
   background-color: @bg0;
   border: 2px solid @blue;
-  border-radius: 1rem;
+  border-radius: 10px;
 }
 
 #workspaces button {
