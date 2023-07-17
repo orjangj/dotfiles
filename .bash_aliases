@@ -24,6 +24,10 @@ alias repos='cd ~/projects/git'
 # xterm-alacritty are not available
 alias ssh="TERM=xterm-256color $(which ssh)"
 
+if type pyserial-miniterm &> /dev/null; then
+  alias miniterm='pyserial-miniterm'
+fi
+
 # Nice to have aliases
 alias open=xdg-open
 alias resource='. ~/.bash_profile'
