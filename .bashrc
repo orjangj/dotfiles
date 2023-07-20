@@ -202,6 +202,8 @@ if type fzf &> /dev/null; then
 
   if [ -f /usr/share/fzf/shell/key-bindings.bash ]; then
     . /usr/share/fzf/shell/key-bindings.bash
+  elif [ -f /usr/share/fzf/key-bindings.bash ]; then
+    . /usr/share/fzf/key-bindings.bash
   fi
 
   export FZF_CTRL_T_OPTS="--select-1 --exit-0 --preview '(bat {} || tree -C {}) 2> /dev/null | head -200'"
