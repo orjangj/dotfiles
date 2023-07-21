@@ -114,6 +114,7 @@ tooltip label {
 
 #battery {
   color: @green;
+  border-radius: 7px;
   padding-right: 15px;
 }
 
@@ -124,3 +125,24 @@ tooltip label {
 #battery.warning:not(.charging) {
   color: @red;
 }
+
+@keyframes blink-critical {
+    50% {
+      color: @bg0;
+    }
+
+    to {
+      color: @bg0;
+      background-color: @red;
+    }
+}
+
+#battery.critical:not(.charging) {
+  color: @red;
+  animation-name: blink-critical;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+  animation-duration: 2s;
+}
+
