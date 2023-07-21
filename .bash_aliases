@@ -28,6 +28,10 @@ if type pyserial-miniterm &> /dev/null; then
   alias miniterm='pyserial-miniterm'
 fi
 
+if type bat &> /dev/null; then
+  alias cat='bat --plain'
+fi
+
 # Nice to have aliases
 alias open=xdg-open
 alias resource='. ~/.bash_profile'
