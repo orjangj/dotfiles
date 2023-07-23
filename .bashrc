@@ -177,9 +177,10 @@ path_append() {
     fi
 }
 
-path_prepend ~/node_modules/.bin
 path_prepend ~/.local/bin
 path_prepend ~/bin
+path_prepend ~/go/bin
+path_prepend ~/node_modules/.bin
 
 # Various
 # -----------------------------------------------------------------------------
