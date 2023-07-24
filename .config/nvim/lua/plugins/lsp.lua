@@ -48,7 +48,7 @@ return {
     local servers = {
       clangd = {},
       cmake = {},
-      --ltex = {},
+      ansiblels = {},
       lua_ls = {
         Lua = {
           diagnostics = {
@@ -74,8 +74,17 @@ return {
     lsp.setup()
 
     vim.diagnostic.config({ virtual_text = true })
-    require('lspconfig.ui.windows').default_options.border = 'rounded' -- TODO other ways to do this?
+    require("lspconfig.ui.windows").default_options.border = "rounded" -- TODO other ways to do this?
 
+    -- nvim-cmp setup
+    local cmp = require("cmp")
+    cmp.setup({
+      mapping = {
+        ["<CR>"] = cmp.mapping.confirm({ select = false }),
+      },
+    })
+
+    -- null-ls setup
     local null_ls = require("null-ls")
     local null_opts = lsp.build_options("null-ls", {})
     local formatting = null_ls.builtins.formatting
