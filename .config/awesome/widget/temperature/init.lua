@@ -8,15 +8,8 @@ local function worker()
   local timeout = 15
 
   temperature = wibox.widget({
-    {
-      {
-        id = "text",
-        widget = wibox.widget.textbox,
-      },
-      layout = wibox.container.margin,
-    },
-    bg = beautiful.bg_critical,
-    widget = wibox.container.background,
+    id = "text",
+    widget = wibox.widget.textbox,
   })
 
   watch("bash -c 'sensors'", timeout, function(widget, stdout)

@@ -8,15 +8,8 @@ local function worker()
   local timeout = 300
 
   storage = wibox.widget({
-    {
-      {
-        id = "text",
-        widget = wibox.widget.textbox,
-      },
-      layout = wibox.container.margin,
-    },
-    bg = beautiful.bg_critical,
-    widget = wibox.container.background,
+    id = "text",
+    widget = wibox.widget.textbox,
   })
 
   watch([[bash -c "df | tail -n +2"]], timeout, function(widget, stdout)

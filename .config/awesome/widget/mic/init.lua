@@ -32,15 +32,8 @@ local function worker()
   local device = "default"
 
   mic.widget = wibox.widget({
-    {
-      {
-        id = "text",
-        widget = wibox.widget.textbox,
-      },
-      layout = wibox.container.margin,
-    },
-    bg = beautiful.bg_critical,
-    widget = wibox.container.background,
+    id = "text",
+    widget = wibox.widget.textbox,
   })
 
   _, mic.watcher = watch(GET_MIC_CMD(device), timeout, function(widget, stdout)

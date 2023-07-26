@@ -10,15 +10,8 @@ local function worker()
   local timeout = 2
 
   ram = wibox.widget({
-    {
-      {
-        id = "text",
-        widget = wibox.widget.textbox,
-      },
-      layout = wibox.container.margin,
-    },
-    bg = beautiful.bg_critical,
-    widget = wibox.container.background,
+    id = "text",
+    widget = wibox.widget.textbox,
   })
 
   --- Widget which is shown when user clicks on the ram widget

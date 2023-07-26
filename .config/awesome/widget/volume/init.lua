@@ -33,15 +33,8 @@ local function worker()
   local device = "default"
 
   volume.widget = wibox.widget({
-    {
-      {
-        id = "text",
-        widget = wibox.widget.textbox,
-      },
-      layout = wibox.container.margin,
-    },
-    bg = beautiful.bg_critical,
-    widget = wibox.container.background,
+    id = "text",
+    widget = wibox.widget.textbox,
   })
 
   _, volume.watcher = watch(GET_VOLUME_CMD(device), timeout, function(widget, stdout)

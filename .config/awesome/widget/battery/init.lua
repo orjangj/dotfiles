@@ -10,16 +10,12 @@ local function worker()
   local timeout = 10
   local last_battery_check = os.time()
 
+  local plugged = ""
+  local discharging = { "", "", "", "", "", "", "", "", "", "", "" }
+
   battery = wibox.widget({
-    {
-      {
-        id = "text",
-        widget = wibox.widget.textbox,
-      },
-      layout = wibox.container.margin,
-    },
-    bg = beautiful.bg_critical,
-    widget = wibox.container.background,
+    id = "text",
+    widget = wibox.widget.textbox,
   })
 
   local function warning_notification(text)
@@ -72,20 +68,21 @@ local function worker()
     charge = charge / capacity
 
     local icon, highlight
+
     if status == "Charging" then
-      icon = ""
+      icon = plugged
       highlight = beautiful.fg_normal
     else
-      if charge < 7 then
-        icon = ""
+      icon = discharging[math.floor(charge / 10)]
+
+      if charge < 15 then
         highlight = beautiful.fg_critical
         local difftime = os.difftime(os.time(), last_battery_check)
         if difftime > 3 * timeout then
-          -- TODO: Consider entering hibernate/suspend
           warning_notification("Connect battery to charger!")
           last_battery_check = os.time()
         end
-      elseif charge < 15 then
+      elseif charge < 25 then
         icon = ""
         highlight = beautiful.fg_urgent
         local difftime = os.difftime(os.time(), last_battery_check)
@@ -93,17 +90,7 @@ local function worker()
           warning_notification("Connect battery to charger!")
           last_battery_check = os.time()
         end
-      elseif charge < 37 then
-        icon = ""
-        highlight = beautiful.fg_focus
-      elseif charge < 62 then
-        icon = ""
-        highlight = beautiful.fg_normal
-      elseif charge < 87 then
-        icon = ""
-        highlight = beautiful.fg_normal
       else
-        icon = ""
         highlight = beautiful.fg_normal
       end
     end

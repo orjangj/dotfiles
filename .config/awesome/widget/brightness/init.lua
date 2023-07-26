@@ -23,15 +23,8 @@ local function worker()
   local step = 5
 
   brightness.widget = wibox.widget({
-    {
-      {
-        id = "text",
-        widget = wibox.widget.textbox,
-      },
-      layout = wibox.container.margin,
-    },
-    bg = beautiful.bg_critical,
-    widget = wibox.container.background,
+    id = "text",
+    widget = wibox.widget.textbox,
   })
 
   _, brightness.watcher = watch("bash -c 'brightnessctl max; brightnessctl get'", timeout, function(widget, stdout)
