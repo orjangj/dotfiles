@@ -85,7 +85,6 @@ local configs = gears.filesystem.get_configuration_dir()
 local shell = os.getenv("SHELL") or "bash"
 local terminal = "kitty"
 local browser = "firefox"
-local compositor = "picom -b"
 local editor = terminal .. " -- " .. shell .. " -i -c \"nvim\""
 local file_manager = terminal .. " --title custom-file-manager -- " .. shell .. " -i -c \"nnn -P 'p'\""
 local modkey = "Mod4"
@@ -460,6 +459,6 @@ end
 
 awful.spawn.with_shell("xset r rate 200 40")
 awful.spawn.with_shell("feh --randomize --bg-fill " .. wallpapers)
-run_once(compositor)
+run_once("picom -b")
 
 -- }}}

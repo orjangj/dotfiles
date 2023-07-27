@@ -1,8 +1,8 @@
 #!/bin/bash
 
-entries=" Lock\n⇠ Logout\n⏾ Suspend\n⭮ Reboot\n⏻ Shutdown"
+entries="  Lock\n⇠  Logout\n⏾  Suspend\n  Reboot\n⏻  Shutdown"
 
-selected=$(echo -e $entries | rofi -p "Power Menu" -dmenu -i | awk '{print tolower($2)}')
+selected=$(echo -e $entries | rofi -p "Power Menu" -dmenu -i -no-fixed-num-lines -no-show-icons | awk '{print tolower($2)}')
 
 case $selected in
   lock)

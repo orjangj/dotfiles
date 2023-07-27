@@ -83,7 +83,6 @@ local function worker()
           last_battery_check = os.time()
         end
       elseif charge < 25 then
-        icon = ""
         highlight = beautiful.fg_urgent
         local difftime = os.difftime(os.time(), last_battery_check)
         if difftime > 6 * timeout then
