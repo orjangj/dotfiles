@@ -6,6 +6,5 @@ return {
   ram = require("widgets.ram"),
   storage = require("widgets.storage"),
   temperature = require("widgets.temperature"),
-  volume = require("widgets.volume"),
   wifi = require("widgets.wifi"),
 }
