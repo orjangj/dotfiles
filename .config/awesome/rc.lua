@@ -12,19 +12,16 @@
 -- FIX:
 -- - Battery
 --   - Calculate rate statistics (i.e. linear extrapolation), and display on hover
--- - Volume
---   -- Change symbol based on output source (i.e. headset vs speaker)
---     -- Look into using "pactl subscribe" to listen for events on headset connect/disconnect
 -- - Wifi
 --   - on hover, show the network name (SSID), BSSID, rate and security protocol
 --   - on click, add options to connect to network
--- - calendar -- simplify and use beatiful theme -- move to middle or left of wibar? if left, then maybe tags should be middle
 --
 -- TODO
 -- Make rofi look like wofi config
 -- MasterStack layout - How to make master size a bit larger by default? Say 60 vs 40 %
 -- Check lain/vicious for ideas on widget implementation
 -- Implement wallpaper setter instead of relying on feh
+-- Mic and volume widgets do not display on startup
 
 -- Awesome libraries
 local gears = require("gears")
@@ -179,8 +176,7 @@ awful.screen.connect_for_each_screen(function(s)
             widgets.ram(),
             widgets.storage(),
             widgets.brightness(),
-            widgets.volume(),
-            widgets.microphone(),
+            widgets.pulse(),
             widgets.battery(),
             dummy_widget,
           },
@@ -275,12 +271,12 @@ local globalkeys = gears.table.join(
   awful.key({ modkey, "Shift"   }, "space", function() awful.layout.inc(-1) end, { description = "select previous", group = "layout" }),
 
   -- Hidden/Ungrouped (laptop) keys
-  awful.key({        }, "XF86AudioRaiseVolume", function() widgets.volume:inc(5) end),
-  awful.key({        }, "XF86AudioLowerVolume", function() widgets.volume:dec(5) end),
-  awful.key({        }, "XF86AudioMute", function() widgets.volume:toggle() end),
-  awful.key({ modkey }, "XF86AudioRaiseVolume", function() widgets.microphone:inc(5) end),
-  awful.key({ modkey }, "XF86AudioLowerVolume", function() widgets.microphone:dec(5) end),
-  awful.key({        }, "XF86AudioMicMute", function() widgets.microphone:toggle() end),
+  awful.key({        }, "XF86AudioRaiseVolume", function() widgets.pulse:volume_increase("sink", 5) end),
+  awful.key({        }, "XF86AudioLowerVolume", function() widgets.pulse:volume_decrease("sink", 5) end),
+  awful.key({        }, "XF86AudioMute", function() widgets.pulse:volume_toggle("sink") end),
+  awful.key({ modkey }, "XF86AudioRaiseVolume", function() widgets.pulse:volume_increase("source", 5) end),
+  awful.key({ modkey }, "XF86AudioLowerVolume", function() widgets.pulse:volume_decrease("source", 5) end),
+  awful.key({        }, "XF86AudioMicMute", function() widgets.pulse:volume_toggle("source") end),
   awful.key({        }, "XF86MonBrightnessDown", function() widgets.brightness:dec(5) end),
   awful.key({        }, "XF86MonBrightnessUp", function() widgets.brightness:inc(5) end)
 )

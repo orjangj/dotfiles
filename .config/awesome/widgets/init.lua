@@ -2,7 +2,7 @@ return {
   battery = require("widgets.battery"),
   brightness = require("widgets.brightness"),
   cpu = require("widgets.cpu"),
-  microphone = require("widgets.microphone"),
+  pulse = require("widgets.pulse"),
   ram = require("widgets.ram"),
   storage = require("widgets.storage"),
   temperature = require("widgets.temperature"),
