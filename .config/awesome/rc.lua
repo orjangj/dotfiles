@@ -18,10 +18,6 @@
 --
 -- TODO
 -- Make rofi look like wofi config
--- MasterStack layout - How to make master size a bit larger by default? Say 60 vs 40 %
--- Check lain/vicious for ideas on widget implementation
--- Implement wallpaper setter instead of relying on feh
--- Mic and volume widgets do not display on startup
 
 -- Awesome libraries
 local gears = require("gears")
@@ -34,6 +30,7 @@ local naughty = require("naughty")
 local menubar = require("menubar")
 local hotkeys_popup = require("awful.hotkeys_popup")
 local xrandr = require("module.xrandr")
+local wp = require("module.wallpaper")
 
 -- Global variables (exposed by Awesome itself)
 local awesome = awesome
@@ -130,6 +127,9 @@ local dummy_widget = wibox.widget({ text = "", widget = wibox.widget.textbox })
 
 -- Create a wibox for each screen and add it
 awful.screen.connect_for_each_screen(function(s)
+  -- Set wallpaper for each screen
+  gears.wallpaper.maximized(wp.random(wallpapers), s, true)
+
   -- Each screen has its own tag table.
   awful.tag(tags.glyphs, s, awful.layout.layouts[1])
 
@@ -227,6 +227,11 @@ local globalkeys = gears.table.join(
     local statusbar = awful.screen.focused().mywibox
     statusbar.visible = not statusbar.visible
   end, { description = "Toggle statusbar", group = "awesome"}),
+  awful.key({ modkey            }, "w", function()
+    awful.screen.connect_for_each_screen(function(s)
+      gears.wallpaper.maximized(wp.random(wallpapers), s, true)
+    end)
+  end, { description = "Change wallpaper", group = "awesome"}),
 
   -- Group "launcher"
   awful.key({ modkey            }, "Return", function() awful.spawn(terminal) end, { description = "Open terminal", group = "launcher" }),
@@ -454,7 +459,6 @@ local function run_once(cmd)
 end
 
 awful.spawn.with_shell("xset r rate 200 40")
-awful.spawn.with_shell("feh --randomize --bg-fill " .. wallpapers)
 run_once("picom -b")
 
 -- }}}
