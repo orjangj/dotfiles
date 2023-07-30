@@ -9,16 +9,6 @@
 
 --]]
 
--- FIX:
--- - Battery
---   - Calculate rate statistics (i.e. linear extrapolation), and display on hover
--- - Wifi
---   - on hover, show the network name (SSID), BSSID, rate and security protocol
---   - on click, add options to connect to network
---
--- TODO
--- Make rofi look like wofi config
-
 -- Awesome libraries
 local gears = require("gears")
 local awful = require("awful")
@@ -29,6 +19,8 @@ local dpi = require("beautiful.xresources").apply_dpi
 local naughty = require("naughty")
 local menubar = require("menubar")
 local hotkeys_popup = require("awful.hotkeys_popup")
+
+-- Custom modules
 local xrandr = require("module.xrandr")
 local wp = require("module.wallpaper")
 

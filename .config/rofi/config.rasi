@@ -1,16 +1,11 @@
 configuration {
     font: "NotoSans Nerd Font 14";
-    width: 30;
-    line-margin: 10;
-    lines: 6;
-    columns: 2;
 
-    display-ssh:    " ";
-    display-run:    " ";
-    display-drun:   " ";
-    display-window: " ";
-    display-combi:  " ";
-    show-icons:     true;
+    display-ssh:    " ";
+    display-run:    " ";
+    display-drun:   " ";
+    display-window: " ";
+    display-combi:  " ";
 }
 
 @theme "~/.config/rofi/nord.rasi"
