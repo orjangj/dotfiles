@@ -48,21 +48,22 @@ local function worker()
 
     total_used = used + used_swap
     total_free = free + free_swap
-    local free_percentage = getPercentage(total_free)
+    local used_percentage = getPercentage(total_used)
 
     local highlight
-    if free_percentage < 20 then
+    if used_percentage > 80 then
       highlight = beautiful.fg_critical
-    elseif free_percentage < 40 then
+    elseif used_percentage > 60 then
       highlight = beautiful.fg_urgent
-    elseif free_percentage < 60 then
+    elseif used_percentage > 40 then
       highlight = beautiful.fg_focus
     else
       highlight = beautiful.fg_normal
     end
 
-    widget:get_children_by_id("text")[1]:set_text(string.format(" %d%%", free_percentage))
-    widget:set_fg(highlight)
+    widget
+      :get_children_by_id("text")[1]
+      :set_markup_silently(("<span foreground='%s'> %d%%</span>"):format(highlight, used_percentage))
 
     if popup.visible then
       popup:get_widget().data_list = {

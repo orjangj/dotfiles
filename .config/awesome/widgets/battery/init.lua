@@ -26,8 +26,11 @@ local function worker()
       timeout = timeout,
       hover_timeout = 0.5,
       position = "top_right",
-      bg = beautiful.red, -- Note: Make the background stand out
-      fg = beautiful.fg_normal,
+      bg = beautiful.bg_normal, -- Note: Make the background stand out
+      fg = beautiful.fg_urgent,
+      border_color = beautiful.fg_urgent,
+      border_width = 2,
+      margin = 10,
       width = 300,
       screen = mouse.screen,
     })
@@ -73,17 +76,17 @@ local function worker()
       icon = plugged
       highlight = beautiful.fg_normal
     else
-      icon = discharging[math.floor(charge / 10)]
+      icon = discharging[math.floor(charge / 10) + 1]
 
       if charge < 15 then
-        highlight = beautiful.fg_critical
+        highlight = beautiful.fg_urgent
         local difftime = os.difftime(os.time(), last_battery_check)
         if difftime > 3 * timeout then
           warning_notification("Connect battery to charger!")
           last_battery_check = os.time()
         end
       elseif charge < 25 then
-        highlight = beautiful.fg_urgent
+        highlight = beautiful.fg_focus
         local difftime = os.difftime(os.time(), last_battery_check)
         if difftime > 6 * timeout then
           warning_notification("Connect battery to charger!")
@@ -94,8 +97,9 @@ local function worker()
       end
     end
 
-    widget:get_children_by_id("text")[1]:set_text(("%s %d%%"):format(icon, charge))
-    widget:set_fg(highlight)
+    widget
+      :get_children_by_id("text")[1]
+      :set_markup_silently(("<span foreground='%s'>%s %d%%</span>"):format(highlight, icon, charge))
   end, battery)
 
   return battery

@@ -51,8 +51,9 @@ local function worker()
       highlight = beautiful.fg_critical
     end
 
-    widget:get_children_by_id("text")[1]:set_text((" %d%%"):format(wifi.signal))
-    widget:set_fg(highlight)
+    widget
+      :get_children_by_id("text")[1]
+      :set_markup_silently(("<span foreground='%s'> %d%%</span>"):format(highlight, wifi.signal))
   end, wifi)
 
   return wifi

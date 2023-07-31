@@ -2,8 +2,6 @@ local beautiful = require("beautiful")
 local watch = require("awful.widget.watch")
 local wibox = require("wibox")
 
-local CPU_CMD = [[grep --max-count=1 '^cpu.' /proc/stat]]
-
 local cpu = {}
 
 -- TODO: Dropdown list with action buttons?
@@ -17,7 +15,7 @@ local function worker()
   })
 
   local maincpu = {}
-  watch(CPU_CMD, timeout, function(widget, stdout)
+  watch("grep --max-count=1 '^cpu.' /proc/stat", timeout, function(widget, stdout)
     local _, user, nice, system, idle, iowait, irq, softirq, steal, _, _ =
       stdout:match("(%w+)%s+(%d+)%s(%d+)%s(%d+)%s(%d+)%s(%d+)%s(%d+)%s(%d+)%s(%d+)%s(%d+)%s(%d+)")
 
@@ -40,8 +38,11 @@ local function worker()
     else
       highlight = beautiful.fg_normal
     end
-    widget:get_children_by_id("text")[1]:set_text(" " .. math.floor(diff_usage) .. "%")
-    widget:set_fg(highlight)
+    widget
+      :get_children_by_id("text")[1]
+      :set_markup_silently(
+        ("<span foreground='%s'> %d%%</span>"):format(highlight, math.floor(diff_usage))
+      )
   end, cpu)
 
   return cpu

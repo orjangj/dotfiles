@@ -31,8 +31,9 @@ local function worker()
       highlight = beautiful.fg_critical
     end
 
-    widget:get_children_by_id("text")[1]:set_text(("%s %d°C"):format(icon, cpu_temp))
-    widget:set_fg(highlight)
+    widget
+      :get_children_by_id("text")[1]
+      :set_markup_silently(("<span foreground='%s'>%s %d°C</span>"):format(highlight, icon, cpu_temp))
   end, temperature)
 
   return temperature

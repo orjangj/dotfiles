@@ -36,8 +36,9 @@ local function worker()
       highlight = beautiful.fg_normal
     end
 
-    widget:get_children_by_id("text")[1]:set_text((" %d%%"):format(used_percentage))
-    widget:set_fg(highlight)
+    widget
+      :get_children_by_id("text")[1]
+      :set_markup_silently(("<span foreground='%s'> %d%%</span>"):format(highlight, used_percentage))
   end, storage)
 
   return storage

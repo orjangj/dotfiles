@@ -42,9 +42,9 @@ local function worker()
       icon = ""
       highlight = beautiful.fg_normal
     end
-
-    widget:get_children_by_id("text")[1]:set_text(string.format("%s %d%%", icon, percentage))
-    widget:set_fg(highlight)
+    widget
+      :get_children_by_id("text")[1]
+      :set_markup_silently(("<span foreground='%s'>%s %d%%</span>"):format(highlight, icon, percentage))
   end, brightness.widget)
 
   function brightness:set(value)

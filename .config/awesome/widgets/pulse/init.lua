@@ -2,19 +2,13 @@ local beautiful = require("beautiful")
 local spawn = require("awful.spawn")
 local watch = require("awful.widget.watch")
 local wibox = require("wibox")
-local naughty = require("naughty")
-
-local json = require("widgets.pulse.json")
-
--- TODO: On session login, the volume displays ?%... is this becuase the pulseaudio server is not initialized?
--- Check if there are errors in async callback
 
 local pulse = {}
 
 local function worker()
-  local timeout = 5 -- default worker period
+  local timeout = 20 -- default worker period
   local step = 5 -- default volume step increment
-  local info
+  local info = {}
   local icons = {
     sink = {
       default = "",
@@ -41,51 +35,62 @@ local function worker()
     spacing = 10,
   })
 
+  -- Parse sinks or sources output
   local function parse(raw, name)
-    local j = json.parse(raw)
     local volume, muted = "", false
-
-    for _, item in pairs(j) do
-      if item.name == name then
-        volume = item.volume["front-left"]["value_percent"]
-        muted = item.mute
+    for str in string.gmatch(raw .. "\n\n", "(.-)\n\n") do
+      local n = string.match(str, ".*Name: (.-)\n")
+      if n == name then
+        volume = string.match(str, ".*Volume: front%-left:.-/%s+(.-)%s+/")
+        muted = string.match(str, ".*Mute: (.-)\n")
       end
     end
-    return volume, muted
+    return volume, muted == "yes"
   end
 
-  _, pulse.watcher = watch("pactl -f json info", timeout, function(widget, info_stdout)
-    info = json.parse(info_stdout)
+  _, pulse.watcher = watch("pactl info", timeout, function(widget, info_stdout)
+    info.default_sink_name = string.match(info_stdout, "Default Sink: (.-)\n")
+    info.default_source_name = string.match(info_stdout, "Default Source: (.-)\n")
 
-    spawn.easy_async("pactl -f json list sinks", function(sinks_stdout)
+    spawn.easy_async("pactl list sinks", function(sinks_stdout)
       local volume, muted = parse(sinks_stdout, info.default_sink_name)
       local icon = muted and icons.sink.muted
         or string.find(info.default_sink_name, "bluez") and icons.sink.headphone
         or icons.sink.default
-      widget:get_children_by_id("sink")[1]:set_text(("%s %s"):format(icon, volume))
+      widget
+        :get_children_by_id("sink")[1]
+        :set_markup_silently(("<span foreground='%s'>%s %s</span>"):format(muted and beautiful.red or beautiful.fg_normal, icon, volume))
     end)
 
-    spawn.easy_async("pactl -f json list sources", function(sources_stdout)
+    spawn.easy_async("pactl list sources", function(sources_stdout)
       local volume, muted = parse(sources_stdout, info.default_source_name)
       local icon = muted and icons.source.muted or icons.source.default
-      widget:get_children_by_id("source")[1]:set_text(("%s %s"):format(icon, volume))
+      widget
+        :get_children_by_id("source")[1]
+        :set_markup_silently(("<span foreground='%s'>%s %s</span>"):format(muted and beautiful.red or beautiful.fg_normal, icon, volume))
     end)
   end, pulse.widget)
 
   function pulse:volume_increase(channel, amount)
     amount = amount or step
     channel = channel or "sink"
-    spawn.easy_async("pactl set-" .. channel .. "-volume @DEFAULT_" .. string.upper(channel) .. "@ +" .. amount .. "%", function()
-      pulse.watcher:emit_signal("timeout")
-    end)
+    spawn.easy_async(
+      "pactl set-" .. channel .. "-volume @DEFAULT_" .. string.upper(channel) .. "@ +" .. amount .. "%",
+      function()
+        pulse.watcher:emit_signal("timeout")
+      end
+    )
   end
 
   function pulse:volume_decrease(channel, amount)
     amount = amount or step
     channel = channel or "sink"
-    spawn.easy_async("pactl set-" .. channel .. "-volume @DEFAULT_" .. string.upper(channel) .. "@ -" .. amount .. "%", function()
-      pulse.watcher:emit_signal("timeout")
-    end)
+    spawn.easy_async(
+      "pactl set-" .. channel .. "-volume @DEFAULT_" .. string.upper(channel) .. "@ -" .. amount .. "%",
+      function()
+        pulse.watcher:emit_signal("timeout")
+      end
+    )
   end
 
   function pulse:volume_toggle(channel)
