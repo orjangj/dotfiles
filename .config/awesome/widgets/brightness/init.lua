@@ -29,7 +29,7 @@ local function worker()
 
   _, brightness.watcher = watch("bash -c 'brightnessctl max; brightnessctl get'", timeout, function(widget, stdout)
     local max_value, current_level = stdout:match("(%d+)[\r\n]+(%d+)")
-    local percentage = 100 * tonumber(current_level) / tonumber(max_value)
+    local percentage = math.floor(100 * tonumber(current_level) / tonumber(max_value))
     local icon, highlight
 
     if percentage < 15 then
