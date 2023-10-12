@@ -9,6 +9,7 @@ return {
     { "folke/neodev.nvim" },
     { "j-hui/fidget.nvim" },
     { "folke/trouble.nvim" },
+    { "mfussenegger/nvim-lint" },
 
     -- Autocompletion
     { "hrsh7th/nvim-cmp" },
@@ -98,6 +99,7 @@ return {
       debug = false,
       sources = {
         code_actions.gitsigns,
+        diagnostics.cppcheck, -- TODO only enable warnings, and update on save or insert leave
         diagnostics.flake8.with({ extra_args = { "--max-line-length", "120" } }),
         formatting.prettier.with({
           filetypes = {
@@ -111,6 +113,16 @@ return {
         formatting.black.with({ extra_args = { "--fast", "--line-length", "120" } }),
         formatting.stylua.with({ extra_args = { "--indent-type", "Spaces", "--indent-width", "2" } }),
       },
+    })
+
+    -- nvim-lint setup
+    require("lint").linters_by_ft = {
+      c = { "flawfinder", "clangtidy" },
+    }
+    vim.api.nvim_create_autocmd({ "BufWritePost" }, {
+      callback = function()
+        require("lint").try_lint()
+      end,
     })
 
     require("fidget").setup()
