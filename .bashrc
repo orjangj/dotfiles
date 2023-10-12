@@ -149,6 +149,10 @@ if [ -f ~/.bash_functions ]; then
     . ~/.bash_functions
 fi
 
+if [ -f ~/.bash_exports ]; then
+    . ~/.bash_exports
+fi
+
 # Completion
 # -----------------------------------------------------------------------------
 
@@ -182,6 +186,7 @@ path_prepend ~/bin
 path_prepend ~/go/bin
 path_prepend ~/.cargo/bin
 path_prepend ~/node_modules/.bin
+path_prepend /snap/bin
 
 # Various
 # -----------------------------------------------------------------------------
