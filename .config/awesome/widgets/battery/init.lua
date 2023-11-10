@@ -82,14 +82,14 @@ local function worker()
         highlight = beautiful.fg_urgent
         local difftime = os.difftime(os.time(), last_battery_check)
         if difftime > 3 * timeout then
-          warning_notification("Connect battery to charger!")
+          --warning_notification("Connect battery to charger!")
           last_battery_check = os.time()
         end
       elseif charge < 25 then
         highlight = beautiful.fg_focus
         local difftime = os.difftime(os.time(), last_battery_check)
         if difftime > 6 * timeout then
-          warning_notification("Connect battery to charger!")
+          --warning_notification("Connect battery to charger!")
           last_battery_check = os.time()
         end
       else

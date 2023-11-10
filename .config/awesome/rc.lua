@@ -71,7 +71,8 @@ local configs = gears.filesystem.get_configuration_dir()
 local shell = os.getenv("SHELL") or "bash"
 local terminal = "kitty"
 local browser = "firefox"
-local editor = terminal .. " -- " .. shell .. " -i -c \"nvim\""
+--local editor = terminal .. " -- " .. shell .. " -i -c \"nvim\""
+local editor = configs .. "scripts/kitty-session.sh"
 local file_manager = terminal .. " --title custom-file-manager -- " .. shell .. " -i -c \"nnn -P 'p'\""
 local modkey = "Mod4"
 local tags = { count = 6, glyphs = { "    ", "    ", "    ", "    ", "    ", "    " } }
@@ -239,6 +240,7 @@ local globalkeys = gears.table.join(
   awful.key({ modkey }, "Escape", awful.tag.history.restore, { description = "go back", group = "tag" }),
 
   -- Group "screen"
+  awful.key({ modkey, "Shift"   }, "x", function() awful.spawn("autorandr --change") end, { description = "Run Autorandr", group = "screen" }),
   awful.key({ modkey, "Control" }, "x", function() xrandr.xrandr() end, { description = "multimonitor setup", group = "screen" }),
   awful.key({ modkey, "Control" }, "j", function() awful.screen.focus_relative(1) end, { description = "focus the next screen", group = "screen" }),
   awful.key({ modkey, "Control" }, "k", function() awful.screen.focus_relative(-1) end, { description = "focus the previous screen", group = "screen" }),
