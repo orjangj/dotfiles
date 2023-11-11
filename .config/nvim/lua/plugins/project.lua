@@ -2,7 +2,7 @@ return {
   "ahmedkhalf/project.nvim",
   config = function()
     require("project_nvim").setup({
-      manual_mode = true, -- Use :AddProject to manually add a project
+      pattern = { ">projects/git" },
     })
 
     local tele_status_ok, telescope = pcall(require, "telescope")

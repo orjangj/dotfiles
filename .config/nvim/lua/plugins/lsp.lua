@@ -7,7 +7,10 @@ return {
     { "williamboman/mason-lspconfig.nvim" },
     { "jose-elias-alvarez/null-ls.nvim" },
     { "folke/neodev.nvim" },
-    { "j-hui/fidget.nvim" },
+    { "j-hui/fidget.nvim",
+      tag = "legacy",
+      event = "LspAttach"
+    },
     { "folke/trouble.nvim" },
     { "mfussenegger/nvim-lint" },
 
