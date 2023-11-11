@@ -71,8 +71,8 @@ local configs = gears.filesystem.get_configuration_dir()
 local shell = os.getenv("SHELL") or "bash"
 local terminal = "kitty"
 local browser = "firefox"
---local editor = terminal .. " -- " .. shell .. " -i -c \"nvim\""
-local editor = configs .. "scripts/kitty-session.sh"
+local editor = terminal .. " -- " .. shell .. " -i -c \"cd ~/projects/git; cd $(ls | fzf --no-height --reverse --select-1 --exit-0 --preview 'tree -C {} | head -200') ;nvim\""
+--local editor = configs .. "scripts/kitty-session.sh"
 local file_manager = terminal .. " --title custom-file-manager -- " .. shell .. " -i -c \"nnn -P 'p'\""
 local modkey = "Mod4"
 local tags = { count = 6, glyphs = { "    ", "    ", "    ", "    ", "    ", "    " } }
