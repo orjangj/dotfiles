@@ -2,7 +2,8 @@ return {
   "ahmedkhalf/project.nvim",
   config = function()
     require("project_nvim").setup({
-      pattern = { ">projects/git" },
+      detection_methods = { "pattern" },
+      patterns = { ">git" },
     })
 
     local tele_status_ok, telescope = pcall(require, "telescope")
