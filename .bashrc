@@ -193,7 +193,7 @@ path_prepend /snap/bin
 
 #export SSL_CERT_DIR=/etc/ssl/certs
 export CMAKE_GENERATOR=Ninja
-export CTEST_OUTPUT_ON_FAILURE
+export CTEST_OUTPUT_ON_FAILURE=1
 
 # Integrations
 # -----------------------------------------------------------------------------
