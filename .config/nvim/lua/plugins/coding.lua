@@ -123,4 +123,24 @@ return {
       require("neobuild").setup({})
     end,
   },
+  {
+    "Civitasv/cmake-tools.nvim",
+    dependencies = {
+      { "nvim-lua/plenary.nvim" },
+      { "akinsho/toggleterm.nvim" },
+    },
+    config = function()
+      require("cmake-tools").setup({
+        cmake_build_directory = "build/${variant:buildType}",
+        cmake_executor = {
+          name = "quickfix",
+          opts = { show = "only_on_error", size = 30 },
+        },
+        cmake_runner = {
+          name = "quickfix",
+          opts = { show = "only_on_error", size = 30 },
+        },
+      })
+    end,
+  },
 }
