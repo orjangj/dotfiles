@@ -4,4 +4,5 @@ tags
 .vagrant
 .roles
 ansible_collections
-
+build/
+out/
