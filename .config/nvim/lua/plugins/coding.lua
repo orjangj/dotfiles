@@ -131,6 +131,7 @@ return {
     },
     config = function()
       require("cmake-tools").setup({
+        cmake_regenerate_on_save = false,
         cmake_build_directory = "build/${variant:buildType}",
         cmake_executor = {
           name = "quickfix",

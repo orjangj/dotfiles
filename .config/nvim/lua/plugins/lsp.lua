@@ -104,6 +104,7 @@ return {
         code_actions.gitsigns,
         diagnostics.cppcheck, -- TODO only enable warnings, and update on save or insert leave
         diagnostics.flake8.with({ extra_args = { "--max-line-length", "120" } }),
+        diagnostics.cmake_lint,
         formatting.prettier.with({
           filetypes = {
             "json",
@@ -113,8 +114,9 @@ return {
             "txt",
           },
         }),
-        formatting.black.with({ extra_args = { "--fast", "--line-length", "120" } }),
+        formatting.black.with({ extra_args = { "--fast", "--line-length", "100" } }),
         formatting.stylua.with({ extra_args = { "--indent-type", "Spaces", "--indent-width", "2" } }),
+        formatting.cmake_format,
       },
     })
 
