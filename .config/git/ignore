@@ -6,3 +6,5 @@ tags
 ansible_collections
 build/
 out/
+venv/
+.venv/
