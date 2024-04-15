@@ -10,8 +10,7 @@ case $- in
       *) return;;
 esac
 
-# General
-# -----------------------------------------------------------------------------
+# General {{{
 
 shopt -s checkwinsize
 shopt -s histappend
@@ -38,27 +37,16 @@ export LESS="FIRSX"
 # make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 
-# History
-# -----------------------------------------------------------------------------
+# }}}
+# History {{{
 
 HISTCONTROL=ignoreboth:erasedups
 HISTSIZE=1024
 HISTFILESIZE=2048
 
-# Colors
-# -----------------------------------------------------------------------------
+# }}}
+# Colors {{{
 
-# Enable color support for ls
-if [ -x /usr/bin/dircolors ]; then
-    test -r "$HOME"/.dircolors && eval "$(dircolors -b "$HOME"/.dircolors)" || eval "$(dircolors -b)"
-fi
-
-export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
-
-# Prompt
-# -----------------------------------------------------------------------------
-
-WORKDIR="\W"
 RESET="\[\033[0m"
 RED="\[\033[00;31m\]"
 RED_BOLD="\[\033[01;31m\]"
@@ -75,71 +63,173 @@ CYAN_BOLD="\[\033[01;36m\]"
 WHITE="\[\033[00;97m\]"
 WHITE_BOLD="\[\033[01;97m\]"
 
-export VIRTUAL_ENV_DISABLE_PROMPT=1
+# Enable color support for ls
+if [ -x /usr/bin/dircolors ]; then
+    test -r "$HOME"/.dircolors && eval "$(dircolors -b "$HOME"/.dircolors)" || eval "$(dircolors -b)"
+fi
 
-git_prompt() {
-    # Check if we're inside a git repository
-    if git status 1> /dev/null 2> /dev/null ; then
-        # Either we get the current branch name, the tag name, or the short commit hash
-        branch=$(git symbolic-ref -q --short HEAD \
-            || git describe --tags --exact-match 2>/dev/null \
-            || git rev-parse --short HEAD
-        )
+export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 
-        # Check symbolic ref again to make sure we're detached or not
-        if git symbolic-ref -q HEAD 1>/dev/null; then
-            detached=false
-        else
-            detached=true
+# }}}
+# Functions {{{
+function venv {
+    if [[ "$1" == "create" && ! -d "venv" ]]; then
+        python -m venv venv
+
+        if [[ -f requirements.txt ]]; then
+            ./venv/bin/pip install -r requirements.txt
         fi
-
-        staged=$(git diff --staged --name-status | wc -l)
-        changed=$(git diff --name-status | wc -l)
-        untracked=$(git ls-files --others --exclude-standard | wc -l)
-        conflicts=$(git diff --name-only --diff-filter=U --relative | wc -l)
-        ahead=$(git rev-list $branch --not origin/$branch 2>/dev/null | wc -l)
-        diverged=$(git rev-list origin/$branch --not $branch 2>/dev/null | wc -l)
-
-        # Build the git prompt
-        prompt="(:$branch"
-        if [ "$detached" = true ] ; then
-            prompt="$prompt|detached|"
-        else
-            prompt="$prompt|↑$ahead↓$diverged|"
+    elif [[ "$1" == "destroy" ]]; then
+        if [[ ! -z "${VIRTUAL_ENV}" ]]; then
+            deactivate
         fi
-
-        if [[ $staged -ne 0 || $changed -ne 0 || $untracked -ne 0 || $conflicts -ne 0 ]]; then
-            prompt="$prompt+$changed-$untracked∙$staged✠$conflicts"
-        else
-            prompt="$prompt✓"
-        fi
-
-        prompt="$prompt)"
-        echo $prompt
+        rm -rf venv
     fi
 }
+# }}}
+# Prompt {{{
 
-virtual_prompt() {
+# See https://git-scm.com/docs/git-status
+function prompt_git() {
     local prompt=""
-    local venv
-    if [[ ! -z "${VIRTUAL_ENV}" ]]; then
-        venv=$(basename "$VIRTUAL_ENV")
-        prompt="(:${venv})"
+
+    # The 'local' statement needs to be on its own line since it
+    # will overwrite $?.
+    local git_status=""
+    git_status=$(git status --porcelain=v2 --branch --show-stash 2>/dev/null)
+    if [[ ! $? -eq 0 ]]; then
+        # Not a Git repository (or some error occured).
+        eval "$1='${prompt}'"
+        return
     fi
-    echo $prompt
+
+    local oid=""
+    local branch=""
+    local stash=0
+    local ahead=0
+    local behind=0
+    local staged=0
+    local changed=0
+    local conflicts=0
+    local untracked=0
+
+    while IFS= read -r line || [[ -n $line ]]; do
+        case "${line:0:1}" in
+            '#')
+                IFS=' ' read -r -a array <<< "${line:1}"
+                if [[ "${array[0]}" == "branch.oid" ]]; then
+                    oid="${array[1]}"
+                elif [[ "${array[0]}" == "branch.head" ]]; then
+                    # if detached, remove '(' and ')' with tr
+                    branch=$(echo "${array[1]}" | tr -d "()")
+                elif [[ "${array[0]}" == "branch.ab" ]]; then
+                    ahead="${array[1]:1}"
+                    behind="${array[1]:1}"
+                elif [[ "${array[0]}" == "stash" ]]; then
+                    stash="${array[1]}"
+                fi
+                ;;
+            '1' | '2')
+                if [[ "${line[2]}" == "." ]]; then
+                    staged=$((staged+1))
+                else
+                    changed=$((changed+1))
+                fi
+                ;;
+            'u')
+                conflicts=$((conflicts+1))
+                ;;
+            '?')
+                untracked=$((untracked+1))
+                ;;
+        esac
+    done < <(printf '%s' "${git_status}")
+
+    # Build the git prompt
+    prompt=":${oid:0:7}"
+
+    if [[ "${branch}" == "detached" ]]; then
+        # Check if we're checked out to a tag
+        local tag=$(git describe --tags --exact-match 2>/dev/null)
+        if [[ ! -z "${tag}" ]]; then
+            branch="${branch}:${tag}"
+        fi
+    fi
+
+    prompt="${prompt}:${branch}"
+
+    local state=""
+
+    if [[ $ahead -ne 0 ]]; then state="${state}:↑$ahead"; fi
+    if [[ $behind -ne 0 ]]; then state="${state}:↓$behind"; fi
+    if [[ $changed -ne 0 ]]; then state="${state}:✗${changed}"; fi
+    if [[ $staged -ne 0 ]]; then state="${state}:${staged}"; fi
+    if [[ $untracked -ne 0 ]]; then state="${state}:${untracked}"; fi
+    if [[ $conflicts -ne 0 ]]; then state="${state}:${conflicts}"; fi
+    if [[ $stash -ne 0 ]]; then state="${state}:${stash}"; fi
+    if [[ -z "${state}" ]]; then state=":✓"; fi
+
+    prompt="${prompt}(${state})"
+    eval "$1='${prompt}'"
 }
 
-PS1="${GREEN_BOLD}┌  \u"
-PS1="${PS1} ${CYAN_BOLD} \h"
-PS1="${PS1} ${BLUE_BOLD} ${WORKDIR}"
-PS1="${PS1} ${YELLOW_BOLD}\$(git_prompt)"
-PS1="${PS1} ${MAGENTA_BOLD}\$(virtual_prompt)"
-PS1="${PS1}\n${GREEN_BOLD}└┄ ${RESET}"
+# TODO: Not possible to manually deactivate environment if inside path (just gets activated
+#       automatically again). Not sure if this is much of a problem as you generally want
+#       to use the venv. See custom venv function (above) for management of venv's.
+function prompt_python_venv {
+    local prompt=""
 
-PS2="${YELLOW_BOLD}➜ ${RESET}"
+    # Auto enable/disable python venv
+    if [[ -z "${VIRTUAL_ENV}" ]]; then
+        # TODO: Implement look-behind to see if parent directories have a venv (and activate top most venv instead)
+        if [[ -f $PWD/venv/pyvenv.cfg ]]; then
+            . $PWD/venv/bin/activate
+        fi
+    else
+        local parentdir="$(dirname "$VIRTUAL_ENV")"
 
-# Includes
-# -----------------------------------------------------------------------------
+        # A venv is already active, should we deactivate it?
+        if [[ "$PWD"/ != "$parentdir"/* ]] ; then
+            # Current working directory is not a subdir of venv parent directory
+            deactivate
+
+            # Should we activate the venv for the current working directory?
+            if [[ -f $PWD/venv/pyvenv.cfg ]]; then
+                . $PWD/venv/bin/activate  # Doesnt seem to work?
+            fi
+        fi
+    fi
+
+    # The prompt
+    if [[ ! -z "${VIRTUAL_ENV}" ]]; then
+        local name=$(basename $(dirname "$VIRTUAL_ENV"))
+        prompt="${prompt}${MAGENTA_BOLD}:${name}${RESET} "
+    fi
+
+    eval "$1='${prompt}'"
+}
+
+function prompt_command {
+    prompt="${GREEN_BOLD}┌  \u"
+    prompt="${prompt} ${CYAN_BOLD} \h"
+    prompt="${prompt} ${BLUE_BOLD} \W${RESET} "
+
+    prompt_git output
+    prompt="${prompt}${YELLOW_BOLD}${output}${RESET}"
+
+    prompt_python_venv output
+    prompt="${prompt} ${MAGENTA_BOLD}${output}${RESET}"
+
+    prompt="${prompt}\n${GREEN_BOLD}└┄ ${RESET}"
+
+    export PS1="${prompt}"
+    export PS2="${YELLOW_BOLD}➜${RESET} "
+}
+
+export PROMPT_COMMAND=prompt_command
+
+# }}}
+# Includes {{{
 
 if [ -f ~/.bash_aliases ]; then
     . ~/.bash_aliases
@@ -153,8 +243,8 @@ if [ -f ~/.bash_exports ]; then
     . ~/.bash_exports
 fi
 
-# Completion
-# -----------------------------------------------------------------------------
+# }}}
+# Completion {{{
 
 if ! shopt -oq posix; then
   if [ -f /usr/share/bash-completion/bash_completion ]; then
@@ -164,8 +254,8 @@ if ! shopt -oq posix; then
   fi
 fi
 
-# Path
-# -----------------------------------------------------------------------------
+# }}}
+# Path {{{
 
 path_prepend() {
     # Only adds path if it exists and isn't already included in PATH
@@ -188,16 +278,11 @@ path_prepend ~/.cargo/bin
 path_prepend ~/node_modules/.bin
 path_prepend /snap/bin
 
-# Various
-# -----------------------------------------------------------------------------
+# }}}
+# Integrations {{{
 
-#export SSL_CERT_DIR=/etc/ssl/certs
 export CMAKE_GENERATOR=Ninja
 export CTEST_OUTPUT_ON_FAILURE=1
-
-# Integrations
-# -----------------------------------------------------------------------------
-
 export VAGRANT_DEFAULT_PROVIDER="libvirt"
 
 if type fzf &> /dev/null; then
@@ -227,3 +312,5 @@ if type nnn &> /dev/null; then
   export NNN_PLUG="p:preview-tui;d:fzcd"
   export NNN_SPLIT="v"
 fi
+
+# }}}
