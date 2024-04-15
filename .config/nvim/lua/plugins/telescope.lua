@@ -88,7 +88,7 @@ return {
       pickers = {
         find_files = {
           -- Make find_files work like git_files, but also show hidden and untracked files
-          find_command = { "rg", "--files", "--hidden", "--glob", "!.git/*" },
+          find_command = { "rg", "--files", "--hidden", "--glob", "!{.git,node_modules,venv,.venv}/*" },
         },
         live_grep = {
           theme = "ivy",
