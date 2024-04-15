@@ -511,7 +511,7 @@ return {
           name = "LSP/Diagnostics",
           a = { "<cmd>lua vim.lsp.buf.code_action()<cr>", "Code Action" },
           A = { "<cmd>lua vim.lsp.codelens.run()<cr>", "CodeLens Action" },
-          d = { "<cmd>Telescope diagnostics bufnr=0<cr>", "Buffer Diagnostics" },
+          d = { "<cmd>Telescope diagnostics bufnr=0 previewer=false<cr>", "Buffer Diagnostics" },
           D = { "<cmd>Telescope diagnostics<cr>", "Workspace Diagnostics" },
           f = { "<cmd>lua vim.lsp.buf.format{ async = true }<cr>", "Format Buffer" },
           i = { "<cmd>LspInfo<cr>", "List LSP Clients" },

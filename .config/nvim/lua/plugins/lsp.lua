@@ -7,9 +7,10 @@ return {
     { "williamboman/mason-lspconfig.nvim" },
     { "jose-elias-alvarez/null-ls.nvim" },
     { "folke/neodev.nvim" },
-    { "j-hui/fidget.nvim",
+    {
+      "j-hui/fidget.nvim",
       tag = "legacy",
-      event = "LspAttach"
+      event = "LspAttach",
     },
     { "folke/trouble.nvim" },
     { "mfussenegger/nvim-lint" },
@@ -50,7 +51,16 @@ return {
     })
 
     local servers = {
-      clangd = {},
+      clangd = {
+        cmd = {
+          "clangd",
+          "--background-index",
+          "--clang-tidy",
+          "--completion-style=bundled",
+          "--cross-file-rename",
+          "--header-insertion=iwyu",
+        },
+      },
       cmake = {},
       ansiblels = {},
       lua_ls = {
@@ -77,15 +87,32 @@ return {
     lsp.nvim_workspace()
     lsp.setup()
 
+    require("luasnip.loaders.from_vscode").lazy_load()
+
     vim.diagnostic.config({ virtual_text = true })
     require("lspconfig.ui.windows").default_options.border = "rounded" -- TODO other ways to do this?
 
     -- nvim-cmp setup
     local cmp = require("cmp")
     cmp.setup({
-      mapping = {
-        ["<CR>"] = cmp.mapping.confirm({ select = false }),
+      snippet = {
+        expand = function(args)
+          require("luasnip").lsp_expand(args.body)
+        end,
       },
+      sources = cmp.config.sources({
+        { name = "nvim_lsp" },
+        { name = "luasnip" },
+        { name = "path" },
+        { name = "buffer" },
+      }),
+      mapping = cmp.mapping.preset.insert({
+        ["<C-b>"] = cmp.mapping.scroll_docs(-4),
+        ["<C-f>"] = cmp.mapping.scroll_docs(4),
+        ["<C-Space>"] = cmp.mapping.complete(),
+        ["<C-e>"] = cmp.mapping.abort(),
+        ["<CR>"] = cmp.mapping.confirm({ select = false }),
+      }),
     })
 
     -- null-ls setup
@@ -116,19 +143,19 @@ return {
         }),
         formatting.black.with({ extra_args = { "--fast", "--line-length", "100" } }),
         formatting.stylua.with({ extra_args = { "--indent-type", "Spaces", "--indent-width", "2" } }),
-        formatting.cmake_format,
+        formatting.cmake_format.with({ extra_args = {"--line-width", "120" } }),
       },
     })
 
     -- nvim-lint setup
-    require("lint").linters_by_ft = {
-      c = { "flawfinder", "clangtidy" },
-    }
-    vim.api.nvim_create_autocmd({ "BufWritePost" }, {
-      callback = function()
-        require("lint").try_lint()
-      end,
-    })
+    --require("lint").linters_by_ft = {
+    --  c = { "clangtidy" },  -- flawfinder
+    --}
+    --vim.api.nvim_create_autocmd({ "BufWritePost" }, {
+    --  callback = function()
+    --    require("lint").try_lint()
+    --  end,
+    --})
 
     require("fidget").setup()
     require("trouble").setup()
