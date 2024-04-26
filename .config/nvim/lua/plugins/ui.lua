@@ -329,6 +329,9 @@ return {
           enable = true,
           update_root = true,
         },
+        view = {
+          adaptive_size = true,
+        },
         renderer = {
           root_folder_modifier = ":t",
           icons = {
