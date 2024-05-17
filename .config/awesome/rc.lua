@@ -187,6 +187,7 @@ awful.screen.connect_for_each_screen(function(s)
             spacing = 10,
             dummy_widget,
             wibox.widget.textclock(" %a %d/%m    %H:%M"),
+            widgets.keyboard(),
             dummy_widget,
           },
           bg = beautiful.bg_normal .. "EF",
