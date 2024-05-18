@@ -59,6 +59,27 @@ return {
     },
   },
   {
+    "folke/todo-comments.nvim",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    opts = {
+      -- your configuration comes here
+      -- or leave it empty to use the default settings
+      -- refer to the configuration section below
+      search = {
+        command = "rg",
+        args = {
+          "--color=never",
+          "--no-heading",
+          "--with-filename",
+          "--line-number",
+          "--column",
+          "--glob=!{submodules}",
+        },
+        pattern = [[\b(KEYWORDS):]],
+      },
+    },
+  },
+  {
     "nvim-neotest/neotest",
     dependencies = {
       { "nvim-neotest/nvim-nio" },

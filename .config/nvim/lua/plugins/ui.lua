@@ -510,7 +510,7 @@ return {
           p = { "<cmd>lua require('telescope').extensions.projects.projects()<cr>", "Projects" },
           s = { "<cmd>Telescope live_grep<cr>", "Workspace Search" },
           S = { "<cmd>Telescope current_buffer_fuzzy_find theme=ivy<cr>", "Buffer Search" },
-          t = { "<cmd>Telescope treesitter<cr>", "Treesitter" },
+          t = { "<cmd>TodoTelescope keywords=TODO,FIX<cr>", "TODO" },
           z = { "<cmd>Telescope symbols<cr>", "Symbols" },
         },
         l = {
