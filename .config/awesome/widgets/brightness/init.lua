@@ -42,6 +42,9 @@ local function worker()
       icon = ""
       highlight = beautiful.fg_normal
     end
+
+    brightness.percentage = percentage
+
     widget
       :get_children_by_id("text")[1]
       :set_markup_silently(("<span foreground='%s'>%s %d%%</span>"):format(highlight, icon, percentage))
@@ -54,12 +57,18 @@ local function worker()
   end
 
   function brightness:inc(value)
+    if brightness.percentage < 5 then
+      value = 1
+    end
     spawn.easy_async(INC_BRIGHTNESS_CMD(value or step), function()
       brightness.watcher:emit_signal("timeout")
     end)
   end
 
   function brightness:dec(value)
+    if brightness.percentage <= 5 then
+      value = 1
+    end
     spawn.easy_async(DEC_BRIGHTNESS_CMD(value or step), function()
       brightness.watcher:emit_signal("timeout")
     end)
