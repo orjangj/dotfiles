@@ -14,18 +14,6 @@ return {
     },
     { "folke/trouble.nvim" },
     { "mfussenegger/nvim-lint" },
-
-    -- Autocompletion
-    { "hrsh7th/nvim-cmp" },
-    { "hrsh7th/cmp-nvim-lsp" },
-    { "hrsh7th/cmp-buffer" },
-    { "hrsh7th/cmp-path" },
-    { "hrsh7th/cmp-nvim-lua" },
-    { "saadparwaiz1/cmp_luasnip" },
-
-    -- Snippets
-    { "L3MON4D3/LuaSnip" },
-    { "rafamadriz/friendly-snippets" },
   },
   config = function()
     -- IMPORTANT: make sure to setup neodev BEFORE lspconfig
@@ -40,7 +28,7 @@ return {
     local lsp = require("lsp-zero").preset({
       name = "minimal",
       set_lsp_keymaps = true,
-      manage_nvim_cmp = true,
+      manage_nvim_cmp = false,
       suggest_lsp_servers = false,
       sign_icons = {
         error = "",
@@ -87,33 +75,8 @@ return {
     lsp.nvim_workspace()
     lsp.setup()
 
-    require("luasnip.loaders.from_vscode").lazy_load()
-
     vim.diagnostic.config({ virtual_text = true })
     require("lspconfig.ui.windows").default_options.border = "rounded" -- TODO other ways to do this?
-
-    -- nvim-cmp setup
-    local cmp = require("cmp")
-    cmp.setup({
-      snippet = {
-        expand = function(args)
-          require("luasnip").lsp_expand(args.body)
-        end,
-      },
-      sources = cmp.config.sources({
-        { name = "nvim_lsp" },
-        { name = "luasnip" },
-        { name = "path" },
-        { name = "buffer" },
-      }),
-      mapping = cmp.mapping.preset.insert({
-        ["<C-b>"] = cmp.mapping.scroll_docs(-4),
-        ["<C-f>"] = cmp.mapping.scroll_docs(4),
-        ["<C-Space>"] = cmp.mapping.complete(),
-        ["<C-e>"] = cmp.mapping.abort(),
-        ["<CR>"] = cmp.mapping.confirm({ select = false }),
-      }),
-    })
 
     -- null-ls setup
     local null_ls = require("null-ls")
