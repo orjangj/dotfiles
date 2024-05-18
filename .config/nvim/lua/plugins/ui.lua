@@ -447,14 +447,21 @@ return {
       }
 
       local mappings = {
-        ["a"] = { "<cmd>Alpha<cr>", "Alpha" },
         ["c"] = { "<cmd>Bdelete!<cr>", "Close Buffer" },
+        ["d"] = { "<cmd>Alpha<cr>", "Dashboard" },
         ["e"] = { "<cmd>NvimTreeToggle<cr>", "Explorer" },
         ["h"] = { "<cmd>nohlsearch<cr>", "No Highlight" },
         ["p"] = { "<cmd>Lazy<cr>", "Plugin" },
         ["q"] = { "<cmd>q!<cr>", "Quit" },
         ["w"] = { "<cmd>w!<cr>", "Save Buffer" },
         ["z"] = { "<cmd>ZenMode<cr>", "Zen Mode" },
+        a = {
+          name = "Annotate",
+          a = { "<cmd>lua require'neogen'.generate({ type=func })<cr>", "Function"},
+          c = { "<cmd>lua require'neogen'.generate({ type=func })<cr>", "Class"},
+          f = { "<cmd>lua require'neogen'.generate({ type=func })<cr>", "File"},
+          t = { "<cmd>lua require'neogen'.generate({ type=func })<cr>", "Type"},
+        },
         b = {
           name = "Build",
           b = { "<cmd>CMakeBuild<cr>", "CMake Build" },
