@@ -12,7 +12,7 @@ return {
           "bash",
           "c",
           "cmake",
-          "comment",
+--          "comment", -- Makes nvim extremely slow on files with a lot of (long) comments
           "cpp",
           "css",
           "diff",
