@@ -1,26 +1,39 @@
 return {
-  {
-    {
-      "ThePrimeagen/harpoon",
-      branch = "harpoon2",
-      dependencies = { "nvim-lua/plenary.nvim" },
-      config = function()
-        local harpoon = require("harpoon")
-
-        -- TODO: How to persist harpooned marks between quit/enter nvim?
-        -- TODO: Unique marks per git branch?
-        harpoon:setup({})
-
-        -- TODO: Use with whichkey?
-        vim.keymap.set("n", "<leader>jj", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end)
-        vim.keymap.set("n", "<leader>ja", function() harpoon:list():add() end)
-        vim.keymap.set("n", "<leader>j1", function() harpoon:list():select(1) end)
-        vim.keymap.set("n", "<leader>j2", function() harpoon:list():select(2) end)
-        vim.keymap.set("n", "<leader>j3", function() harpoon:list():select(3) end)
-        vim.keymap.set("n", "<leader>j4", function() harpoon:list():select(4) end)
-        vim.keymap.set("n", "<leader>jh", function() harpoon:list():prev() end)
-        vim.keymap.set("n", "<leader>jl", function() harpoon:list():next() end)
-      end
-    },
+  "ThePrimeagen/harpoon",
+  branch = "harpoon2",
+  dependencies = {
+    "nvim-lua/plenary.nvim",
   },
+  keys = function()
+    local harpoon = require("harpoon")
+    return {
+      {"<leader>j1", function() harpoon:list():select(1) end, desc ="Harpoon buffer 1"},
+      {"<leader>j2", function() harpoon:list():select(2) end, desc ="Harpoon buffer 2"},
+      {"<leader>j3", function() harpoon:list():select(3) end, desc ="Harpoon buffer 3"},
+      {"<leader>j4", function() harpoon:list():select(4) end, desc ="Harpoon buffer 4"},
+      {"<leader>jh", function() harpoon:list():next() end, desc ="Harpoon next buffer"},
+      {"<leader>jl", function() harpoon:list():prev() end, desc ="Harpoon prev buffer"},
+      {"<leader>jj", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end, desc ="Harpoon Toggle Menu"},
+      {"<leader>ja", function() harpoon:list():add() end, desc ="Harpoon add file"},
+      {"<leader>jc", function() harpoon:list():clear() end, desc ="Clear all harpoons"},
+    }
+  end,
+  -- TODO: Some of these settings seem deprecated
+  opts = function(_, opts)
+    opts.settings = {
+      save_on_toggle = false,
+      sync_on_ui_close = false,
+      save_on_change = true,
+      enter_on_sendcmd = false,
+      tmux_autoclose_windows = false,
+      excluded_filetypes = { "harpoon", "alpha", "dashboard", "gitcommit" },
+      mark_branch = true, -- FIX: Doesn't seem to work (related? https://github.com/ThePrimeagen/harpoon/issues/565)
+      key = function()
+        return vim.loop.cwd()
+      end
+    }
+  end,
+  config = function(_, opts)
+    require("harpoon").setup(opts)
+  end,
 }
