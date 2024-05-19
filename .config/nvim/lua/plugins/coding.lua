@@ -32,7 +32,7 @@ return {
       cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done({ map_char = { tex = "" } }))
     end,
   },
-  {
+  { -- TODO: Remove Comment.nvim when using neovim v0.10+?
     "numToStr/Comment.nvim",
     dependencies = {
       { "JoosepAlviste/nvim-ts-context-commentstring" },

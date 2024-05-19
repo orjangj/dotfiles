@@ -372,11 +372,20 @@ return {
   },
   -- }}}
   -- {{{ Notifications
+  --{
+  --  "rcarriga/nvim-notify",
+  --  config = function()
+  --    vim.notify = require("notify")
+  --  end,
+  --},
   {
-    "rcarriga/nvim-notify",
-    config = function()
-      vim.notify = require("notify")
-    end,
+    "j-hui/fidget.nvim",
+    tag = "v1.4.5",
+    opts = {
+      notification = {
+        override_vim_notify = true,
+      },
+    }
   },
   -- }}}
   -- {{{ Zen
@@ -390,18 +399,18 @@ return {
           -- * an absolute number of cells when > 1
           -- * a percentage of the width / height of the editor when <= 1
           -- * a function that returns the width or the height
-          width = 0.70, -- width of the Zen window in number of characters
+          width = 0.70,  -- width of the Zen window in number of characters
           height = 0.85, -- height of the Zen window in number of lines
           -- by default, no options are changed for the Zen window
           -- uncomment any of the options below, or add other vim.wo options you want to apply
           options = {
-            signcolumn = "no", -- disable signcolumn
-            number = false, -- disable number column
+            signcolumn = "no",      -- disable signcolumn
+            number = false,         -- disable number column
             relativenumber = false, -- disable relative numbers
-            cursorline = false, -- disable cursorline
-            cursorcolumn = false, -- disable cursor column
-            foldcolumn = "0", -- disable fold column
-            list = false, -- disable whitespace characters
+            cursorline = false,     -- disable cursorline
+            cursorcolumn = false,   -- disable cursor column
+            foldcolumn = "0",       -- disable fold column
+            list = false,           -- disable whitespace characters
           },
         },
         plugins = {
@@ -409,12 +418,12 @@ return {
           -- comment the lines to not apply the options
           options = {
             enabled = true,
-            ruler = false, -- disables the ruler text in the cmd line area
-            showcmd = false, -- disables the command in the last line of the screen
+            ruler = false,                -- disables the ruler text in the cmd line area
+            showcmd = false,              -- disables the command in the last line of the screen
           },
-          twilight = { enabled = true }, -- enable to start Twilight when zen mode opens
+          twilight = { enabled = true },  -- enable to start Twilight when zen mode opens
           gitsigns = { enabled = false }, -- disables git signs
-          tmux = { enabled = false }, -- disables the tmux statusline
+          tmux = { enabled = false },     -- disables the tmux statusline
           kitty = {
             enabled = true,
             font = "+3",
@@ -457,10 +466,10 @@ return {
         ["z"] = { "<cmd>ZenMode<cr>", "Zen Mode" },
         a = {
           name = "Annotate",
-          a = { "<cmd>lua require'neogen'.generate({ type=func })<cr>", "Function"},
-          c = { "<cmd>lua require'neogen'.generate({ type=func })<cr>", "Class"},
-          f = { "<cmd>lua require'neogen'.generate({ type=func })<cr>", "File"},
-          t = { "<cmd>lua require'neogen'.generate({ type=func })<cr>", "Type"},
+          a = { "<cmd>lua require'neogen'.generate({ type=func })<cr>", "Function" },
+          c = { "<cmd>lua require'neogen'.generate({ type=func })<cr>", "Class" },
+          f = { "<cmd>lua require'neogen'.generate({ type=func })<cr>", "File" },
+          t = { "<cmd>lua require'neogen'.generate({ type=func })<cr>", "Type" },
         },
         b = {
           name = "Build",

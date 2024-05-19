@@ -28,6 +28,10 @@ return lazy.setup("plugins", {
     border = "rounded",
   },
   dev = {
-    path = "~/projects/git"
-  }
+    path = "~/projects/git",
+  },
+  change_detection = {
+    enabled = true,
+    notify = false,
+  },
 })

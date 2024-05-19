@@ -12,7 +12,6 @@ return {
       { "folke/zen-mode.nvim" },
       { "folke/twilight.nvim" },
     },
-    build = ":Neorg sync-parsers",
     config = function()
       require("neorg").setup({
         load = {

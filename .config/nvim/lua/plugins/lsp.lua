@@ -1,17 +1,11 @@
 return {
-  {
+  { -- TODO: Remove lsp-zero
     "VonHeikemen/lsp-zero.nvim",
     dependencies = {
-      -- LSP Support
       { "neovim/nvim-lspconfig" },
       { "williamboman/mason.nvim" },
       { "williamboman/mason-lspconfig.nvim" },
       { "folke/neodev.nvim" },
-      {
-        "j-hui/fidget.nvim",
-        tag = "legacy",
-        event = "LspAttach",
-      },
       { "folke/trouble.nvim" },
       { "mfussenegger/nvim-lint" },
     },
@@ -88,7 +82,6 @@ return {
       --  end,
       --})
 
-      require("fidget").setup()
       require("trouble").setup()
     end,
   },
