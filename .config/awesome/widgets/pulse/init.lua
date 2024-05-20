@@ -42,6 +42,10 @@ local function worker()
       local n = string.match(str, ".*Name: (.-)\n")
       if n == name then
         volume = string.match(str, ".*Volume: front%-left:.-/%s+(.-)%s+/")
+        if volume == nil then
+          -- The mic may be configured as mono input
+          volume = string.match(str, ".*Volume: mono:.-/%s+(.-)%s+/")
+        end
         muted = string.match(str, ".*Mute: (.-)\n")
       end
     end
