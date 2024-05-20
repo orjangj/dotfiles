@@ -118,7 +118,7 @@ return {
                 -- See https://stackoverflow.com/questions/46652192/py-test-gives-coverage-py-warning-module-sample-py-was-never-imported
                 -- The coverage module doesn't create the coverage report, so we'll have to use neotest for that.
                 -- Unfortunately, coverage plugin does not provide docs/suggestions for how to do that
-                -- TODO This currently makes pytest-cov or coverage.py generate errors if tests are run on file-level
+                -- TODO: This currently makes pytest-cov or coverage.py generate errors if tests are run on file-level
                 return { "--log-level", "DEBUG", "--cov", "./", "--cov-append", "--cov-branch" }
               else
                 return { "--log-level", "DEBUG" }

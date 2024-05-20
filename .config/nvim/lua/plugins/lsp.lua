@@ -36,6 +36,9 @@ return {
         clangd = {
           cmd = {
             "clangd",
+            -- FIX: Doesn't seem to work (look into overriding capabilities)
+            --      Seem to be fixed in nvim v0.10.0 though? See https://github.com/neovim/neovim/commit/15641f38cf4b489a7c83e2c3aa6efc4c63009f00
+            -- "--offset-encoding=utf-16",
             "--background-index",
             "--clang-tidy",
             "--completion-style=bundled",
@@ -70,7 +73,9 @@ return {
       lsp.setup()
 
       vim.diagnostic.config({ virtual_text = true })
-      require("lspconfig.ui.windows").default_options.border = "rounded" -- TODO other ways to do this?
+
+      -- TODO: other ways to do this?
+      require("lspconfig.ui.windows").default_options.border = "rounded"
 
       -- nvim-lint setup
       --require("lint").linters_by_ft = {
@@ -101,7 +106,7 @@ return {
         debug = false,
         sources = {
           code_actions.gitsigns,
-          diagnostics.cppcheck, -- TODO only enable warnings, and update on save or insert leave
+          diagnostics.cppcheck, -- TODO: only enable warnings, and update on save or insert leave
           diagnostics.cmake_lint,
           -- TODO: consider using ruff for python linting (requires none-ls-extras.nvim)
           formatting.prettier.with({
