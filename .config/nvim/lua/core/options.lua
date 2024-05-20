@@ -42,6 +42,7 @@ local options = {
   scrolloff = 8,
   sidescrolloff = 8,
   termguicolors = true,                    -- set term gui colors (most terminals support this)
+  laststatus = 3,                          -- draw a line for horizontal splits
   -- Folding
   foldenable = true,
   foldlevel = 0,

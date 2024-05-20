@@ -22,15 +22,15 @@ return {
       local harpoon = require("harpoon")
       -- stylua: ignore
       return {
-        { "<leader>j1", function() harpoon:list():select(1) end,                     desc = "Harpoon buffer 1" },
-        { "<leader>j2", function() harpoon:list():select(2) end,                     desc = "Harpoon buffer 2" },
-        { "<leader>j3", function() harpoon:list():select(3) end,                     desc = "Harpoon buffer 3" },
-        { "<leader>j4", function() harpoon:list():select(4) end,                     desc = "Harpoon buffer 4" },
-        { "<leader>jh", function() harpoon:list():next() end,                        desc = "Harpoon next buffer" },
-        { "<leader>jl", function() harpoon:list():prev() end,                        desc = "Harpoon prev buffer" },
+        { "<leader>j1", function() harpoon:list():select(1) end, desc = "Harpoon buffer 1" },
+        { "<leader>j2", function() harpoon:list():select(2) end, desc = "Harpoon buffer 2" },
+        { "<leader>j3", function() harpoon:list():select(3) end, desc = "Harpoon buffer 3" },
+        { "<leader>j4", function() harpoon:list():select(4) end, desc = "Harpoon buffer 4" },
+        { "<leader>jh", function() harpoon:list():next() end, desc = "Harpoon next buffer" },
+        { "<leader>jl", function() harpoon:list():prev() end, desc = "Harpoon prev buffer" },
         { "<leader>jj", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end, desc = "Harpoon Toggle Menu" },
-        { "<leader>ja", function() harpoon:list():add() end,                         desc = "Harpoon add file" },
-        { "<leader>jc", function() harpoon:list():clear() end,                       desc = "Clear all harpoons" },
+        { "<leader>ja", function() harpoon:list():add() end, desc = "Harpoon add file" },
+        { "<leader>jc", function() harpoon:list():clear() end, desc = "Clear all harpoons" },
       }
     end,
     -- TODO: Some of these settings seem deprecated
