@@ -20,3 +20,33 @@ autocmd('Filetype', {
   pattern = { 'norg' },
   command = 'setlocal conceallevel=2 foldlevel=1'
 })
+
+-- Close some filetypes with <q>.
+augroup("closeWithQ", { clear = true })
+autocmd("FileType", {
+  group = "closeWithQ",
+  pattern = {
+    "PlenaryTestPopup",
+    "checkhealth",
+    "fugitive",
+    "git",
+    "help",
+    "lspinfo",
+    "man",
+    "neotest-output",
+    "neotest-output-panel",
+    "neotest-summary",
+    "notify",
+    "qf",
+    "query",
+    "spectre_panel",
+    "startuptime",
+    "tsplayground",
+  },
+  callback = function(event)
+    vim.bo[event.buf].buflisted = false
+    vim.keymap.set(
+      "n", "q", "<cmd>close<cr>", { buffer = event.buf, silent = true }
+    )
+  end,
+})
