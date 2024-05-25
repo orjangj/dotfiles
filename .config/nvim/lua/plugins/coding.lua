@@ -33,18 +33,6 @@ return {
       cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done({ map_char = { tex = "" } }))
     end,
   },
-  { -- TODO: Remove Comment.nvim when using neovim v0.10+?
-    "numToStr/Comment.nvim",
-    event = "VeryLazy",
-    dependencies = {
-      { "JoosepAlviste/nvim-ts-context-commentstring" },
-    },
-    config = function()
-      require("Comment").setup({
-        pre_hook = require("ts_context_commentstring.integrations.comment_nvim").create_pre_hook(),
-      })
-    end,
-  },
   {
     "lukas-reineke/indent-blankline.nvim",
     event = "VeryLazy",
