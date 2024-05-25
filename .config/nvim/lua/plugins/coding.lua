@@ -1,6 +1,7 @@
 return {
   {
     "windwp/nvim-autopairs",
+    event = "VeryLazy",
     config = function()
       require("nvim-autopairs").setup({
         check_ts = true,
@@ -34,6 +35,7 @@ return {
   },
   { -- TODO: Remove Comment.nvim when using neovim v0.10+?
     "numToStr/Comment.nvim",
+    event = "VeryLazy",
     dependencies = {
       { "JoosepAlviste/nvim-ts-context-commentstring" },
     },
@@ -45,6 +47,7 @@ return {
   },
   {
     "lukas-reineke/indent-blankline.nvim",
+    event = "VeryLazy",
     main = "ibl",
     opts = {
       scope = {
@@ -60,6 +63,7 @@ return {
   },
   {
     "folke/todo-comments.nvim",
+    event = "VeryLazy",
     dependencies = { "nvim-lua/plenary.nvim" },
     opts = {
       -- your configuration comes here
@@ -81,6 +85,7 @@ return {
   },
   {
     "nvim-neotest/neotest",
+    event = "VeryLazy",
     dependencies = {
       { "nvim-neotest/nvim-nio" },
       { "nvim-lua/plenary.nvim" },
@@ -91,6 +96,7 @@ return {
       { "andythigpen/nvim-coverage" },
       { "orjangj/neotest-ctest" },
     },
+    -- TODO: update config
     config = function()
       local coverage_exists, coverage = pcall(require, "coverage")
       if coverage_exists then
@@ -140,6 +146,7 @@ return {
   },
   {
     "orjangj/neobuild",
+    enable = false, -- disable for now
     dev = vim.fn.isdirectory("~/projects/git/neobuild") and true or false,
     config = function()
       require("neobuild").setup({})
@@ -147,6 +154,7 @@ return {
   },
   {
     "Civitasv/cmake-tools.nvim",
+    event = "VeryLazy",
     dependencies = {
       { "nvim-lua/plenary.nvim" },
       { "akinsho/toggleterm.nvim" },

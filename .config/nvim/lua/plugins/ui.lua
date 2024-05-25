@@ -2,6 +2,7 @@ return {
   -- {{{ Dashboard
   {
     "goolord/alpha-nvim",
+    event = "VimEnter",
     dependencies = {
       "nvim-tree/nvim-web-devicons",
     },
@@ -44,6 +45,7 @@ return {
   -- {{{ Tab/Bufferline
   {
     "akinsho/bufferline.nvim",
+    event = "VimEnter",
     dependencies = {
       "nvim-tree/nvim-web-devicons",
     },
@@ -65,7 +67,7 @@ return {
         tab_size = 21,
         diagnostics = false,
         diagnostics_update_in_insert = false,
-        offsets = { { filetype = "NvimTree", text = "", padding = 1 } },
+        offsets = { { filetype = "NvimTree", text = "File Explorer", padding = 1, highlight = "NvimTreeNormal" } },
         show_buffer_icons = true,
         show_buffer_close_icons = true,
         show_close_icon = true,

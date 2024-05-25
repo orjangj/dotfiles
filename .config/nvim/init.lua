@@ -1,6 +1,11 @@
+-- Enable the new |lua-loader| (nvim version > 0.9) that byte-compiles and caches lua files.
+vim.loader.enable()
+
 require("core.options")
 require("core.keymaps")
 require("core.autocommands")
+
+-- TODO: Startup time is slow... about 0.5 seconds. Try lazy loading as much as possible.
 
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 
@@ -15,7 +20,7 @@ if not vim.loop.fs_stat(lazypath) then
   })
 end
 
-vim.opt.rtp:prepend(lazypath)
+vim.opt.runtimepath:prepend(lazypath)
 
 -- Use a protected call so we don't error out on first use
 local status_ok, lazy = pcall(require, "lazy")

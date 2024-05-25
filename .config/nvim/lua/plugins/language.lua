@@ -3,7 +3,6 @@ return {
     "nvim-treesitter/nvim-treesitter",
     dependencies = {
       { "nvim-lua/plenary.nvim" },
-      { "nvim-treesitter/playground" },
     },
     build = ":TSUpdate",
     config = function()
@@ -12,7 +11,7 @@ return {
           "bash",
           "c",
           "cmake",
---          "comment", -- Makes nvim extremely slow on files with a lot of (long) comments
+          -- "comment", -- Makes nvim extremely slow on files with a lot of (long) comments
           "cpp",
           "css",
           "diff",
@@ -55,5 +54,5 @@ return {
       })
     end,
   },
-  { "martinda/Jenkinsfile-vim-syntax" },
+  { "martinda/Jenkinsfile-vim-syntax", ft = "Jenkinsfile" },
 }

@@ -1,36 +1,16 @@
+-- TODO: look into https://github.com/WhoIsSethDaniel/mason-tool-installer.nvim
 return {
-  { -- TODO: Remove lsp-zero
-    "VonHeikemen/lsp-zero.nvim",
+  {
+    "neovim/nvim-lspconfig",
+    event = { "BufReadPre", "BufNewFile" },
     dependencies = {
-      { "neovim/nvim-lspconfig" },
       { "williamboman/mason.nvim" },
       { "williamboman/mason-lspconfig.nvim" },
       { "folke/neodev.nvim" },
       { "folke/trouble.nvim" },
-      { "mfussenegger/nvim-lint" },
     },
     config = function()
-      -- IMPORTANT: make sure to setup neodev BEFORE lspconfig
       require("neodev").setup()
-
-      require("mason.settings").set({
-        ui = {
-          border = "rounded",
-        },
-      })
-
-      local lsp = require("lsp-zero").preset({
-        name = "minimal",
-        set_lsp_keymaps = true,
-        manage_nvim_cmp = false,
-        suggest_lsp_servers = false,
-        sign_icons = {
-          error = "",
-          warn = "",
-          hint = "ﴞ",
-          info = "",
-        },
-      })
 
       local servers = {
         clangd = {
@@ -59,33 +39,60 @@ return {
         },
       }
 
-      lsp.ensure_installed(vim.tbl_keys(servers))
+      local ensure_installed = vim.tbl_keys(servers)
+      require("mason").setup({ ui = { border = "rounded" } })
+      require("mason-lspconfig").setup({ ensure_installed = ensure_installed })
+
+      local capabilities = nil
+      if pcall(require, "cmp_nvim_lsp") then
+        capabilities = require("cmp_nvim_lsp").default_capabilities()
+      end
 
       for server, settings in pairs(servers) do
-        lsp.configure(server, {
-          --on_attach = require("plugins.lsp.handlers").on_attach,
-          --capabilities = require("plugins.lsp.handlers").capabilities,
+        require("lspconfig")[server].setup({
+          capabilities = capabilities,
           settings = settings,
         })
       end
 
-      lsp.nvim_workspace()
-      lsp.setup()
+      -- note: diagnostics are not exclusive to lsp servers
+      -- so these can be global keybindings
+      vim.keymap.set("n", "gl", "<cmd>lua vim.diagnostic.open_float()<cr>")
+      vim.keymap.set("n", "[d", "<cmd>lua vim.diagnostic.goto_prev()<cr>")
+      vim.keymap.set("n", "]d", "<cmd>lua vim.diagnostic.goto_next()<cr>")
 
-      vim.diagnostic.config({ virtual_text = true })
+      vim.api.nvim_create_autocmd("LspAttach", {
+        desc = "LSP actions",
+        callback = function(event)
+          local opts = { buffer = event.buf }
 
-      -- TODO: other ways to do this?
-      require("lspconfig.ui.windows").default_options.border = "rounded"
+          -- these will be buffer-local keybindings
+          -- because they only work if you have an active language server
 
-      -- nvim-lint setup
-      --require("lint").linters_by_ft = {
-      --  c = { "clangtidy" },  -- flawfinder
-      --}
-      --vim.api.nvim_create_autocmd({ "BufWritePost" }, {
-      --  callback = function()
-      --    require("lint").try_lint()
-      --  end,
-      --})
+          vim.keymap.set("n", "K", "<cmd>lua vim.lsp.buf.hover()<cr>", opts)
+          vim.keymap.set("n", "gd", "<cmd>lua vim.lsp.buf.definition()<cr>", opts)
+          vim.keymap.set("n", "gD", "<cmd>lua vim.lsp.buf.declaration()<cr>", opts)
+          vim.keymap.set("n", "gi", "<cmd>lua vim.lsp.buf.implementation()<cr>", opts)
+          vim.keymap.set("n", "go", "<cmd>lua vim.lsp.buf.type_definition()<cr>", opts)
+          vim.keymap.set("n", "gr", "<cmd>lua vim.lsp.buf.references()<cr>", opts)
+          vim.keymap.set("n", "gs", "<cmd>lua vim.lsp.buf.signature_help()<cr>", opts)
+          vim.keymap.set("n", "<F2>", "<cmd>lua vim.lsp.buf.rename()<cr>", opts)
+          vim.keymap.set({ "n", "x" }, "<F3>", "<cmd>lua vim.lsp.buf.format({async = true})<cr>", opts)
+          vim.keymap.set("n", "<F4>", "<cmd>lua vim.lsp.buf.code_action()<cr>", opts)
+        end,
+      })
+
+      -- Change diagnostic symbols in the sign column (gutter)
+      local signs = { Error = "", Warn = "", Hint = "", Info = "" }
+      for type, icon in pairs(signs) do
+        local hl = "DiagnosticSign" .. type
+        vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
+      end
+
+      -- Configure ui/window borders for lsp/diagnostics
+      vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded" })
+      vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, { border = "rounded" })
+      vim.diagnostic.config({ virtual_text = true, float = { border = "rounded" } })
 
       require("trouble").setup()
     end,

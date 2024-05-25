@@ -7,7 +7,9 @@ return {
   },
   {
     "nvim-neorg/neorg",
+    ft = "norg",
     dependencies = {
+      -- TODO: lua-utils not found
       { "vhyrro/luarocks.nvim" },
       { "folke/zen-mode.nvim" },
       { "folke/twilight.nvim" },
@@ -91,6 +93,7 @@ return {
   -- {{{ Headlines
   {
     "lukas-reineke/headlines.nvim",
+    ft = "markdown",
     config = function()
       require("headlines").setup({
         markdown = {
