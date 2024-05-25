@@ -19,6 +19,13 @@ return {
         prompt_prefix = " ",
         selection_caret = " ",
         path_display = { "smart" },
+        -- TODO: git_status seem to show more than what is source controlled in dotfiles
+        git_worktrees = {
+          {
+            toplevel = vim.env.HOME,
+            gitdir = vim.env.HOME .. "/dotfiles",
+          },
+        },
 
         mappings = {
           i = {

@@ -4,8 +4,11 @@ return {
     dependencies = {
       { "nvim-lua/plenary.nvim" },
     },
+    event = { "BufReadPost", "BufNewFile" },
+    cmd = { "TSInstall", "TSBufEnable", "TSBufDisable", "TSModuleInfo" },
     build = ":TSUpdate",
     config = function()
+      -- TODO: Only install when entering file missing treesitter integration. Not all of the languages below are actively used.
       require("nvim-treesitter.configs").setup({
         ensure_installed = {
           "bash",

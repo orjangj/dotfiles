@@ -248,6 +248,8 @@ return {
   -- {{{ Explorer
   {
     "nvim-tree/nvim-tree.lua",
+    -- TODO: See https://github.com/Ultra-Code/awesome-neovim/blob/393ad277ae6e86ec882d8ff78cf752a3b7c0b32f/lua/plugins/tree.lua#L6
+    -- There's no need to start nvim-tree until keymaps are triggered
     dependencies = {
       "nvim-tree/nvim-web-devicons",
     },
@@ -387,7 +389,7 @@ return {
       notification = {
         override_vim_notify = true,
       },
-    }
+    },
   },
   -- }}}
   -- {{{ Zen
@@ -445,47 +447,25 @@ return {
     dependencies = {
       "moll/vim-bbye",
     },
-    config = function()
-      local setup = {
-        icons = { group = "" },
-        window = { border = "rounded" },
-        ignore_missing = true, -- enable this to hide mappings for which you didn't specify a label
-      }
+    opts = {
+      icons = { group = "" },
+      window = { border = "rounded" },
+    },
+    config = function(_, opts)
+      local wk = require("which-key")
+      wk.setup(opts)
 
-      local opts = {
-        prefix = "<leader>",
-        nowait = true, -- use `nowait` when creating keymaps
-      }
-
-      local mappings = {
-        ["c"] = { "<cmd>Bdelete!<cr>", "Close Buffer" },
-        ["d"] = { "<cmd>Alpha<cr>", "Dashboard" },
-        ["e"] = { "<cmd>NvimTreeToggle<cr>", "Explorer" },
-        ["h"] = { "<cmd>nohlsearch<cr>", "No Highlight" },
-        ["p"] = { "<cmd>Lazy<cr>", "Plugin" },
-        ["q"] = { "<cmd>q!<cr>", "Quit" },
-        ["w"] = { "<cmd>w!<cr>", "Save Buffer" },
-        ["z"] = { "<cmd>ZenMode<cr>", "Zen Mode" },
-        a = {
-          name = "Annotate",
-          a = { "<cmd>lua require'neogen'.generate({ type=func })<cr>", "Function" },
-          c = { "<cmd>lua require'neogen'.generate({ type=func })<cr>", "Class" },
-          f = { "<cmd>lua require'neogen'.generate({ type=func })<cr>", "File" },
-          t = { "<cmd>lua require'neogen'.generate({ type=func })<cr>", "Type" },
-        },
-        b = {
-          name = "Build",
-          b = { "<cmd>CMakeBuild<cr>", "CMake Build" },
-          c = { "<cmd>CMakeClean<cr>", "CMake Clean" },
-          f = { "<cmd>Telescope cmake_tools<cr>", "CMake Project Files" },
-          t = { "<cmd>CMakeRunTest<cr>", "CTest" },
-          s = { "<cmd>CMakeSettings<cr>", "Settings" },
-          --b = { "<cmd>lua require('neobuild').build()<cr>", "Build" },
-          --c = { "<cmd>lua require('neobuild').configure()<cr>", "Configure" },
-          --d = { "<cmd>lua require('neobuild').clean()<cr>", "Clean" },
-          --f = { "<cmd>lua require('neobuild').build(vim.fn.expand('%'))<cr>", "Build File" },
-        },
-        g = {
+      local keymaps = {
+        mode = { "n", "v" },
+        ["<leader>c"] = { "<cmd>Bdelete!<cr>", "Close Buffer" },
+        ["<leader>d"] = { "<cmd>Alpha<cr>", "Dashboard" },         -- TODO: Move to plugin config
+        ["<leader>e"] = { "<cmd>NvimTreeToggle<cr>", "Explorer" }, -- TODO: Move to plugin config
+        ["<leader>h"] = { "<cmd>nohlsearch<cr>", "No Highlight" },
+        ["<leader>p"] = { "<cmd>Lazy<cr>", "Plugin" },
+        ["<leader>q"] = { "<cmd>q!<cr>", "Quit" },
+        ["<leader>w"] = { "<cmd>w!<cr>", "Save Buffer" },
+        -- TODO: Move to their respective plugins
+        ["<leader>g"] = {
           name = "Git",
           b = { "<cmd>Telescope git_branches<cr>", "Checkout branch" },
           c = { "<cmd>Telescope git_commits<cr>", "Checkout commit" },
@@ -504,7 +484,7 @@ return {
           u = { "<cmd>lua require 'gitsigns'.undo_stage_hunk()<cr>", "Undo Stage Hunk" },
           U = { "<cmd>lua require 'gitsigns'.reset_buffer_index()<cr>", "Undo Stage Buffer" },
         },
-        f = {
+        ["<leader>f"] = {
           name = "Find",
           b = {
             "<cmd>lua require('telescope.builtin').buffers(require('telescope.themes').get_dropdown{previewer = false})<cr>",
@@ -524,7 +504,7 @@ return {
           t = { "<cmd>TodoTelescope keywords=TODO,FIX<cr>", "TODO" },
           z = { "<cmd>Telescope symbols<cr>", "Symbols" },
         },
-        l = {
+        ["<leader>l"] = {
           name = "LSP/Diagnostics",
           a = { "<cmd>lua vim.lsp.buf.code_action()<cr>", "Code Action" },
           A = { "<cmd>lua vim.lsp.codelens.run()<cr>", "CodeLens Action" },
@@ -542,41 +522,17 @@ return {
           t = { "<cmd>TroubleToggle<cr>", "Trouble Diagnostics" },
           z = { "<cmd>Telescope spell_suggest<cr>", "Spelling Suggestions" },
         },
-        --      n = {
-        --        name = "Neorg",
-        --        -- n -- Open Neorg index file
-        --        p = { "<cmd>Neorg presenter start<cr>", "Start Presentation"},
-        --      },
-        t = {
-          name = "Test",
-          -- TODO: Is there a way to specify test suite (namespace)?
-          a = { "<cmd>lua require('neotest').run.attach()<cr>", "Attach" },
-          d = { "<cmd>lua require('neotest').run.run({ strategy = 'dap' })<cr>", "Debug" },
-          -- NOTE: Currently relies on either (1) manually executing CoverageLoad, or execute neotest on entire workspace.
-          -- Not all adapters (i.e. pytest) makes it easy to isolate coverage report without knowing what modules are tested.
-          -- Maybe there's a more elegant solution here, but this seems to work quite well.
-          c = { "<cmd>lua require('coverage').summary()<cr>", "Coverage Summary" },
-          f = { "<cmd>lua require('neotest').run.run(vim.fn.expand('%'))<cr>", "File" },
-          j = { "<cmd>lua require('neotest').jump.next({ status = 'failed' })<cr>", "Next Failed Test" },
-          k = { "<cmd>lua require('neotest').jump.prev({ status = 'failed' })<cr>", "Prev Failed Test" },
-          r = { "<cmd>lua require('neotest').output.open()<cr>", "Results" },
-          s = { "<cmd>lua require('neotest').summary.toggle()<cr>", "Summary" },
-          t = { "<cmd>lua require('neotest').run.run()<cr>", "Nearest" },
-          -- NOTE: Will produce error unless executed inside a file containing tests
-          -- To be able to execute this without having to go through a test file, the adapter option must be set.
-          -- The adapter arg expects "adapter_name:root_dir" as adapter_id. Might want to check if a lua function
-          -- can be used to figure this out based on e.g. file extension. Ex: python files would specify neotest-python.
-          -- example: lua require('neotest').run.run({ suite = true, adapter = 'neotest-python:/home/og/projects/personal/nvim-demo/python' })
-          w = {
-            "<cmd>lua require('neotest').run.run({ suite = true })<cr><cmd>lua require('coverage').load(true)<cr>",
-            "Workspace",
-          },
-        },
       }
-
-      require("which-key").setup(setup)
-      require("which-key").register(mappings, opts)
+      wk.register(keymaps)
     end,
+    -- config = function()
+    --
+    --   local mappings = {
+    --   }
+    --
+    --   require("which-key").setup(setup)
+    --   require("which-key").register(mappings, opts)
+    -- end,
   },
   -- }}}
 }

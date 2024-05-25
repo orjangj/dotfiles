@@ -97,8 +97,27 @@ return {
   },
   {
     "danymat/neogen",
-    config = function()
-      require("neogen").setup({ snippet_engine = "luasnip" })
+    keys = function()
+      local neogen = require("neogen")
+
+      local success, wk = pcall(require, "which-key")
+      if success then
+        wk.register({
+          mode = { "n", "v" },
+          ["<leader>a"] = { name = "Annotate" },
+        })
+      end
+
+      -- stylua: ignore
+      return {
+        { "<leader>aa", function() neogen.generate({ type = "func" }) end,  desc = "Function" },
+        { "<leader>ac", function() neogen.generate({ type = "class" }) end, desc = "Class" },
+        { "<leader>af", function() neogen.generate({ type = "file" }) end,  desc = "File" },
+        { "<leader>at", function() neogen.generate({ type = "type" }) end,  desc = "Type" },
+      }
     end,
+    opts = {
+      snippet_engine = "luasnip",
+    },
   },
 }

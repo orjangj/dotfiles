@@ -1,8 +1,6 @@
 return {
   {
     "folke/flash.nvim",
-    event = "VeryLazy",
-    ---@type Flash.Config
     opts = {},
     keys = {
       { "s", mode = { "n", "x", "o" }, function() require("flash").jump() end, desc = "Flash" },
@@ -20,6 +18,15 @@ return {
     },
     keys = function()
       local harpoon = require("harpoon")
+
+      local success, wk = pcall(require, "which-key")
+      if success then
+        wk.register({
+          mode = { "n", "v" },
+          ["<leader>j"] = { name = "Harpoon" },
+        })
+      end
+
       -- stylua: ignore
       return {
         { "<leader>j1", function() harpoon:list():select(1) end, desc = "Harpoon buffer 1" },
