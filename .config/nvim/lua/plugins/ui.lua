@@ -248,12 +248,13 @@ return {
   -- {{{ Explorer
   {
     "nvim-tree/nvim-tree.lua",
-    -- TODO: See https://github.com/Ultra-Code/awesome-neovim/blob/393ad277ae6e86ec882d8ff78cf752a3b7c0b32f/lua/plugins/tree.lua#L6
-    -- There's no need to start nvim-tree until keymaps are triggered
     dependencies = {
       "nvim-tree/nvim-web-devicons",
     },
-    config = function()
+    keys = {
+      { "<leader>e", "<cmd>NvimTreeToggle<cr>", desc = "Explorer" },
+    },
+    opts = function()
       local function on_attach(bufnr)
         local api = require("nvim-tree.api")
 
@@ -322,7 +323,8 @@ return {
         vim.keymap.set("n", "v", api.node.open.vertical, opts("Open: Vertical Split"))
       end
 
-      require("nvim-tree").setup({
+      return {
+        on_attach = on_attach,
         sync_root_with_cwd = true,
         respect_buf_cwd = true,
         update_focused_file = {
@@ -370,31 +372,26 @@ return {
             error = "",
           },
         },
-        on_attach = on_attach,
-      })
+      }
+    end,
+    config = function(_, opts)
+      require("nvim-tree").setup(opts)
     end,
   },
   -- }}}
   -- {{{ Notifications
-  --{
-  --  "rcarriga/nvim-notify",
-  --  config = function()
-  --    vim.notify = require("notify")
-  --  end,
-  --},
   {
-    "j-hui/fidget.nvim",
-    tag = "v1.4.5",
-    opts = {
-      notification = {
-        override_vim_notify = true,
-      },
-    },
+    "rcarriga/nvim-notify",
+    config = function()
+      vim.notify = require("notify")
+    end,
   },
   -- }}}
   -- {{{ Zen
   {
     "folke/zen-mode.nvim",
+    enabled = false, -- TODO: Primarily used with neorg.presenter, but not sure if I should keep it
+    cmd = { "ZenMode" },
     config = function()
       require("zen-mode").setup({
         window = {
@@ -444,6 +441,7 @@ return {
   -- {{{ Which-key
   {
     "folke/which-key.nvim",
+    events = "VeryLazy",
     dependencies = {
       "moll/vim-bbye",
     },
@@ -458,8 +456,7 @@ return {
       local keymaps = {
         mode = { "n", "v" },
         ["<leader>c"] = { "<cmd>Bdelete!<cr>", "Close Buffer" },
-        ["<leader>d"] = { "<cmd>Alpha<cr>", "Dashboard" },         -- TODO: Move to plugin config
-        ["<leader>e"] = { "<cmd>NvimTreeToggle<cr>", "Explorer" }, -- TODO: Move to plugin config
+        ["<leader>d"] = { "<cmd>Alpha<cr>", "Dashboard" }, -- TODO: Move to plugin config
         ["<leader>h"] = { "<cmd>nohlsearch<cr>", "No Highlight" },
         ["<leader>p"] = { "<cmd>Lazy<cr>", "Plugin" },
         ["<leader>q"] = { "<cmd>q!<cr>", "Quit" },
@@ -470,7 +467,6 @@ return {
           b = { "<cmd>Telescope git_branches<cr>", "Checkout branch" },
           c = { "<cmd>Telescope git_commits<cr>", "Checkout commit" },
           d = { "<cmd>Gitsigns diffthis HEAD<cr>", "Diff" },
-          g = { "<cmd>LazyGit<cr>", "LazyGit" },
           j = { "<cmd>lua require 'gitsigns'.next_hunk()<cr>", "Next Hunk" },
           k = { "<cmd>lua require 'gitsigns'.prev_hunk()<cr>", "Prev Hunk" },
           l = { "<cmd>lua require 'gitsigns'.blame_line()<cr>", "Blame Line" },
@@ -483,26 +479,6 @@ return {
           S = { "<cmd>lua require 'gitsigns'.stage_buffer()<cr>", "Stage buffer" },
           u = { "<cmd>lua require 'gitsigns'.undo_stage_hunk()<cr>", "Undo Stage Hunk" },
           U = { "<cmd>lua require 'gitsigns'.reset_buffer_index()<cr>", "Undo Stage Buffer" },
-        },
-        ["<leader>f"] = {
-          name = "Find",
-          b = {
-            "<cmd>lua require('telescope.builtin').buffers(require('telescope.themes').get_dropdown{previewer = false})<cr>",
-            "Buffers",
-          },
-          c = { "<cmd>Telescope commands<cr>", "Commands" },
-          f = { "<cmd>Telescope find_files<cr>", "Files" },
-          F = { "<cmd>lua require('telescope').extensions.recent_files.pick()<cr>", "Recent Files" },
-          g = { "<cmd>Telescope glyph<cr>", "Glyphs" },
-          h = { "<cmd>Telescope help_tags<cr>", "Help Tags" },
-          i = { "<cmd>Telescope media_files<cr>", "Media Files" },
-          m = { "<cmd>Telescope man_pages<cr>", "Man Pages" },
-          n = { "<cmd>Telescope notify<cr>", "Notify history" },
-          p = { "<cmd>lua require('telescope').extensions.projects.projects()<cr>", "Projects" },
-          s = { "<cmd>Telescope live_grep<cr>", "Workspace Search" },
-          S = { "<cmd>Telescope current_buffer_fuzzy_find theme=ivy<cr>", "Buffer Search" },
-          t = { "<cmd>TodoTelescope keywords=TODO,FIX<cr>", "TODO" },
-          z = { "<cmd>Telescope symbols<cr>", "Symbols" },
         },
         ["<leader>l"] = {
           name = "LSP/Diagnostics",

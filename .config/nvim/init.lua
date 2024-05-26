@@ -5,8 +5,6 @@ require("core.options")
 require("core.keymaps")
 require("core.autocommands")
 
--- TODO: Startup time is slow... about 0.5 seconds. Try lazy loading as much as possible.
-
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 
 if not vim.loop.fs_stat(lazypath) then
@@ -28,6 +26,9 @@ if not status_ok then
   return
 end
 
+-- TODO: Look into the config folder integration with lazy.
+--       Currently, I'm using core as folder name.
+
 return lazy.setup("plugins", {
   ui = {
     border = "rounded",
@@ -38,5 +39,36 @@ return lazy.setup("plugins", {
   change_detection = {
     enabled = true,
     notify = false,
+  },
+  performance = {
+    rtp = {
+      -- disable some rtp plugins
+      disabled_plugins = {
+        -- Vim plugin for editing compressed files.
+        "gzip",
+        -- tarPlugin.vim -- a Vim plugin for browsing tarfiles
+        "tarPlugin",
+        -- Vim plugin for converting a syntax highlighted file to HTML.
+        "tohtml",
+        -- zipPlugin.vim: Handles browsing zipfiles
+        "zipPlugin",
+        -- netrwPlugin.vim: Handles file transfer and remote directory listing across a network
+        -- support of plugins written in other languages
+        "netrwPlugin",
+        "rplugin",
+        -- Vim plugin for downloading spell files
+        -- "spellfile",
+        -- matchit.vim: (global plugin) Extended "%" matching
+        -- "matchit",
+        -- Vim plugin for showing matching parens
+        -- "matchparen",
+        -- "tutor",
+        -- "man",
+        -- "shada",
+        -- "health",
+        -- "editorconfig",
+        -- "nvim",
+      },
+    },
   },
 })

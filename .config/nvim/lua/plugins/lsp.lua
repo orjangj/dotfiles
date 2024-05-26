@@ -1,4 +1,5 @@
 -- TODO: look into https://github.com/WhoIsSethDaniel/mason-tool-installer.nvim
+-- TODO: Auto update LSP servers?
 return {
   {
     "neovim/nvim-lspconfig",
@@ -8,11 +9,23 @@ return {
       { "williamboman/mason-lspconfig.nvim" },
       { "folke/neodev.nvim" },
       { "folke/trouble.nvim" },
+      {
+        "j-hui/fidget.nvim",
+        tag = "v1.4.5",
+        opts = {
+          integration = {
+            ["nvim-tree"] = {
+              enable = false,
+            },
+          },
+        },
+      },
     },
     config = function()
       require("neodev").setup()
 
       local servers = {
+        ansiblels = {},
         clangd = {
           cmd = {
             "clangd",
@@ -27,7 +40,7 @@ return {
           },
         },
         cmake = {},
-        ansiblels = {},
+        -- cpptools = {}, -- TODO: Check it out
         lua_ls = {
           Lua = {
             diagnostics = {
@@ -91,7 +104,8 @@ return {
 
       -- Configure ui/window borders for lsp/diagnostics
       vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded" })
-      vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, { border = "rounded" })
+      vim.lsp.handlers["textDocument/signatureHelp"] =
+          vim.lsp.with(vim.lsp.handlers.signature_help, { border = "rounded" })
       vim.diagnostic.config({ virtual_text = true, float = { border = "rounded" } })
 
       require("trouble").setup()
@@ -102,6 +116,7 @@ return {
     dependencies = {
       { "nvim-lua/plenary.nvim" },
     },
+    event = { "BufReadPre", "BufNewFile" },
     config = function()
       -- null-ls setup
       local null_ls = require("null-ls")

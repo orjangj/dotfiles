@@ -1,5 +1,7 @@
 return {
+  -- TODO: Use telescope-project.nvim instead?
   "ahmedkhalf/project.nvim",
+  event = "VeryLazy",
   config = function()
     require("project_nvim").setup({
       detection_methods = { "pattern" },

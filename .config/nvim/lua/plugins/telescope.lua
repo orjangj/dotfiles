@@ -8,14 +8,46 @@ return {
     { "nvim-telescope/telescope-symbols.nvim" },
     { "nvim-lua/popup.nvim" },
     { "nvim-lua/plenary.nvim" },
+    --   "ahmedkhalf/project.nvim",
+    --   opts = {
+    --     detection_methods = { "pattern" },
+    --     patterns = { ">git" },
+    --   },
+    --   config = function(_, opts)
+    --     require("project_nvim").setup(opts)
+    --   end,
+    -- }
   },
-  config = function()
-    local telescope = require("telescope")
+  cmd = "Telescope",
+  keys = function ()
+      local success, wk = pcall(require, "which-key")
+      if success then
+        wk.register({
+          mode = { "n", "v" },
+          ["<leader>f"] = { name = "Find" },
+        })
+      end
+
+      return {
+        {"<leader>fb", "<cmd>lua require('telescope.builtin').buffers(require('telescope.themes').get_dropdown{previewer = false})<cr>", desc = "Buffers" },
+        { "<leader>fc", "<cmd>Telescope commands<cr>", desc = "Commands" },
+        { "<leader>ff", "<cmd>Telescope find_files<cr>", desc = "Files" },
+        { "<leader>fF", "<cmd>lua require('telescope').extensions.recent_files.pick()<cr>", desc = "Recent Files" },
+        { "<leader>fg", "<cmd>Telescope glyph<cr>", desc = "Glyphs" },
+        { "<leader>fh", "<cmd>Telescope help_tags<cr>", desc = "Help Tags" },
+        { "<leader>fi", "<cmd>Telescope media_files<cr>", desc = "Media Files" },
+        { "<leader>fm", "<cmd>Telescope man_pages<cr>", desc = "Man Pages" },
+        { "<leader>fn", "<cmd>Telescope notify<cr>", desc = "Notification history" },
+        { "<leader>fp", "<cmd>lua require('telescope').extensions.projects.projects()<cr>", desc = "Projects" },
+        { "<leader>fs", "<cmd>Telescope live_grep<cr>", desc = "Workspace Search" },
+        { "<leader>fS", "<cmd>Telescope current_buffer_fuzzy_find theme=ivy<cr>", desc = "Buffer Search" },
+        { "<leader>fz", "<cmd>Telescope symbols<cr>", desc = "Symbols" },
+      }
+  end,
+  opts = function()
     local actions = require("telescope.actions")
-
-    telescope.setup({
+    return {
       defaults = {
-
         prompt_prefix = " ",
         selection_caret = " ",
         path_display = { "smart" },
@@ -26,31 +58,23 @@ return {
             gitdir = vim.env.HOME .. "/dotfiles",
           },
         },
-
         mappings = {
           i = {
             ["<C-n>"] = actions.cycle_history_next,
             ["<C-p>"] = actions.cycle_history_prev,
-
             ["<C-j>"] = actions.move_selection_next,
             ["<C-k>"] = actions.move_selection_previous,
-
             ["<C-c>"] = actions.close,
-
             ["<Down>"] = actions.move_selection_next,
             ["<Up>"] = actions.move_selection_previous,
-
             ["<CR>"] = actions.select_default,
             ["<C-x>"] = actions.select_horizontal,
             ["<C-v>"] = actions.select_vertical,
             ["<C-t>"] = actions.select_tab,
-
             ["<C-u>"] = actions.preview_scrolling_up,
             ["<C-d>"] = actions.preview_scrolling_down,
-
             ["<PageUp>"] = actions.results_scrolling_up,
             ["<PageDown>"] = actions.results_scrolling_down,
-
             ["<Tab>"] = actions.toggle_selection + actions.move_selection_worse,
             ["<S-Tab>"] = actions.toggle_selection + actions.move_selection_better,
             ["<C-q>"] = actions.send_to_qflist + actions.open_qflist,
@@ -58,36 +82,29 @@ return {
             ["<C-l>"] = actions.complete_tag,
             ["<C-_>"] = actions.which_key, -- keys from pressing <C-/>
           },
-
           n = {
             ["<esc>"] = actions.close,
             ["<CR>"] = actions.select_default,
             ["<C-x>"] = actions.select_horizontal,
             ["<C-v>"] = actions.select_vertical,
             ["<C-t>"] = actions.select_tab,
-
             ["<Tab>"] = actions.toggle_selection + actions.move_selection_worse,
             ["<S-Tab>"] = actions.toggle_selection + actions.move_selection_better,
             ["<C-q>"] = actions.send_to_qflist + actions.open_qflist,
             ["<M-q>"] = actions.send_selected_to_qflist + actions.open_qflist,
-
             ["j"] = actions.move_selection_next,
             ["k"] = actions.move_selection_previous,
             ["H"] = actions.move_to_top,
             ["M"] = actions.move_to_middle,
             ["L"] = actions.move_to_bottom,
-
             ["<Down>"] = actions.move_selection_next,
             ["<Up>"] = actions.move_selection_previous,
             ["gg"] = actions.move_to_top,
             ["G"] = actions.move_to_bottom,
-
             ["<C-u>"] = actions.preview_scrolling_up,
             ["<C-d>"] = actions.preview_scrolling_down,
-
             ["<PageUp>"] = actions.results_scrolling_up,
             ["<PageDown>"] = actions.results_scrolling_down,
-
             ["?"] = actions.which_key,
           },
         },
@@ -109,13 +126,14 @@ return {
           find_cmd = "rg",
         },
       },
-    })
-
-    -- To get extensions loaded with telescope, we need to call load_extension,
-    -- somewhere after setup function
-    require("telescope").load_extension("fzf")
-    require("telescope").load_extension("glyph")
-    require("telescope").load_extension("recent_files")
-    require("telescope").load_extension("media_files")
+    }
+  end,
+  config = function(_, opts)
+    local telescope = require("telescope")
+    telescope.setup(opts)
+    telescope.load_extension("fzf")
+    telescope.load_extension("glyph")
+    telescope.load_extension("recent_files")
+    telescope.load_extension("media_files")
   end,
 }

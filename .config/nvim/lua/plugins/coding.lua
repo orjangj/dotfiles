@@ -51,12 +51,12 @@ return {
   },
   {
     "folke/todo-comments.nvim",
-    event = "VeryLazy",
+    event = { "BufReadPre", "BufNewFile" },
     dependencies = { "nvim-lua/plenary.nvim" },
+    keys = {
+      { "<leader>ft", "<cmd>TodoTelescope keywords=TODO,FIX<cr>", desc = "TODO" },
+    },
     opts = {
-      -- your configuration comes here
-      -- or leave it empty to use the default settings
-      -- refer to the configuration section below
       search = {
         command = "rg",
         args = {
@@ -65,7 +65,7 @@ return {
           "--with-filename",
           "--line-number",
           "--column",
-          "--glob=!{submodules}",
+          "--glob=!{submodules}", -- Don't search in these folders
         },
         pattern = [[\b(KEYWORDS):]],
       },

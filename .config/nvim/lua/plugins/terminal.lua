@@ -1,7 +1,11 @@
 return {
   "akinsho/toggleterm.nvim",
-  config = function()
-    require("toggleterm").setup({
+  tag = "*",
+  keys = {
+    -- Only description to let lazy.nvim lazy load it
+    { [[<c-\>]], desc = "Toggle terminal" },
+  },
+  opts = {
       size = function(term)
         if term.direction == "float" then
           return 80
@@ -13,7 +17,7 @@ return {
       shade_terminals = false,
       start_in_insert = true,
       insert_mappings = true,
-      persist_size = true,
+      persist_size = false,
       direction = "vertical",
       close_on_exit = true,
       shell = vim.o.shell,
@@ -26,17 +30,19 @@ return {
           guifg = vim.api.nvim_get_hl(0, { name = "FloatBorder" }).fg,
         },
       },
-    })
+  },
+  config = function(_, opts)
+    require("toggleterm").setup(opts)
 
+    -- TODO: move to lazy spec init?
     function _G.set_terminal_keymaps()
-      local opts = { noremap = true }
-      vim.api.nvim_buf_set_keymap(0, "t", "<esc>", [[<C-\><C-n>]], opts)
-      vim.api.nvim_buf_set_keymap(0, "t", "<C-h>", [[<C-\><C-n><C-W>h]], opts)
-      vim.api.nvim_buf_set_keymap(0, "t", "<C-j>", [[<C-\><C-n><C-W>j]], opts)
-      vim.api.nvim_buf_set_keymap(0, "t", "<C-k>", [[<C-\><C-n><C-W>k]], opts)
-      vim.api.nvim_buf_set_keymap(0, "t", "<C-l>", [[<C-\><C-n><C-W>l]], opts)
+      local settings = { noremap = true }
+      vim.api.nvim_buf_set_keymap(0, "t", "<esc>", [[<C-\><C-n>]], settings )
+      vim.api.nvim_buf_set_keymap(0, "t", "<C-h>", [[<C-\><C-n><C-W>h]], settings )
+      vim.api.nvim_buf_set_keymap(0, "t", "<C-j>", [[<C-\><C-n><C-W>j]], settings )
+      vim.api.nvim_buf_set_keymap(0, "t", "<C-k>", [[<C-\><C-n><C-W>k]], settings )
+      vim.api.nvim_buf_set_keymap(0, "t", "<C-l>", [[<C-\><C-n><C-W>l]], settings )
     end
-
     vim.cmd("autocmd! TermOpen term://* lua set_terminal_keymaps()")
   end,
 }
