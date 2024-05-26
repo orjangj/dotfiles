@@ -112,6 +112,7 @@ return {
     end,
   },
   {
+    -- TODO: format selected? i.e. when in visual mode?
     "nvimtools/none-ls.nvim",
     dependencies = {
       { "nvim-lua/plenary.nvim" },

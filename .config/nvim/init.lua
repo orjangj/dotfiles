@@ -18,6 +18,7 @@ if not vim.loop.fs_stat(lazypath) then
   })
 end
 
+
 vim.opt.runtimepath:prepend(lazypath)
 
 -- Use a protected call so we don't error out on first use

@@ -4,6 +4,70 @@ return {
     -- TODO: detached work tree, and integrations with other plugins
     "lewis6991/gitsigns.nvim",
     commit = "d6a3bf0b36b7e0f09e39f738f9f87ab1e3c450dc", -- NOTE: See https://github.com/lewis6991/gitsigns.nvim/issues/1020
+    event = { "BufReadPost", "BufNewFile" },
+    init = function()
+      local augroup = vim.api.nvim_create_augroup
+      local autocmd = vim.api.nvim_create_autocmd
+
+      -- Go back to original window with <q> after user gitsigns.diffview()
+      -- NOTE: Not sure if this can have any side-effects, but it seems to work
+      augroup("closeDiffWithQ", { clear = true })
+      autocmd("DiffUpdated", {
+        group = "closeDiffWithQ",
+        callback = function(event)
+          -- Might be redundant, but ensure we're actually in a diff
+          if vim.opt.diff:get() then
+            vim.keymap.set("n", "q", function()
+              vim.cmd("wincmd p | q")
+              -- Unmap so the keymap doesn't apply to the buffer anymore,
+              -- effectively making <q> a oneshot keymap.
+              vim.keymap.del("n", "q", { buffer = event.buf })
+            end, { buffer = event.buf, silent = true })
+          end
+        end,
+      })
+    end,
+    keys = function()
+      local gitsigns = require("gitsigns")
+      local success, wk = pcall(require, "which-key")
+      if success then
+        wk.register({
+          mode = { "n", "v" },
+          ["<leader>g"] = { name = "Git" },
+        })
+      end
+
+      -- stylua: ignore
+      return {
+        { "<leader>gb", "<cmd>Telescope git_branches<cr>", desc = "Checkout branch" },
+        { "<leader>gc", "<cmd>Telescope git_commits<cr>",  desc = "Checkout commit" },
+        {
+          "<leader>gd",
+          function()
+            -- NOTE: See init section for closing with <q> instead
+            if not vim.opt.diff:get() then
+              gitsigns.diffthis("HEAD")
+            else
+              -- Go back to original window
+              vim.cmd("wincmd p | q")
+            end
+          end,
+          desc = "Toggle Diff"
+        },
+        { "<leader>gj", function() gitsigns.next_hunk() end,                 desc = "Next Hunk" },
+        { "<leader>gk", function() gitsigns.prev_hunk() end,                 desc = "Prev Hunk" },
+        { "<leader>gl", function() gitsigns.blame_line() end,                desc = "Blame Line" },
+        { "<leader>gL", function() gitsigns.toggle_current_line_blame() end, desc = "Blame Toggle" },
+        { "<leader>go", "<cmd>Telescope git_status<cr>",                     desc = "Open changed file" },
+        { "<leader>gp", function() gitsigns.preview_hunk() end,              desc = "Preview Hunk" },
+        { "<leader>gr", function() gitsigns.reset_hunk() end,                desc = "Reset Hunk" },
+        { "<leader>gR", function() gitsigns.reset_buffer() end,              desc = "Reset Buffer" },
+        { "<leader>gs", function() gitsigns.stage_hunk() end,                desc = "Stage Hunk" },
+        { "<leader>gS", function() gitsigns.stage_buffer() end,              desc = "Stage buffer" },
+        { "<leader>gu", function() gitsigns.undo_stage_hunk() end,           desc = "Undo Stage Hunk" },
+        { "<leader>gU", function() gitsigns.reset_buffer_index() end,        desc = "Undo Stage Buffer" },
+      }
+    end,
     opts = {
       signs = {
         add = { text = "│" },
@@ -14,8 +78,8 @@ return {
         untracked = { text = "┆" },
       },
       signcolumn = true, -- Toggle with `:Gitsigns toggle_signs`
-      numhl = false,     -- Toggle with `:Gitsigns toggle_numhl`
-      linehl = false,    -- Toggle with `:Gitsigns toggle_linehl`
+      numhl = false, -- Toggle with `:Gitsigns toggle_numhl`
+      linehl = false, -- Toggle with `:Gitsigns toggle_linehl`
       word_diff = false, -- Toggle with `:Gitsigns toggle_word_diff`
       watch_gitdir = {
         interval = 1000,
@@ -64,8 +128,8 @@ return {
       -- TODO: telescope integration?
     },
     keys = {
-      { "<leader>gg", "<cmd>LazyGit<cr>", desc = "LazyGit" }
-    }
+      { "<leader>gg", "<cmd>LazyGit<cr>", desc = "LazyGit" },
+    },
   },
   -- }}}
 }
