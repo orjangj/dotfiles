@@ -99,15 +99,6 @@ return {
     "danymat/neogen",
     keys = function()
       local neogen = require("neogen")
-
-      local success, wk = pcall(require, "which-key")
-      if success then
-        wk.register({
-          mode = { "n", "v" },
-          ["<leader>a"] = { name = "Annotate" },
-        })
-      end
-
       -- stylua: ignore
       return {
         { "<leader>aa", function() neogen.generate({ type = "func" }) end,  desc = "Function" },

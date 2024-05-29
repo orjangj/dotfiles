@@ -28,7 +28,7 @@ local options = {
   -- Indentation
   expandtab = true,                        -- convert tabs to spaces
   shiftwidth = 4,                          -- the number of spaces inserted for each indentation
-  showtabline = 4,                         -- always show tabs
+  showtabline = 1,                         -- Only if two or more (may be overridden by i.e. bufferline plugin)
   smartindent = true,                      -- make indenting smarter again
   tabstop = 4,                             -- insert spaces for a tab
   -- Completion

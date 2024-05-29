@@ -21,6 +21,24 @@ return {
         },
       },
     },
+    keys = function()
+      return {
+        { "<leader>la", function () vim.lsp.buf.code_action() end, desc = "Code Action" },
+        { "<leader>lA", function () vim.lsp.codelens.run() end, desc = "CodeLens Action" },
+        { "<leader>ld", "<cmd>Telescope diagnostics bufnr=0 previewer=false<cr>", desc = "Buffer Diagnostics" },
+        { "<leader>lD", "<cmd>Telescope diagnostics<cr>", desc = "Workspace Diagnostics" },
+        { "<leader>lf", function () vim.lsp.buf.format({ async = true }) end, desc = "Format Buffer" },
+        { "<leader>li", "<cmd>LspInfo<cr>", desc = "List LSP Clients" },
+        { "<leader>lI", "<cmd>Mason<cr>", desc = "LSP Installer" },
+        { "<leader>lj", function () vim.diagnostic.goto_next() end, desc = "Next Diagnostic" },
+        { "<leader>lk", function () vim.diagnostic.goto_prev() end, desc = "Prev Diagnostic" },
+        { "<leader>lr", "<cmd>Telescope lsp_references<cr>", desc = "References" },
+        { "<leader>lR", function () vim.lsp.buf.rename() end, desc = "Rename" },
+        { "<leader>ls", "<cmd>Telescope lsp_document_symbols<cr>", desc = "Document Symbols" },
+        { "<leader>lS", "<cmd>Telescope lsp_dynamic_workspace_symbols<cr>", desc = "Workspace Symbols" },
+        { "<leader>lt", "<cmd>TroubleToggle<cr>", desc = "Trouble Diagnostics" },
+      }
+    end,
     config = function()
       require("neodev").setup()
 
@@ -105,7 +123,7 @@ return {
       -- Configure ui/window borders for lsp/diagnostics
       vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded" })
       vim.lsp.handlers["textDocument/signatureHelp"] =
-          vim.lsp.with(vim.lsp.handlers.signature_help, { border = "rounded" })
+        vim.lsp.with(vim.lsp.handlers.signature_help, { border = "rounded" })
       vim.diagnostic.config({ virtual_text = true, float = { border = "rounded" } })
 
       require("trouble").setup()

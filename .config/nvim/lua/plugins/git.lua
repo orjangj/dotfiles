@@ -9,18 +9,18 @@ return {
       local augroup = vim.api.nvim_create_augroup
       local autocmd = vim.api.nvim_create_autocmd
 
-      -- Go back to original window with <q> after user gitsigns.diffview()
-      -- NOTE: Not sure if this can have any side-effects, but it seems to work
+      -- NOTE: Not sure if this can have any side-effects, but it seems to work:
+      -- Go back to original window with <q> after calling gitsigns.diffthis()
       augroup("closeDiffWithQ", { clear = true })
       autocmd("DiffUpdated", {
         group = "closeDiffWithQ",
         callback = function(event)
-          -- Might be redundant, but ensure we're actually in a diff
+          -- Ensure we're actually in a diff
           if vim.opt.diff:get() then
+            -- make <q> a oneshot keymap that closes the diff view
+            -- and goes back to the original winndow
             vim.keymap.set("n", "q", function()
               vim.cmd("wincmd p | q")
-              -- Unmap so the keymap doesn't apply to the buffer anymore,
-              -- effectively making <q> a oneshot keymap.
               vim.keymap.del("n", "q", { buffer = event.buf })
             end, { buffer = event.buf, silent = true })
           end
@@ -29,31 +29,11 @@ return {
     end,
     keys = function()
       local gitsigns = require("gitsigns")
-      local success, wk = pcall(require, "which-key")
-      if success then
-        wk.register({
-          mode = { "n", "v" },
-          ["<leader>g"] = { name = "Git" },
-        })
-      end
-
       -- stylua: ignore
       return {
-        { "<leader>gb", "<cmd>Telescope git_branches<cr>", desc = "Checkout branch" },
-        { "<leader>gc", "<cmd>Telescope git_commits<cr>",  desc = "Checkout commit" },
-        {
-          "<leader>gd",
-          function()
-            -- NOTE: See init section for closing with <q> instead
-            if not vim.opt.diff:get() then
-              gitsigns.diffthis("HEAD")
-            else
-              -- Go back to original window
-              vim.cmd("wincmd p | q")
-            end
-          end,
-          desc = "Toggle Diff"
-        },
+        { "<leader>gb", "<cmd>Telescope git_branches<cr>",                   desc = "Checkout branch" },
+        { "<leader>gc", "<cmd>Telescope git_commits<cr>",                    desc = "Checkout commit" },
+        { "<leader>gd", function() gitsigns.diffthis("HEAD") end,            desc = "Toggle Diff" },
         { "<leader>gj", function() gitsigns.next_hunk() end,                 desc = "Next Hunk" },
         { "<leader>gk", function() gitsigns.prev_hunk() end,                 desc = "Prev Hunk" },
         { "<leader>gl", function() gitsigns.blame_line() end,                desc = "Blame Line" },
@@ -122,6 +102,7 @@ return {
   -- }}}
   -- {{{ Lazygit
   {
+    -- TODO: Replace with something else? Fugitive or Neogit maybe?
     "kdheepak/lazygit.nvim",
     dependencies = {
       "nvim-lua/plenary.nvim",

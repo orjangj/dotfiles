@@ -19,14 +19,6 @@ return {
     keys = function()
       local harpoon = require("harpoon")
 
-      local success, wk = pcall(require, "which-key")
-      if success then
-        wk.register({
-          mode = { "n", "v" },
-          ["<leader>j"] = { name = "Harpoon" },
-        })
-      end
-
       -- stylua: ignore
       return {
         { "<leader>j1", function() harpoon:list():select(1) end, desc = "Harpoon buffer 1" },
@@ -40,23 +32,18 @@ return {
         { "<leader>jc", function() harpoon:list():clear() end, desc = "Clear all harpoons" },
       }
     end,
-    -- TODO: Some of these settings seem deprecated
     opts = function(_, opts)
       opts.settings = {
         save_on_toggle = false,
         sync_on_ui_close = false,
-        save_on_change = true,
-        enter_on_sendcmd = false,
-        tmux_autoclose_windows = false,
-        excluded_filetypes = { "harpoon", "alpha", "dashboard", "gitcommit" },
-        mark_branch = true, -- FIX: Doesn't seem to work (related? https://github.com/ThePrimeagen/harpoon/issues/565)
         key = function()
+          -- TODO: Integrate with git branches (i.e. different harpoons based on git branch)
           return vim.loop.cwd()
         end,
       }
     end,
     config = function(_, opts)
-      require("harpoon").setup(opts)
+      require("harpoon"):setup(opts)
     end,
   },
 }

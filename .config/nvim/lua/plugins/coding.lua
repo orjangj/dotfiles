@@ -87,35 +87,27 @@ return {
       local neotest = require("neotest")
       local coverage = require("coverage")
 
-      local success, wk = pcall(require, "which-key")
-      if success then
-        wk.register({
-          mode = { "n", "v" },
-          ["<leader>t"] = { name = "Test" },
-        })
-      end
-
       -- stylua: ignore
       -- TODO: Is there a way to specify test suite (namespace)?
       return {
-        { "<leader>ta", function() neotest.run.attach() end,                    desc = "Attach" },
-        { "<leader>td", function() neotest.run.run({ strategy = 'dap' }) end,   desc = "Debug" },
+        { "<leader>ta", function() neotest.run.attach() end,                     desc = "Attach" },
+        { "<leader>td", function() neotest.run.run({ strategy = 'dap' }) end,    desc = "Debug" },
         -- NOTE: Currently relies on either (1) manually executing CoverageLoad, or execute neotest on entire workspace.
         -- Not all adapters (i.e. pytest) makes it easy to isolate coverage report without knowing what modules are tested.
         -- Maybe there's a more elegant solution here, but this seems to work quite well.
-        { "<leader>tc", function() coverage.summary() end,                      desc = "Coverage" },
-        { "<leader>tf", function() neotest.run.run(vim.fn.expand('%')) end,     desc = "File" },
+        { "<leader>tc", function() coverage.summary() end,                       desc = "Coverage" },
+        { "<leader>tf", function() neotest.run.run(vim.fn.expand('%')) end,      desc = "File" },
         { "<leader>tj", function() neotest.jump.next({ status = 'failed' }) end, desc = "Next Failed" },
         { "<leader>tk", function() neotest.jump.prev({ status = 'failed' }) end, desc = "Prev Failed" },
-        { "<leader>tr", function() neotest.output.open() end,                   desc = "Results" },
-        { "<leader>ts", function() neotest.summary.toggle() end,                desc = "Summary" },
-        { "<leader>tt", function() neotest.run.run() end,                       desc = "Run Nearest" },
+        { "<leader>tr", function() neotest.output.open() end,                    desc = "Results" },
+        { "<leader>ts", function() neotest.summary.toggle() end,                 desc = "Summary" },
+        { "<leader>tt", function() neotest.run.run() end,                        desc = "Run Nearest" },
         -- NOTE: Will produce error unless executed inside a file containing tests
         -- To be able to execute this without having to go through a test file, the adapter option must be set.
         -- The adapter arg expects "adapter_name:root_dir" as adapter_id. Might want to check if a lua function
         -- can be used to figure this out based on e.g. file extension. Ex: python files would specify neotest-python.
         -- example: lua require('neotest').run.run({ suite = true, adapter = 'neotest-python:/home/og/projects/personal/nvim-demo/python' })
-        { "<leader>tw", function() neotest.run.run({ suite = true }) end,       desc = "Workspace" },
+        { "<leader>tw", function() neotest.run.run({ suite = true }) end,        desc = "Workspace" },
       }
     end,
     -- TODO: update config?
@@ -169,6 +161,9 @@ return {
   {
     "orjangj/neobuild",
     enabled = false, -- disable for now
+    dependencies = {
+      { "MunifTanjim/nui.nvim" },
+    },
     -- Keymaps for later
     --     b = {
     --       --b = { "<cmd>lua require('neobuild').build()<cr>", "Build" },
@@ -187,23 +182,13 @@ return {
       { "nvim-lua/plenary.nvim" },
       { "akinsho/toggleterm.nvim" },
     },
-    keys = function()
-      local success, wk = pcall(require, "which-key")
-      if success then
-        wk.register({
-          mode = { "n", "v" },
-          ["<leader>b"] = { name = "Build" },
-        })
-      end
-
-      return {
-        { "<leader>bb", "<cmd>CMakeBuild<cr>",            desc = "CMake Build" },
-        { "<leader>bc", "<cmd>CMakeClean<cr>",            desc = "CMake Clean" },
-        { "<leader>bf", "<cmd>Telescope cmake_tools<cr>", desc = "CMake Project Files" },
-        { "<leader>bt", "<cmd>CMakeRunTest<cr>",          desc = "Run CTest" },
-        { "<leader>bs", "<cmd>CMakeSettings<cr>",         desc = "CMake Settings" },
-      }
-    end,
+    keys = {
+      { "<leader>bb", "<cmd>CMakeBuild<cr>",            desc = "CMake Build" },
+      { "<leader>bc", "<cmd>CMakeClean<cr>",            desc = "CMake Clean" },
+      { "<leader>bf", "<cmd>Telescope cmake_tools<cr>", desc = "CMake Project Files" }, -- TODO: load extension?
+      { "<leader>bt", "<cmd>CMakeRunTest<cr>",          desc = "Run CTest" },
+      { "<leader>bs", "<cmd>CMakeSettings<cr>",         desc = "CMake Settings" },
+    },
     config = function()
       require("cmake-tools").setup({
         cmake_regenerate_on_save = false,
@@ -217,6 +202,13 @@ return {
           opts = { show = "only_on_error", size = 30 },
         },
       })
+    end,
+  },
+  {
+    "norcalli/nvim-colorizer.lua",
+    event = { "BufReadPost", "BufNewFile" },
+    config = function()
+      require("colorizer").setup()
     end,
   },
 }

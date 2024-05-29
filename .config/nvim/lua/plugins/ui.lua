@@ -45,7 +45,7 @@ return {
   -- {{{ Tab/Bufferline
   {
     "akinsho/bufferline.nvim",
-    event = "VimEnter",
+    event = { "BufReadPre", "BufNewFile" },
     dependencies = {
       "nvim-tree/nvim-web-devicons",
     },
@@ -144,6 +144,9 @@ return {
         indicator_selected = {
           bg = { attribute = "bg", highlight = "TabLine" },
         },
+        trunc_marker = {
+          bg = { attribute = "bg", highlight = "Normal" },
+        },
       }
 
       require("bufferline").setup({ options = options, highlights = highlights })
@@ -154,6 +157,7 @@ return {
   {
     -- TODO: Get inspired
     "nvim-lualine/lualine.nvim",
+    event = "VimEnter",
     config = function()
       local hide_in_width = function()
         return vim.fn.winwidth(0) > 80
@@ -383,6 +387,7 @@ return {
   -- {{{ Notifications
   {
     "rcarriga/nvim-notify",
+    event = "VeryLazy",
     config = function()
       vim.notify = require("notify")
     end,
@@ -442,7 +447,7 @@ return {
   -- {{{ Which-key
   {
     "folke/which-key.nvim",
-    events = "VeryLazy",
+    keys = { "<leader>", "<c-r>", '"', "'", "`", "c", "v", "g" },
     dependencies = {
       "moll/vim-bbye",
     },
@@ -456,31 +461,21 @@ return {
 
       local keymaps = {
         mode = { "n", "v" },
+        -- Single-keys
         ["<leader>c"] = { "<cmd>Bdelete!<cr>", "Close Buffer" },
         ["<leader>d"] = { "<cmd>Alpha<cr>", "Dashboard" }, -- TODO: Move to plugin config
         ["<leader>h"] = { "<cmd>nohlsearch<cr>", "No Highlight" },
         ["<leader>p"] = { "<cmd>Lazy<cr>", "Plugin" },
         ["<leader>q"] = { "<cmd>q!<cr>", "Quit" },
         ["<leader>w"] = { "<cmd>w!<cr>", "Save Buffer" },
-        -- TODO: Move to their respective plugins
-        ["<leader>l"] = {
-          name = "LSP/Diagnostics",
-          a = { "<cmd>lua vim.lsp.buf.code_action()<cr>", "Code Action" },
-          A = { "<cmd>lua vim.lsp.codelens.run()<cr>", "CodeLens Action" },
-          d = { "<cmd>Telescope diagnostics bufnr=0 previewer=false<cr>", "Buffer Diagnostics" },
-          D = { "<cmd>Telescope diagnostics<cr>", "Workspace Diagnostics" },
-          f = { "<cmd>lua vim.lsp.buf.format{ async = true }<cr>", "Format Buffer" },
-          i = { "<cmd>LspInfo<cr>", "List LSP Clients" },
-          I = { "<cmd>Mason<cr>", "LSP Installer" },
-          j = { "<cmd>lua vim.diagnostic.goto_next()<cr>", "Next Diagnostic" },
-          k = { "<cmd>lua vim.diagnostic.goto_prev()<cr>", "Prev Diagnostic" },
-          r = { "<cmd>Telescope lsp_references<cr>", "References" },
-          R = { "<cmd>lua vim.lsp.buf.rename()<cr>", "Rename" },
-          s = { "<cmd>Telescope lsp_document_symbols<cr>", "Document Symbols" },
-          S = { "<cmd>Telescope lsp_dynamic_workspace_symbols<cr>", "Workspace Symbols" },
-          t = { "<cmd>TroubleToggle<cr>", "Trouble Diagnostics" },
-          z = { "<cmd>Telescope spell_suggest<cr>", "Spelling Suggestions" },
-        },
+        -- Groups
+        ["<leader>a"] = { name = "Annotate" },
+        ["<leader>b"] = { name = "Build" },
+        ["<leader>f"] = { name = "Find" },
+        ["<leader>g"] = { name = "Git" },
+        ["<leader>j"] = { name = "Harpoon" },
+        ["<leader>t"] = { name = "Test" },
+        ["<leader>l"] = { name = "LSP/Diagnostics" },
       }
       wk.register(keymaps)
     end,

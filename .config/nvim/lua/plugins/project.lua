@@ -1,6 +1,9 @@
 return {
   -- TODO: Use telescope-project.nvim instead?
+  -- Until this is fixed at least: https://github.com/ahmedkhalf/project.nvim/issues/123 
+  -- And something like this is added: https://github.com/ahmedkhalf/project.nvim/issues/73
   "ahmedkhalf/project.nvim",
+  enabled = false,
   event = "VeryLazy",
   config = function()
     require("project_nvim").setup({

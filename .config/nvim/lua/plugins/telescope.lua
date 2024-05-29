@@ -6,6 +6,7 @@ return {
     { "smartpde/telescope-recent-files" },
     { "nvim-telescope/telescope-media-files.nvim" },
     { "nvim-telescope/telescope-symbols.nvim" },
+    { "nvim-telescope/telescope-project.nvim" },
     { "nvim-lua/popup.nvim" },
     { "nvim-lua/plenary.nvim" },
     --   "ahmedkhalf/project.nvim",
@@ -19,30 +20,31 @@ return {
     -- }
   },
   cmd = "Telescope",
-  keys = function ()
-      local success, wk = pcall(require, "which-key")
-      if success then
-        wk.register({
-          mode = { "n", "v" },
-          ["<leader>f"] = { name = "Find" },
-        })
-      end
+  keys = function()
+    local telescope = require("telescope")
+    local extensions = telescope.extensions
+    local themes = require("telescope.themes")
+    local builtin = require("telescope.builtin")
 
-      return {
-        {"<leader>fb", "<cmd>lua require('telescope.builtin').buffers(require('telescope.themes').get_dropdown{previewer = false})<cr>", desc = "Buffers" },
-        { "<leader>fc", "<cmd>Telescope commands<cr>", desc = "Commands" },
-        { "<leader>ff", "<cmd>Telescope find_files<cr>", desc = "Files" },
-        { "<leader>fF", "<cmd>lua require('telescope').extensions.recent_files.pick()<cr>", desc = "Recent Files" },
-        { "<leader>fg", "<cmd>Telescope glyph<cr>", desc = "Glyphs" },
-        { "<leader>fh", "<cmd>Telescope help_tags<cr>", desc = "Help Tags" },
-        { "<leader>fi", "<cmd>Telescope media_files<cr>", desc = "Media Files" },
-        { "<leader>fm", "<cmd>Telescope man_pages<cr>", desc = "Man Pages" },
-        { "<leader>fn", "<cmd>Telescope notify<cr>", desc = "Notification history" },
-        { "<leader>fp", "<cmd>lua require('telescope').extensions.projects.projects()<cr>", desc = "Projects" },
-        { "<leader>fs", "<cmd>Telescope live_grep<cr>", desc = "Workspace Search" },
-        { "<leader>fS", "<cmd>Telescope current_buffer_fuzzy_find theme=ivy<cr>", desc = "Buffer Search" },
-        { "<leader>fz", "<cmd>Telescope symbols<cr>", desc = "Symbols" },
-      }
+    -- stylua: ignore
+    return {
+      { "<leader>fb", function() builtin.buffers(themes.get_dropdown({ previewer = false })) end, desc = "Buffers" },
+      { "<leader>fc", function() builtin.commands() end,                                          desc = "Commands" },
+      { "<leader>ff", function() builtin.find_files() end,                                        desc = "Files" },
+      { "<leader>fF", function() extensions.recent_files.pick() end,                              desc = "Recent Files" },
+      { "<leader>fg", "<cmd>Telescope glyph<cr>",                                                 desc = "Glyphs" },
+      { "<leader>fh", "<cmd>Telescope help_tags<cr>",                                             desc = "Help Tags" },
+      { "<leader>fi", "<cmd>Telescope media_files<cr>",                                           desc = "Media Files" },
+      { "<leader>fm", "<cmd>Telescope man_pages<cr>",                                             desc = "Man Pages" },
+      { "<leader>fn", "<cmd>Telescope notify<cr>",                                                desc = "Notification history" },
+      { "<leader>fp", function() extensions.project.project({ display_type = "full" }) end,       desc = "Projects" },
+      -- { "<leader>fp", function () telescope.extensions.project.project({ display_type = "full" }) end, desc = "Projects" },
+      -- { "<leader>fp", "<cmd>lua require('telescope').extensions.projects.projects()<cr>", desc = "Projects" },
+      { "<leader>fs", "<cmd>Telescope live_grep<cr>",                                             desc = "Workspace Search" },
+      { "<leader>fS", "<cmd>Telescope current_buffer_fuzzy_find theme=ivy<cr>",                   desc = "Buffer Search" },
+      { "<leader>fz", "<cmd>Telescope symbols<cr>",                                               desc = "Symbols" },
+      { "<leader>fZ", "<cmd>Telescope spell_suggest<cr>",                                         desc = "Spelling Suggestions" },
+    }
   end,
   opts = function()
     local actions = require("telescope.actions")
@@ -119,6 +121,30 @@ return {
         },
       },
       extensions = {
+        project = {
+          base_dirs = {
+            { path = vim.env.HOME .. "/projects/git", max_depth = 2 },
+          },
+          theme = "dropdown",
+          order_by = "asc",
+          search_by = "title",
+          on_project_selected = function(prompt_bufnr)
+            -- TODO: Close all currently open buffers
+            --       Hmmm... maybe I need a session manager instead?
+            --       A project + session manager would be great, but I also like the idea of integrating harpoon (with git integration)
+            require("telescope._extensions.project.actions").change_working_directory(prompt_bufnr, false)
+
+            -- TODO: This doesn't seem to work with harpoon2
+            --       The list of harpoon files shows as empty even though the data store is not
+            local has_harpoon, harpoon = pcall(require, "harpoon")
+            if has_harpoon then
+              harpoon:list():select(1)
+              harpoon:list():select(2)
+              harpoon:list():select(3)
+              harpoon:list():select(4)
+            end
+          end,
+        },
         recent_files = {
           only_cwd = true,
         },
@@ -135,5 +161,6 @@ return {
     telescope.load_extension("glyph")
     telescope.load_extension("recent_files")
     telescope.load_extension("media_files")
+    telescope.load_extension("project")
   end,
 }
