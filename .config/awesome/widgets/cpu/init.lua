@@ -41,7 +41,7 @@ local function worker()
     widget
       :get_children_by_id("text")[1]
       :set_markup_silently(
-        ("<span foreground='%s'> %d%%</span>"):format(highlight, math.floor(diff_usage))
+        ("<span foreground='%s'> %d%%</span>"):format(highlight, math.floor(diff_usage))
       )
   end, cpu)
 
