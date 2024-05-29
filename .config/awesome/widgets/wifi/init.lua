@@ -35,12 +35,20 @@ local function worker()
         wifi.rate = rate
         wifi.signal = tonumber(signal)
         wifi.security = security
+      else
+        wifi.connected = false
+        wifi.ssid = ""
+        wifi.rate = ""
+        wifi.signal = 0
+        wifi.security = ""
       end
     end
 
     local highlight
+    local icon = "直"
     if not wifi.connected then
       highlight = beautiful.fg_critical
+      icon = "睊"
     elseif wifi.signal > 88 then
       highlight = beautiful.fg_normal
     elseif wifi.signal > 70 then
@@ -53,7 +61,7 @@ local function worker()
 
     widget
       :get_children_by_id("text")[1]
-      :set_markup_silently(("<span foreground='%s'> %d%%</span>"):format(highlight, wifi.signal))
+      :set_markup_silently(("<span foreground='%s'>%s %d%%</span>"):format(highlight, icon, wifi.signal))
   end, wifi)
 
   return wifi
