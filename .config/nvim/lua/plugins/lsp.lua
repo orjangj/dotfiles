@@ -7,6 +7,7 @@ return {
     dependencies = {
       { "williamboman/mason.nvim" },
       { "williamboman/mason-lspconfig.nvim" },
+      -- TODO: Look into https://github.com/jay-babu/mason-nvim-dap.nvim
       { "folke/neodev.nvim" },
       { "folke/trouble.nvim" },
       {

@@ -66,7 +66,7 @@ return {
           "--with-filename",
           "--line-number",
           "--column",
-          "--glob=!{submodules}", -- Don't search in these folders
+          "--glob=!{submodules,thirdparty,external}", -- Don't search in these folders
         },
         pattern = [[\b(KEYWORDS):]],
       },

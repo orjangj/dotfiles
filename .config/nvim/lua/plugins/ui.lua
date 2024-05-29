@@ -396,52 +396,56 @@ return {
   -- {{{ Zen
   {
     "folke/zen-mode.nvim",
-    enabled = false, -- TODO: Primarily used with neorg.presenter, but not sure if I should keep it
-    cmd = { "ZenMode" },
-    config = function()
-      require("zen-mode").setup({
-        window = {
-          backdrop = 1,
-          -- height and width can be:
-          -- * an absolute number of cells when > 1
-          -- * a percentage of the width / height of the editor when <= 1
-          -- * a function that returns the width or the height
-          width = 0.70,  -- width of the Zen window in number of characters
-          height = 0.85, -- height of the Zen window in number of lines
-          -- by default, no options are changed for the Zen window
-          -- uncomment any of the options below, or add other vim.wo options you want to apply
-          options = {
-            signcolumn = "no",      -- disable signcolumn
-            number = false,         -- disable number column
-            relativenumber = false, -- disable relative numbers
-            cursorline = false,     -- disable cursorline
-            cursorcolumn = false,   -- disable cursor column
-            foldcolumn = "0",       -- disable fold column
-            list = false,           -- disable whitespace characters
-          },
-        },
-        plugins = {
-          -- disable some global vim options (vim.o...)
-          -- comment the lines to not apply the options
-          options = {
-            enabled = true,
-            ruler = false,                -- disables the ruler text in the cmd line area
-            showcmd = false,              -- disables the command in the last line of the screen
-          },
-          twilight = { enabled = true },  -- enable to start Twilight when zen mode opens
-          gitsigns = { enabled = false }, -- disables git signs
-          tmux = { enabled = false },     -- disables the tmux statusline
-          kitty = {
-            enabled = true,
-            font = "+3",
-          },
-        },
-        -- callback where you can add custom code when the Zen window opens
-        on_open = function(win) end,
-        -- callback where you can add custom code when the Zen window closes
-        on_close = function() end,
-      })
+    dependencies = { "folke/twilight.nvim" },
+    keys = {
+      { "<leader>z", "<cmd>ZenMode<cr>", desc = "Toggle ZenMode" },
+    },
+    init = function ()
     end,
+    opts = {
+      window = {
+        -- TODO: Maybe move neorg stuff to presenter keybinding?
+        width = function()
+          -- NOTE: doesn't account for window resize
+          local w = vim.api.nvim_win_get_width(0)
+          if vim.bo.filetype == "norg" then
+            w = w * 0.7
+          else
+            w = w * 0.95
+          end
+          return w
+        end,
+        height = function()
+          -- NOTE: doesn't account for window resize
+          local h = vim.api.nvim_win_get_height(0)
+          if vim.bo.filetype == "norg" then
+            h = h * 0.85
+          end
+          return h
+        end,
+        options = {
+          signcolumn = "no", -- disable signcolumn
+          number = false, -- disable number column
+          relativenumber = false, -- disable relative numbers
+          cursorline = false, -- disable cursorline
+          cursorcolumn = false, -- disable cursor column
+          foldcolumn = "0", -- disable fold column
+          list = false, -- disable whitespace characters
+        },
+      },
+      -- TODO: Maybe use zen-mode LUA api as part of neorg keymaps to perform this behavior?
+      on_open = function(win)
+        -- TODO: Neorg presenter mode integration
+        -- 1) Increase font size when in neorg presenter mode
+        -- 2) vim.opt.laststatus = 0
+        vim.api.nvim_set_hl(0, "ZenBg", { ctermbg = 0 })
+      end,
+      on_close = function()
+        -- TODO: Neorg presneter mode integration
+        -- 1) Reset font size when exiting neorg presenter mode
+        -- 2) vim.opt.laststatus = 3
+      end,
+    },
   },
   -- }}}
   -- {{{ Which-key
@@ -463,7 +467,6 @@ return {
         mode = { "n", "v" },
         -- Single-keys
         ["<leader>c"] = { "<cmd>Bdelete!<cr>", "Close Buffer" },
-        ["<leader>d"] = { "<cmd>Alpha<cr>", "Dashboard" }, -- TODO: Move to plugin config
         ["<leader>h"] = { "<cmd>nohlsearch<cr>", "No Highlight" }, -- Make it Toggle hightlight
         ["<leader>p"] = { "<cmd>Lazy<cr>", "Plugin" },
         ["<leader>q"] = { "<cmd>q!<cr>", "Quit" },
@@ -471,6 +474,7 @@ return {
         -- Groups
         ["<leader>a"] = { name = "Annotate" },
         ["<leader>b"] = { name = "Build" },
+        ["<leader>d"] = { name = "Debug" },
         ["<leader>f"] = { name = "Find" },
         ["<leader>g"] = { name = "Git" },
         ["<leader>j"] = { name = "Harpoon" },

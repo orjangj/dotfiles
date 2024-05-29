@@ -12,7 +12,6 @@ return {
       -- TODO: lua-utils not found
       { "vhyrro/luarocks.nvim" },
       { "folke/zen-mode.nvim" },
-      { "folke/twilight.nvim" },
     },
     config = function()
       require("neorg").setup({

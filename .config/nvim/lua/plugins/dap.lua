@@ -14,7 +14,6 @@ return {
     local dap = require("dap")
     local dapui = require("dapui")
     -- stylua: ignore
-    -- TODO: Conflicting keymaps with Dashboard
     return {
       { "<leader>dR", function() dap.run_to_cursor() end, desc = "Run to Cursor" },
       { "<leader>dE", function() dapui.eval(vim.fn.input("[Expression] > ")) end, desc = "Evaluate Input" },

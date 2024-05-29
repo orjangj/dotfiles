@@ -1,6 +1,6 @@
 return {
   "akinsho/toggleterm.nvim",
-  tag = "*",
+  version = "*",
   keys = {
     -- Only description to let lazy.nvim lazy load it
     { [[<c-\>]], desc = "Toggle terminal" },
