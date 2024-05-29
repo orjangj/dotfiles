@@ -31,6 +31,7 @@ return {
       { "<leader>fb", function() builtin.buffers(themes.get_dropdown({ previewer = false })) end, desc = "Buffers" },
       { "<leader>fc", function() builtin.commands() end,                                          desc = "Commands" },
       { "<leader>ff", function() builtin.find_files() end,                                        desc = "Files" },
+      -- TODO: Pick recent files starting from cwd only?
       { "<leader>fF", function() extensions.recent_files.pick() end,                              desc = "Recent Files" },
       { "<leader>fg", "<cmd>Telescope glyph<cr>",                                                 desc = "Glyphs" },
       { "<leader>fh", "<cmd>Telescope help_tags<cr>",                                             desc = "Help Tags" },
