@@ -1,4 +1,5 @@
 return {
+  -- TODO: Never used dap, so need to ensure all of this stuff works
   "mfussenegger/nvim-dap",
   enabled = false, -- TODO: Finish spec
   dependencies = {

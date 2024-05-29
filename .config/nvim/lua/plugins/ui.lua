@@ -464,7 +464,7 @@ return {
         -- Single-keys
         ["<leader>c"] = { "<cmd>Bdelete!<cr>", "Close Buffer" },
         ["<leader>d"] = { "<cmd>Alpha<cr>", "Dashboard" }, -- TODO: Move to plugin config
-        ["<leader>h"] = { "<cmd>nohlsearch<cr>", "No Highlight" },
+        ["<leader>h"] = { "<cmd>nohlsearch<cr>", "No Highlight" }, -- Make it Toggle hightlight
         ["<leader>p"] = { "<cmd>Lazy<cr>", "Plugin" },
         ["<leader>q"] = { "<cmd>q!<cr>", "Quit" },
         ["<leader>w"] = { "<cmd>w!<cr>", "Save Buffer" },

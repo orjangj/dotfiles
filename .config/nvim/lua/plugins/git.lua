@@ -9,13 +9,13 @@ return {
       local augroup = vim.api.nvim_create_augroup
       local autocmd = vim.api.nvim_create_autocmd
 
-      -- NOTE: Not sure if this can have any side-effects, but it seems to work:
+      -- NOTE: Not sure if this can have any side-effects, but it seems to work :D
       -- Go back to original window with <q> after calling gitsigns.diffthis()
       augroup("closeDiffWithQ", { clear = true })
       autocmd("DiffUpdated", {
         group = "closeDiffWithQ",
         callback = function(event)
-          -- Ensure we're actually in a diff
+          -- Ensure we're actually in a diff (might be redundant, but why not?)
           if vim.opt.diff:get() then
             -- make <q> a oneshot keymap that closes the diff view
             -- and goes back to the original winndow
@@ -33,7 +33,7 @@ return {
       return {
         { "<leader>gb", "<cmd>Telescope git_branches<cr>",                   desc = "Checkout branch" },
         { "<leader>gc", "<cmd>Telescope git_commits<cr>",                    desc = "Checkout commit" },
-        { "<leader>gd", function() gitsigns.diffthis("HEAD") end,            desc = "Toggle Diff" },
+        { "<leader>gd", function() gitsigns.diffthis("HEAD") end,            desc = "Show Diff" },
         { "<leader>gj", function() gitsigns.next_hunk() end,                 desc = "Next Hunk" },
         { "<leader>gk", function() gitsigns.prev_hunk() end,                 desc = "Prev Hunk" },
         { "<leader>gl", function() gitsigns.blame_line() end,                desc = "Blame Line" },
