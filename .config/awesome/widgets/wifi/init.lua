@@ -35,6 +35,7 @@ local function worker()
         wifi.rate = rate
         wifi.signal = tonumber(signal)
         wifi.security = security
+        break
       else
         wifi.connected = false
         wifi.ssid = ""
