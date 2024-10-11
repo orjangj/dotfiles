@@ -148,7 +148,7 @@ return {
         debug = false,
         sources = {
           code_actions.gitsigns,
-          diagnostics.cppcheck, -- TODO: only enable warnings, and update on save or insert leave
+          --diagnostics.cppcheck, -- TODO: only enable warnings, and update on save or insert leave
           diagnostics.cmake_lint,
           -- TODO: consider using ruff for python linting (requires none-ls-extras.nvim)
           formatting.prettier.with({

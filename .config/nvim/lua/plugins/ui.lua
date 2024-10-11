@@ -400,8 +400,7 @@ return {
     keys = {
       { "<leader>z", "<cmd>ZenMode<cr>", desc = "Toggle ZenMode" },
     },
-    init = function ()
-    end,
+    init = function() end,
     opts = {
       window = {
         -- TODO: Maybe move neorg stuff to presenter keybinding?
@@ -454,10 +453,11 @@ return {
     keys = { "<leader>", "<c-r>", '"', "'", "`", "c", "v", "g" },
     dependencies = {
       "moll/vim-bbye",
+      "nvim-web-devicons",
     },
     opts = {
       icons = { group = "" },
-      window = { border = "rounded" },
+      win = { border = "rounded" },
     },
     config = function(_, opts)
       local wk = require("which-key")
@@ -466,22 +466,22 @@ return {
       local keymaps = {
         mode = { "n", "v" },
         -- Single-keys
-        ["<leader>c"] = { "<cmd>Bdelete!<cr>", "Close Buffer" },
-        ["<leader>h"] = { "<cmd>nohlsearch<cr>", "No Highlight" }, -- Make it Toggle hightlight
-        ["<leader>p"] = { "<cmd>Lazy<cr>", "Plugin" },
-        ["<leader>q"] = { "<cmd>q!<cr>", "Quit" },
-        ["<leader>w"] = { "<cmd>w!<cr>", "Save Buffer" },
+        { "<leader>c", "<cmd>Bdelete!<cr>", desc = "Close Buffer" },
+        { "<leader>h", "<cmd>nohlsearch<cr>", desc = "No Highlight" }, -- Make it Toggle hightlight
+        { "<leader>p", "<cmd>Lazy<cr>", desc = "Plugin" },
+        { "<leader>q", "<cmd>q!<cr>", desc = "Quit" },
+        { "<leader>w", "<cmd>w!<cr>", desc = "Save Buffer" },
         -- Groups
-        ["<leader>a"] = { name = "Annotate" },
-        ["<leader>b"] = { name = "Build" },
-        ["<leader>d"] = { name = "Debug" },
-        ["<leader>f"] = { name = "Find" },
-        ["<leader>g"] = { name = "Git" },
-        ["<leader>j"] = { name = "Harpoon" },
-        ["<leader>t"] = { name = "Test" },
-        ["<leader>l"] = { name = "LSP/Diagnostics" },
+        { "<leader>a", group = "Annotate" },
+        { "<leader>b", group = "Build" },
+        { "<leader>d", group = "Debug" },
+        { "<leader>f", group = "Find" },
+        { "<leader>g", group = "Git" },
+        { "<leader>j", group = "Harpoon" },
+        { "<leader>t", group = "Test" },
+        { "<leader>l", group = "LSP/Diagnostics" },
       }
-      wk.register(keymaps)
+      wk.add(keymaps)
     end,
     -- config = function()
     --
