@@ -284,6 +284,7 @@ path_prepend /snap/bin
 export CMAKE_GENERATOR=Ninja
 export CTEST_OUTPUT_ON_FAILURE=1
 export VAGRANT_DEFAULT_PROVIDER="libvirt"
+export CPM_SOURCE_CACHE=$HOME/.cache/CPM
 
 if type fzf &> /dev/null; then
   if type fd &> /dev/null; then
