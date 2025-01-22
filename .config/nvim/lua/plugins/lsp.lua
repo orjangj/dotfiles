@@ -37,7 +37,7 @@ return {
         { "<leader>lR", function () vim.lsp.buf.rename() end, desc = "Rename" },
         { "<leader>ls", "<cmd>Telescope lsp_document_symbols<cr>", desc = "Document Symbols" },
         { "<leader>lS", "<cmd>Telescope lsp_dynamic_workspace_symbols<cr>", desc = "Workspace Symbols" },
-        { "<leader>lt", "<cmd>TroubleToggle<cr>", desc = "Trouble Diagnostics" },
+        { "<leader>lt", "<cmd>Trouble diagnostics toggle<cr>", desc = "Trouble Diagnostics" },
       }
     end,
     config = function()
@@ -148,7 +148,7 @@ return {
         debug = false,
         sources = {
           code_actions.gitsigns,
-          --diagnostics.cppcheck, -- TODO: only enable warnings, and update on save or insert leave
+          diagnostics.cppcheck, -- TODO: only enable warnings, and update on save or insert leave
           diagnostics.cmake_lint,
           -- TODO: consider using ruff for python linting (requires none-ls-extras.nvim)
           formatting.prettier.with({

@@ -68,8 +68,11 @@ return {
           "--column",
           "--glob=!{submodules,thirdparty,external}", -- Don't search in these folders
         },
-        pattern = [[\b(KEYWORDS):]],
+        pattern = [[\b(KEYWORDS)(.*):]],
       },
+      highlight = {
+        pattern = [[.*<((KEYWORDS)%(\(.{-1,}\))?):]],
+      }
     },
   },
   {

@@ -450,6 +450,7 @@ return {
   -- {{{ Which-key
   {
     "folke/which-key.nvim",
+    event = "VimEnter", -- TODO: This wasn't necessary before, but which-key doesn't seem to be loaded fast enough with keys
     keys = { "<leader>", "<c-r>", '"', "'", "`", "c", "v", "g" },
     dependencies = {
       "moll/vim-bbye",
