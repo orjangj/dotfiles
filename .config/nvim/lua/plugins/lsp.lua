@@ -24,20 +24,56 @@ return {
     },
     keys = function()
       return {
-        { "<leader>la", function () vim.lsp.buf.code_action() end, desc = "Code Action" },
-        { "<leader>lA", function () vim.lsp.codelens.run() end, desc = "CodeLens Action" },
+        {
+          "<leader>la",
+          function()
+            vim.lsp.buf.code_action()
+          end,
+          desc = "Code Action",
+        },
+        {
+          "<leader>lA",
+          function()
+            vim.lsp.codelens.run()
+          end,
+          desc = "CodeLens Action",
+        },
         { "<leader>ld", "<cmd>Telescope diagnostics bufnr=0 previewer=false<cr>", desc = "Buffer Diagnostics" },
-        { "<leader>lD", "<cmd>Telescope diagnostics<cr>", desc = "Workspace Diagnostics" },
-        { "<leader>lf", function () vim.lsp.buf.format({ async = true }) end, desc = "Format Buffer" },
+        { "<leader>lD", "<cmd>Telescope diagnostics<cr>",                         desc = "Workspace Diagnostics" },
+        {
+          "<leader>lf",
+          function()
+            vim.lsp.buf.format({ async = true })
+          end,
+          desc = "Format Buffer",
+        },
         { "<leader>li", "<cmd>LspInfo<cr>", desc = "List LSP Clients" },
-        { "<leader>lI", "<cmd>Mason<cr>", desc = "LSP Installer" },
-        { "<leader>lj", function () vim.diagnostic.goto_next() end, desc = "Next Diagnostic" },
-        { "<leader>lk", function () vim.diagnostic.goto_prev() end, desc = "Prev Diagnostic" },
-        { "<leader>lr", "<cmd>Telescope lsp_references<cr>", desc = "References" },
-        { "<leader>lR", function () vim.lsp.buf.rename() end, desc = "Rename" },
-        { "<leader>ls", "<cmd>Telescope lsp_document_symbols<cr>", desc = "Document Symbols" },
+        { "<leader>lI", "<cmd>Mason<cr>",   desc = "LSP Installer" },
+        {
+          "<leader>lj",
+          function()
+            vim.diagnostic.goto_next()
+          end,
+          desc = "Next Diagnostic",
+        },
+        {
+          "<leader>lk",
+          function()
+            vim.diagnostic.goto_prev()
+          end,
+          desc = "Prev Diagnostic",
+        },
+        { "<leader>lr", "<cmd>Telescope lsp_references<cr>",                desc = "References" },
+        {
+          "<leader>lR",
+          function()
+            vim.lsp.buf.rename()
+          end,
+          desc = "Rename",
+        },
+        { "<leader>ls", "<cmd>Telescope lsp_document_symbols<cr>",          desc = "Document Symbols" },
         { "<leader>lS", "<cmd>Telescope lsp_dynamic_workspace_symbols<cr>", desc = "Workspace Symbols" },
-        { "<leader>lt", "<cmd>Trouble diagnostics toggle<cr>", desc = "Trouble Diagnostics" },
+        { "<leader>lt", "<cmd>Trouble diagnostics toggle<cr>",              desc = "Trouble Diagnostics" },
       }
     end,
     config = function()
@@ -124,7 +160,7 @@ return {
       -- Configure ui/window borders for lsp/diagnostics
       vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded" })
       vim.lsp.handlers["textDocument/signatureHelp"] =
-        vim.lsp.with(vim.lsp.handlers.signature_help, { border = "rounded" })
+          vim.lsp.with(vim.lsp.handlers.signature_help, { border = "rounded" })
       vim.diagnostic.config({ virtual_text = true, float = { border = "rounded" } })
 
       require("trouble").setup()
@@ -148,7 +184,9 @@ return {
         debug = false,
         sources = {
           code_actions.gitsigns,
-          diagnostics.cppcheck, -- TODO: only enable warnings, and update on save or insert leave
+          diagnostics.cppcheck.with({
+            extra_args = { "--check-level=exhaustive", "--inconclusive" },
+          }),
           diagnostics.cmake_lint,
           -- TODO: consider using ruff for python linting (requires none-ls-extras.nvim)
           formatting.prettier.with({
