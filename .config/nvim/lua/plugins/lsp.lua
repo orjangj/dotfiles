@@ -185,7 +185,7 @@ return {
         sources = {
           code_actions.gitsigns,
           diagnostics.cppcheck.with({
-            extra_args = { "--check-level=exhaustive", "--inconclusive" },
+            extra_args = { "--check-level=exhaustive", "--inconclusive", "--suppress=unusedStructMember" },
           }),
           diagnostics.cmake_lint,
           -- TODO: consider using ruff for python linting (requires none-ls-extras.nvim)
