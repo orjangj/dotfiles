@@ -5,7 +5,7 @@
     "margin-left": 5,
     "margin-right": 5,
     "margin-top": 5,
-    "modules-left": ["wlr/workspaces", "sway/workspaces"],
+    "modules-left": ["hyprland/workspaces"],
     "modules-center": ["clock"],
     "modules-right": ["network", "cpu", "memory", "disk", "temperature", "pulseaudio", "backlight", "battery"],
     "wlr/workspaces": {
@@ -29,7 +29,7 @@
             "6": []
         }
     },
-    "sway/workspaces": {
+    "hyprland/workspaces": {
         "disable-scroll": true,
         "on-click": "activate",
         "format": "{icon}",
@@ -52,7 +52,7 @@
     },
     "clock": {
         "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
-        "format": "{: %a %d/%m    %H:%M}"
+        "format": " {:%a %d/%m    %H:%M}"
     },
     "cpu": {
         "format": " {usage}%"
