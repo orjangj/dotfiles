@@ -25,8 +25,10 @@ return {
           },
         },
       },
-      -- TODO: Make sure neotest-ctest still works
-      --      { "orjangj/neotest-ctest" },
+      {
+        "orjangj/neotest-ctest",
+        dev = vim.fn.isdirectory("~/projects/git/neotest-ctest") and true or false,
+      },
     },
     cmd = { "Neotest" },
     keys = function()
@@ -70,7 +72,7 @@ return {
             end,
           }),
           require("neotest-plenary"),
-          --          require("neotest-ctest"), -- TODO: Make sure it works
+          require("neotest-ctest"), -- TODO: Make sure it works
         },
         status = {
           virtual_text = true,
