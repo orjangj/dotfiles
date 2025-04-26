@@ -124,6 +124,7 @@ tooltip label {
 
 #battery.warning:not(.charging) {
   color: @red;
+  background: @bg0;  /* TODO: Not sure why this is necessary, but the bg is red otherwise */
 }
 
 @keyframes blink-critical {
