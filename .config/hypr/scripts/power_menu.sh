@@ -6,7 +6,7 @@ selected=$(echo -e $entries | wofi -p "Power Menu" --width 270 --height 270 --dm
 
 case $selected in
   lock)
-    exec $HOME/.config/hypr/scripts/locker.sh ;;
+    hyprlock ;;
   logout)
     hyprctl dispatch exit ;;
   suspend)
