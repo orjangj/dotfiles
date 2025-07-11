@@ -36,6 +36,8 @@ return lazy.setup("plugins", {
   },
   dev = {
     path = "~/projects/git",
+    patterns = { "neotest-ctest", "polar.nvim" },
+    fallback = true,
   },
   change_detection = {
     enabled = true,

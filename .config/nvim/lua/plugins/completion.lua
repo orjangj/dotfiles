@@ -1,5 +1,52 @@
 return {
   {
+    "CopilotC-Nvim/CopilotChat.nvim",
+    branch = "main",
+    dependencies = {
+      {
+        "zbirenbaum/copilot.lua",
+        cmd = "Copilot",
+        event = "InsertEnter",
+        config = function()
+          require("copilot").setup({
+            suggestion = { enabled = false },
+            panel = { enabled = false },
+          })
+        end,
+      },
+      { "nvim-lua/plenary.nvim" }, -- for curl, log and async functions
+      { "nvim-telescope/telescope.nvim" }, -- for help actions
+    },
+    event = "VeryLazy",
+    opts = {
+      -- See Configuration section for options
+    },
+    keys = {
+      { "<leader>ae", "<cmd>CopilotChatExplain<cr>", desc = "CopilotChat - Explain code" },
+      { "<leader>at", "<cmd>CopilotChatTests<cr>", desc = "CopilotChat - Generate tests" },
+      { "<leader>ar", "<cmd>CopilotChatReview<cr>", desc = "CopilotChat - Review code" },
+      { "<leader>aR", "<cmd>CopilotChatRefactor<cr>", desc = "CopilotChat - Refactor code" },
+      { "<leader>an", "<cmd>CopilotChatBetterNamings<cr>", desc = "CopilotChat - Better Naming" },
+      -- Chat with Copilot in visual mode
+      {
+        "<leader>av",
+        ":CopilotChatVisual",
+        mode = "x",
+        desc = "CopilotChat - Open in vertical split",
+      },
+      -- Fix the issue with diagnostic
+      { "<leader>af", "<cmd>CopilotChatFixError<cr>", desc = "CopilotChat - Fix Diagnostic" },
+      -- Clear buffer and chat history
+      { "<leader>al", "<cmd>CopilotChatReset<cr>", desc = "CopilotChat - Clear buffer and chat history" },
+      -- Toggle Copilot Chat Vsplit
+      { "<leader>av", "<cmd>CopilotChatToggle<cr>", desc = "CopilotChat - Toggle" },
+      -- Copilot Chat Models
+      { "<leader>a?", "<cmd>CopilotChatModels<cr>", desc = "CopilotChat - Select Models" },
+      -- Copilot Chat Agents
+      { "<leader>aa", "<cmd>CopilotChatAgents<cr>", desc = "CopilotChat - Select Agents" },
+    },
+  },
+  {
     "hrsh7th/nvim-cmp",
     event = "InsertEnter",
     dependencies = {
@@ -12,17 +59,6 @@ return {
       { "L3MON4D3/LuaSnip" },
       { "rafamadriz/friendly-snippets" },
       { "saadparwaiz1/cmp_luasnip" },
-      {
-        "zbirenbaum/copilot.lua",
-        cmd = "Copilot",
-        event = "InsertEnter",
-        config = function()
-          require("copilot").setup({
-            suggestion = { enabled = false },
-            panel = { enabled = false },
-          })
-        end,
-      },
       {
         "zbirenbaum/copilot-cmp",
         config = function()
@@ -116,21 +152,5 @@ return {
         }),
       })
     end,
-  },
-  {
-    "danymat/neogen",
-    keys = function()
-      local neogen = require("neogen")
-      -- stylua: ignore
-      return {
-        { "<leader>aa", function() neogen.generate({ type = "func" }) end,  desc = "Function" },
-        { "<leader>ac", function() neogen.generate({ type = "class" }) end, desc = "Class" },
-        { "<leader>af", function() neogen.generate({ type = "file" }) end,  desc = "File" },
-        { "<leader>at", function() neogen.generate({ type = "type" }) end,  desc = "Type" },
-      }
-    end,
-    opts = {
-      snippet_engine = "luasnip",
-    },
   },
 }

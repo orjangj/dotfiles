@@ -72,7 +72,7 @@ return {
       },
       highlight = {
         pattern = [[.*<((KEYWORDS)%(\(.{-1,}\))?):]],
-      }
+      },
     },
   },
   {

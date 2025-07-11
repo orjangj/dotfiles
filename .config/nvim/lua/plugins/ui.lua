@@ -387,6 +387,7 @@ return {
   -- {{{ Notifications
   {
     "rcarriga/nvim-notify",
+    tag = "v3.14.1",
     event = "VeryLazy",
     config = function()
       vim.notify = require("notify")

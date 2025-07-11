@@ -86,32 +86,18 @@ return {
     "iamcco/markdown-preview.nvim",
     cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
     ft = { "markdown" },
-    build = function()
-      vim.fn["mkdp#util#install"]()
-    end,
+    build = ":call mkdp#util#install()",
   },
-  -- }}}
-  -- {{{ Headlines
   {
-    "lukas-reineke/headlines.nvim",
-    ft = "markdown",
-    config = function()
-      require("headlines").setup({
-        markdown = {
-          headline_highlights = {
-            "Headline1",
-            "Headline2",
-            "Headline3",
-            "Headline4",
-            "Headline5",
-            "Headline6",
-          },
-          codeblock_highlight = "CodeBlock",
-          dash_highlight = "Dash",
-          quote_highlight = "Quote",
-        },
-      })
-    end,
+    "MeanderingProgrammer/render-markdown.nvim",
+    dependencies = {
+      "nvim-treesitter/nvim-treesitter",
+      "nvim-tree/nvim-web-devicons"
+    },
+    opts = {
+      file_types = { "markdown", "copilot-chat" },
+    },
+    ft = { "markdown", "copilot-chat" },
   },
   -- }}}
 }

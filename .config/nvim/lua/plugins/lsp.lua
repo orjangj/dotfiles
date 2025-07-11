@@ -5,8 +5,8 @@ return {
     "neovim/nvim-lspconfig",
     event = { "BufReadPre", "BufNewFile" },
     dependencies = {
-      { "williamboman/mason.nvim" },
-      { "williamboman/mason-lspconfig.nvim" },
+      { "mason-org/mason.nvim", },
+      { "mason-org/mason-lspconfig.nvim", tag = "v1.32.0" },
       -- TODO: Look into https://github.com/jay-babu/mason-nvim-dap.nvim
       { "folke/neodev.nvim" },
       { "folke/trouble.nvim" },
@@ -107,7 +107,13 @@ return {
         },
       }
 
-      local ensure_installed = vim.tbl_keys(servers)
+      local ensure_installed = {
+        "ansiblels",
+        "clangd@19.1.2",
+        "cmake",
+        "lua_ls",
+      } -- vim.tbl_keys(servers)
+
       require("mason").setup({ ui = { border = "rounded" } })
       require("mason-lspconfig").setup({ ensure_installed = ensure_installed })
 
@@ -185,7 +191,7 @@ return {
         sources = {
           code_actions.gitsigns,
           diagnostics.cppcheck.with({
-            extra_args = { "--check-level=exhaustive", "--inconclusive", "--suppress=unusedStructMember" },
+            extra_args = {"--check-level=exhaustive", "--inconclusive", "--suppress=unusedStructMember", "--suppress=unknownMacro" },
           }),
           diagnostics.cmake_lint,
           -- TODO: consider using ruff for python linting (requires none-ls-extras.nvim)

@@ -11,6 +11,7 @@ return {
       { "antoinemadec/FixCursorHold.nvim" },
       { "nvim-neotest/neotest-python" },
       { "nvim-neotest/neotest-plenary" },
+      { "orjangj/neotest-ctest" },
       {
         "andythigpen/nvim-coverage",
         opts = {
@@ -25,10 +26,6 @@ return {
           },
         },
       },
-      {
-        "orjangj/neotest-ctest",
-        dev = vim.fn.isdirectory("~/projects/git/neotest-ctest") and true or false,
-      },
     },
     cmd = { "Neotest" },
     keys = function()
@@ -40,7 +37,7 @@ return {
       return {
         { "<leader>ta", function() neotest.run.attach() end,                  desc = "Attach" },
         { "<leader>td", function() neotest.run.run({ strategy = 'dap' }) end, desc = "Debug" },
-        { "<leader>tc", function() coverage.load(true) end, desc = "Show Coverage" },
+        { "<leader>tc", function() coverage.load(true) end,                   desc = "Show Coverage" },
         {
           "<leader>tC",
           function()

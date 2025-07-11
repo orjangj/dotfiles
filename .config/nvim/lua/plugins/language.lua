@@ -23,6 +23,7 @@ return {
           "html",
           "javascript",
           "json",
+          "jsonc",
           "json5",
           "kconfig",
           "kotlin",
