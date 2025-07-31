@@ -5,9 +5,9 @@ return {
     "neovim/nvim-lspconfig",
     event = { "BufReadPre", "BufNewFile" },
     dependencies = {
-      { "mason-org/mason.nvim", },
+      { "mason-org/mason.nvim" },
       { "mason-org/mason-lspconfig.nvim", tag = "v1.32.0" },
-      -- TODO: Look into https://github.com/jay-babu/mason-nvim-dap.nvim
+      { "jay-babu/mason-nvim-dap.nvim" },
       { "folke/neodev.nvim" },
       { "folke/trouble.nvim" },
       {
@@ -39,7 +39,7 @@ return {
           desc = "CodeLens Action",
         },
         { "<leader>ld", "<cmd>Telescope diagnostics bufnr=0 previewer=false<cr>", desc = "Buffer Diagnostics" },
-        { "<leader>lD", "<cmd>Telescope diagnostics<cr>",                         desc = "Workspace Diagnostics" },
+        { "<leader>lD", "<cmd>Telescope diagnostics<cr>", desc = "Workspace Diagnostics" },
         {
           "<leader>lf",
           function()
@@ -48,7 +48,7 @@ return {
           desc = "Format Buffer",
         },
         { "<leader>li", "<cmd>LspInfo<cr>", desc = "List LSP Clients" },
-        { "<leader>lI", "<cmd>Mason<cr>",   desc = "LSP Installer" },
+        { "<leader>lI", "<cmd>Mason<cr>", desc = "LSP Installer" },
         {
           "<leader>lj",
           function()
@@ -63,7 +63,7 @@ return {
           end,
           desc = "Prev Diagnostic",
         },
-        { "<leader>lr", "<cmd>Telescope lsp_references<cr>",                desc = "References" },
+        { "<leader>lr", "<cmd>Telescope lsp_references<cr>", desc = "References" },
         {
           "<leader>lR",
           function()
@@ -71,16 +71,15 @@ return {
           end,
           desc = "Rename",
         },
-        { "<leader>ls", "<cmd>Telescope lsp_document_symbols<cr>",          desc = "Document Symbols" },
+        { "<leader>ls", "<cmd>Telescope lsp_document_symbols<cr>", desc = "Document Symbols" },
         { "<leader>lS", "<cmd>Telescope lsp_dynamic_workspace_symbols<cr>", desc = "Workspace Symbols" },
-        { "<leader>lt", "<cmd>Trouble diagnostics toggle<cr>",              desc = "Trouble Diagnostics" },
+        { "<leader>lt", "<cmd>Trouble diagnostics toggle<cr>", desc = "Trouble Diagnostics" },
       }
     end,
     config = function()
       require("neodev").setup()
 
       local servers = {
-        ansiblels = {},
         clangd = {
           cmd = {
             "clangd",
@@ -107,15 +106,15 @@ return {
         },
       }
 
-      local ensure_installed = {
-        "ansiblels",
-        "clangd@19.1.2",
-        "cmake",
-        "lua_ls",
-      } -- vim.tbl_keys(servers)
-
       require("mason").setup({ ui = { border = "rounded" } })
-      require("mason-lspconfig").setup({ ensure_installed = ensure_installed })
+      require("mason-lspconfig").setup({
+        ensure_installed = { "clangd@19.1.2", "cmake", "lua_ls" },
+        automatic_installation = true,
+      })
+      require("mason-nvim-dap").setup({
+        ensure_installed = { "codelldb" },
+        automatic_installation = true,
+      })
 
       local capabilities = nil
       if pcall(require, "cmp_nvim_lsp") then
@@ -166,7 +165,7 @@ return {
       -- Configure ui/window borders for lsp/diagnostics
       vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded" })
       vim.lsp.handlers["textDocument/signatureHelp"] =
-          vim.lsp.with(vim.lsp.handlers.signature_help, { border = "rounded" })
+        vim.lsp.with(vim.lsp.handlers.signature_help, { border = "rounded" })
       vim.diagnostic.config({ virtual_text = true, float = { border = "rounded" } })
 
       require("trouble").setup()
@@ -191,7 +190,12 @@ return {
         sources = {
           code_actions.gitsigns,
           diagnostics.cppcheck.with({
-            extra_args = {"--check-level=exhaustive", "--inconclusive", "--suppress=unusedStructMember", "--suppress=unknownMacro" },
+            extra_args = {
+              "--check-level=exhaustive",
+              "--inconclusive",
+              "--suppress=unusedStructMember",
+              "--suppress=unknownMacro",
+            },
           }),
           diagnostics.cmake_lint,
           -- TODO: consider using ruff for python linting (requires none-ls-extras.nvim)
