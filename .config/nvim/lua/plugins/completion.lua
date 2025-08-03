@@ -17,33 +17,20 @@ return {
       { "nvim-lua/plenary.nvim" }, -- for curl, log and async functions
       { "nvim-telescope/telescope.nvim" }, -- for help actions
     },
-    event = "VeryLazy",
     opts = {
       -- See Configuration section for options
     },
+    -- stylua: ignore
     keys = {
-      { "<leader>ae", "<cmd>CopilotChatExplain<cr>", desc = "CopilotChat - Explain code" },
-      { "<leader>at", "<cmd>CopilotChatTests<cr>", desc = "CopilotChat - Generate tests" },
-      { "<leader>ar", "<cmd>CopilotChatReview<cr>", desc = "CopilotChat - Review code" },
-      { "<leader>aR", "<cmd>CopilotChatRefactor<cr>", desc = "CopilotChat - Refactor code" },
-      { "<leader>an", "<cmd>CopilotChatBetterNamings<cr>", desc = "CopilotChat - Better Naming" },
-      -- Chat with Copilot in visual mode
-      {
-        "<leader>av",
-        ":CopilotChatVisual",
-        mode = "x",
-        desc = "CopilotChat - Open in vertical split",
-      },
-      -- Fix the issue with diagnostic
-      { "<leader>af", "<cmd>CopilotChatFixError<cr>", desc = "CopilotChat - Fix Diagnostic" },
-      -- Clear buffer and chat history
-      { "<leader>al", "<cmd>CopilotChatReset<cr>", desc = "CopilotChat - Clear buffer and chat history" },
-      -- Toggle Copilot Chat Vsplit
-      { "<leader>av", "<cmd>CopilotChatToggle<cr>", desc = "CopilotChat - Toggle" },
-      -- Copilot Chat Models
-      { "<leader>a?", "<cmd>CopilotChatModels<cr>", desc = "CopilotChat - Select Models" },
-      -- Copilot Chat Agents
-      { "<leader>aa", "<cmd>CopilotChatAgents<cr>", desc = "CopilotChat - Select Agents" },
+      { "<leader>aa", "<cmd>CopilotChatToggle<cr>",        desc = "Toggle Chat" },
+      { "<leader>al", "<cmd>CopilotChatReset<cr>",         desc = "Reset Chat" },
+      { "<leader>ae", "<cmd>CopilotChatExplain<cr>",       desc = "Explain Code" },
+      { "<leader>at", "<cmd>CopilotChatTests<cr>",         desc = "Generate Tests" },
+      { "<leader>ar", "<cmd>CopilotChatReview<cr>",        desc = "Review Code" },
+      { "<leader>aR", "<cmd>CopilotChatRefactor<cr>",      desc = "Refactor Code" },
+      { "<leader>an", "<cmd>CopilotChatBetterNamings<cr>", desc = "Better Naming" },
+      { "<leader>af", "<cmd>CopilotChatFixError<cr>",      desc = "Fix Diagnostic" },
+      { "<leader>am", "<cmd>CopilotChatModels<cr>",        desc = "Select Models" },
     },
   },
   {
@@ -56,9 +43,6 @@ return {
       { "hrsh7th/cmp-nvim-lua" },
       { "hrsh7th/cmp-emoji" },
       { "hrsh7th/cmp-cmdline" },
-      { "L3MON4D3/LuaSnip" },
-      { "rafamadriz/friendly-snippets" },
-      { "saadparwaiz1/cmp_luasnip" },
       {
         "zbirenbaum/copilot-cmp",
         config = function()
@@ -67,10 +51,7 @@ return {
       },
     },
     config = function()
-      require("luasnip.loaders.from_vscode").lazy_load()
-
       local cmp = require("cmp")
-      local luasnip = require("luasnip")
 
       -- TODO: What does this do?
       local has_words_before = function()
@@ -83,20 +64,13 @@ return {
           completion = cmp.config.window.bordered(),
           documentation = cmp.config.window.bordered(),
         },
-        snippet = {
-          expand = function(args)
-            luasnip.lsp_expand(args.body)
-          end,
-        },
         sources = cmp.config.sources({
           { name = "copilot" },
           { name = "nvim_lsp" },
-          { name = "luasnip" },
           { name = "path" },
           { name = "buffer" },
           { name = "nvim_lua" },
           { name = "emoji" },
-          { name = "neorg" },
         }),
         formatting = {
           expandable_indicator = true,
@@ -105,11 +79,9 @@ return {
             vim_item.menu = ({
               buffer = "[Buffer]",
               nvim_lsp = "[LSP]",
-              luasnip = "[LuaSnip]",
               nvim_lua = "[Lua]",
               path = "[Path]",
               emoji = "[Emoji]",
-              neorg = "[Neorg]",
               spell = "[Spell]",
             })[entry.source.name]
             return vim_item
@@ -131,8 +103,6 @@ return {
           ["<Tab>"] = cmp.mapping(function(fallback)
             if cmp.visible() then
               cmp.select_next_item()
-            elseif luasnip.expand_or_jumpable() then
-              luasnip.expand_or_jump()
             elseif has_words_before() then
               cmp.complete()
             else
@@ -143,8 +113,6 @@ return {
           ["<S-Tab>"] = cmp.mapping(function(fallback)
             if cmp.visible() then
               cmp.select_prev_item()
-            elseif luasnip.jumpable(-1) then
-              luasnip.jump(-1)
             else
               fallback()
             end

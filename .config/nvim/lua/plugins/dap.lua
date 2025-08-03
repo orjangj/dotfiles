@@ -5,29 +5,20 @@ return {
     { "nvim-neotest/nvim-nio" }, -- nvim-dap-ui dependency
     { "theHamsta/nvim-dap-virtual-text" },
   },
-  cmd = { "DapInstall", "DapUninstall" },
-  keys = function()
-    local dap = require("dap")
-    local dapui = require("dapui")
-    -- stylua: ignore
-    return {
-      -- Session control
-      { "<leader>dd", function() dap.continue() end,          desc = "Start/Continue" },
-      { "<leader>dq", function() dap.terminate() end,         desc = "Quit" },
-      { "<leader>dp", function() dap.pause() end,             desc = "Pause" },
-      -- Stepping
-      { "<leader>dk", function() dap.step_back() end,         desc = "Step Back" },
-      { "<leader>dj", function() dap.step_into() end,         desc = "Step Into" },
-      { "<leader>dJ", function() dap.step_over() end,         desc = "Step Over" },
-      { "<leader>dl", function() dap.step_out() end,          desc = "Step Out" },
-      -- Breakpoint
-      { "<leader>dr", function() dap.run_to_cursor() end,     desc = "Run to Cursor" },
-      { "<leader>db", function() dap.toggle_breakpoint() end, desc = "Toggle Breakpoint" },
-      { "<leader>dB", function() dap.clear_breakpoints() end, desc = "Clear Breakpoints" },
-      -- Inspection
-      { "<leader>de", function() dapui.eval() end,            mode = { "n", "v" },       desc = "Evaluate" },
-    }
-  end,
+  -- stylua: ignore
+  keys = {
+    { "<leader>dd", function() require('dap').continue() end,          desc = "Start/Continue" },
+    { "<leader>dq", function() require('dap').terminate() end,         desc = "Quit" },
+    { "<leader>dp", function() require('dap').pause() end,             desc = "Pause" },
+    { "<leader>dk", function() require('dap').step_back() end,         desc = "Step Back" },
+    { "<leader>dj", function() require('dap').step_into() end,         desc = "Step Into" },
+    { "<leader>dJ", function() require('dap').step_over() end,         desc = "Step Over" },
+    { "<leader>dl", function() require('dap').step_out() end,          desc = "Step Out" },
+    { "<leader>dr", function() require('dap').run_to_cursor() end,     desc = "Run to Cursor" },
+    { "<leader>db", function() require('dap').toggle_breakpoint() end, desc = "Toggle Breakpoint" },
+    { "<leader>dB", function() require('dap').clear_breakpoints() end, desc = "Clear Breakpoints" },
+    { "<leader>de", function() require('dapui').eval() end,            mode = { "n", "v" },       desc = "Evaluate" },
+  },
   config = function()
     local dap = require("dap")
     local dapui = require("dapui")

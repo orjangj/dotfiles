@@ -1,23 +1,5 @@
 return {
   {
-    "orjangj/neobuild",
-    enabled = false, -- disable for now
-    dependencies = {
-      { "MunifTanjim/nui.nvim" },
-    },
-    -- Keymaps for later
-    --     b = {
-    --       --b = { "<cmd>lua require('neobuild').build()<cr>", "Build" },
-    --       --c = { "<cmd>lua require('neobuild').configure()<cr>", "Configure" },
-    --       --d = { "<cmd>lua require('neobuild').clean()<cr>", "Clean" },
-    --       --f = { "<cmd>lua require('neobuild').build(vim.fn.expand('%'))<cr>", "Build File" },
-    --     },
-    dev = vim.fn.isdirectory("~/projects/git/neobuild") and true or false,
-    config = function()
-      require("neobuild").setup({})
-    end,
-  },
-  {
     "Civitasv/cmake-tools.nvim",
     dependencies = {
       { "nvim-lua/plenary.nvim" },

@@ -7,6 +7,7 @@ return {
     event = { "BufReadPost", "BufNewFile" },
     cmd = { "TSInstall", "TSBufEnable", "TSBufDisable", "TSModuleInfo" },
     build = ":TSUpdate",
+    lazy = false,
     config = function()
       -- TODO: Only install when entering file missing treesitter integration. Not all of the languages below are actively used.
       require("nvim-treesitter.configs").setup({
@@ -14,7 +15,6 @@ return {
           "bash",
           "c",
           "cmake",
-          -- "comment", -- Makes nvim extremely slow on files with a lot of (long) comments
           "cpp",
           "css",
           "diff",
@@ -31,7 +31,6 @@ return {
           "make",
           "markdown",
           "meson",
-          "norg",
           "python",
           "query",
           "rasi",

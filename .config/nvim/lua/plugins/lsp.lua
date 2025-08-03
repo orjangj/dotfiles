@@ -8,7 +8,13 @@ return {
       { "mason-org/mason.nvim" },
       { "mason-org/mason-lspconfig.nvim", tag = "v1.32.0" },
       { "jay-babu/mason-nvim-dap.nvim" },
-      { "folke/neodev.nvim" },
+      {
+        "folke/lazydev.nvim",
+        ft = "lua",
+        opts = {
+          library = { "neotest", "nvim-treesitter", "plenary.nvim" },
+        },
+      },
       { "folke/trouble.nvim" },
       {
         "j-hui/fidget.nvim",
@@ -22,63 +28,24 @@ return {
         },
       },
     },
-    keys = function()
-      return {
-        {
-          "<leader>la",
-          function()
-            vim.lsp.buf.code_action()
-          end,
-          desc = "Code Action",
-        },
-        {
-          "<leader>lA",
-          function()
-            vim.lsp.codelens.run()
-          end,
-          desc = "CodeLens Action",
-        },
-        { "<leader>ld", "<cmd>Telescope diagnostics bufnr=0 previewer=false<cr>", desc = "Buffer Diagnostics" },
-        { "<leader>lD", "<cmd>Telescope diagnostics<cr>", desc = "Workspace Diagnostics" },
-        {
-          "<leader>lf",
-          function()
-            vim.lsp.buf.format({ async = true })
-          end,
-          desc = "Format Buffer",
-        },
-        { "<leader>li", "<cmd>LspInfo<cr>", desc = "List LSP Clients" },
-        { "<leader>lI", "<cmd>Mason<cr>", desc = "LSP Installer" },
-        {
-          "<leader>lj",
-          function()
-            vim.diagnostic.goto_next()
-          end,
-          desc = "Next Diagnostic",
-        },
-        {
-          "<leader>lk",
-          function()
-            vim.diagnostic.goto_prev()
-          end,
-          desc = "Prev Diagnostic",
-        },
-        { "<leader>lr", "<cmd>Telescope lsp_references<cr>", desc = "References" },
-        {
-          "<leader>lR",
-          function()
-            vim.lsp.buf.rename()
-          end,
-          desc = "Rename",
-        },
-        { "<leader>ls", "<cmd>Telescope lsp_document_symbols<cr>", desc = "Document Symbols" },
-        { "<leader>lS", "<cmd>Telescope lsp_dynamic_workspace_symbols<cr>", desc = "Workspace Symbols" },
-        { "<leader>lt", "<cmd>Trouble diagnostics toggle<cr>", desc = "Trouble Diagnostics" },
-      }
-    end,
+    -- stylua: ignore
+    keys = {
+      { "<leader>la", function() vim.lsp.buf.code_action() end,                 desc = "Code Action" },
+      { "<leader>lA", function() vim.lsp.codelens.run() end,                    desc = "CodeLens Action" },
+      { "<leader>ld", "<cmd>Telescope diagnostics bufnr=0 previewer=false<cr>", desc = "Buffer Diagnostics" },
+      { "<leader>lD", "<cmd>Telescope diagnostics<cr>",                         desc = "Workspace Diagnostics" },
+      { "<leader>lf", function() vim.lsp.buf.format({ async = true }) end,      desc = "Format Buffer" },
+      { "<leader>li", "<cmd>LspInfo<cr>",                                       desc = "List LSP Clients" },
+      { "<leader>lI", "<cmd>Mason<cr>",                                         desc = "LSP Installer" },
+      { "<leader>lj", function() vim.diagnostic.goto_next() end,                desc = "Next Diagnostic" },
+      { "<leader>lk", function() vim.diagnostic.goto_prev() end,                desc = "Prev Diagnostic" },
+      { "<leader>lr", "<cmd>Telescope lsp_references<cr>",                      desc = "References" },
+      { "<leader>lR", function() vim.lsp.buf.rename() end,                      desc = "Rename" },
+      { "<leader>ls", "<cmd>Telescope lsp_document_symbols<cr>",                desc = "Document Symbols" },
+      { "<leader>lS", "<cmd>Telescope lsp_dynamic_workspace_symbols<cr>",       desc = "Workspace Symbols" },
+      { "<leader>lt", "<cmd>Trouble diagnostics toggle<cr>",                    desc = "Trouble Diagnostics" },
+    },
     config = function()
-      require("neodev").setup()
-
       local servers = {
         clangd = {
           cmd = {
@@ -97,11 +64,17 @@ return {
         -- cpptools = {}, -- TODO: Check it out
         lua_ls = {
           Lua = {
+            runtime = {
+              version = "LuaJIT",
+            },
             diagnostics = {
               globals = { "vim", "describe", "it" },
             },
             telemetry = { enable = false },
-            workspace = { checkThirdParty = false },
+            workspace = {
+              library = { vim.env.VIMRUNTIME },
+              checkThirdParty = false,
+            },
           },
         },
       }

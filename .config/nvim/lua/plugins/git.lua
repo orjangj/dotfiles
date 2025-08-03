@@ -27,27 +27,24 @@ return {
         end,
       })
     end,
-    keys = function()
-      local gitsigns = require("gitsigns")
-      -- stylua: ignore
-      return {
-        { "<leader>gb", "<cmd>Telescope git_branches<cr>",                   desc = "Checkout branch" },
-        { "<leader>gc", "<cmd>Telescope git_commits<cr>",                    desc = "Checkout commit" },
-        { "<leader>gd", function() gitsigns.diffthis("HEAD") end,            desc = "Show Diff" },
-        { "<leader>gj", function() gitsigns.next_hunk() end,                 desc = "Next Hunk" },
-        { "<leader>gk", function() gitsigns.prev_hunk() end,                 desc = "Prev Hunk" },
-        { "<leader>gl", function() gitsigns.blame_line() end,                desc = "Blame Line" },
-        { "<leader>gL", function() gitsigns.toggle_current_line_blame() end, desc = "Blame Toggle" },
-        { "<leader>go", "<cmd>Telescope git_status<cr>",                     desc = "Open changed file" },
-        { "<leader>gp", function() gitsigns.preview_hunk() end,              desc = "Preview Hunk" },
-        { "<leader>gr", function() gitsigns.reset_hunk() end,                desc = "Reset Hunk" },
-        { "<leader>gR", function() gitsigns.reset_buffer() end,              desc = "Reset Buffer" },
-        { "<leader>gs", function() gitsigns.stage_hunk() end,                desc = "Stage Hunk" },
-        { "<leader>gS", function() gitsigns.stage_buffer() end,              desc = "Stage buffer" },
-        { "<leader>gu", function() gitsigns.undo_stage_hunk() end,           desc = "Undo Stage Hunk" },
-        { "<leader>gU", function() gitsigns.reset_buffer_index() end,        desc = "Undo Stage Buffer" },
-      }
-    end,
+    -- stylua: ignore
+    keys = {
+      { "<leader>gb", "<cmd>Telescope git_branches<cr>",                              desc = "Checkout branch" },
+      { "<leader>gc", "<cmd>Telescope git_commits<cr>",                               desc = "Checkout commit" },
+      { "<leader>gd", function() require('gitsigns').diffthis("HEAD") end,            desc = "Show Diff" },
+      { "<leader>gj", function() require('gitsigns').next_hunk() end,                 desc = "Next Hunk" },
+      { "<leader>gk", function() require('gitsigns').prev_hunk() end,                 desc = "Prev Hunk" },
+      { "<leader>gl", function() require('gitsigns').blame_line() end,                desc = "Blame Line" },
+      { "<leader>gL", function() require('gitsigns').toggle_current_line_blame() end, desc = "Blame Toggle" },
+      { "<leader>go", "<cmd>Telescope git_status<cr>",                                desc = "Open changed file" },
+      { "<leader>gp", function() require('gitsigns').preview_hunk() end,              desc = "Preview Hunk" },
+      { "<leader>gr", function() require('gitsigns').reset_hunk() end,                desc = "Reset Hunk" },
+      { "<leader>gR", function() require('gitsigns').reset_buffer() end,              desc = "Reset Buffer" },
+      { "<leader>gs", function() require('gitsigns').stage_hunk() end,                desc = "Stage Hunk" },
+      { "<leader>gS", function() require('gitsigns').stage_buffer() end,              desc = "Stage buffer" },
+      { "<leader>gu", function() require('gitsigns').undo_stage_hunk() end,           desc = "Undo Stage Hunk" },
+      { "<leader>gU", function() require('gitsigns').reset_buffer_index() end,        desc = "Undo Stage Buffer" },
+    },
     opts = {
       signs = {
         add = { text = "│" },
@@ -58,8 +55,8 @@ return {
         untracked = { text = "┆" },
       },
       signcolumn = true, -- Toggle with `:Gitsigns toggle_signs`
-      numhl = false, -- Toggle with `:Gitsigns toggle_numhl`
-      linehl = false, -- Toggle with `:Gitsigns toggle_linehl`
+      numhl = false,     -- Toggle with `:Gitsigns toggle_numhl`
+      linehl = false,    -- Toggle with `:Gitsigns toggle_linehl`
       word_diff = false, -- Toggle with `:Gitsigns toggle_word_diff`
       watch_gitdir = {
         interval = 1000,

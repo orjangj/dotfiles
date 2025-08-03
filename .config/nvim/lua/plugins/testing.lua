@@ -1,9 +1,7 @@
 return {
-  -- TODO: Need to update config?
-  -- TODO: Integrate with neodev?
-  -- TODO: Look into neotest.watch feature
   {
     "nvim-neotest/neotest",
+    cmd = "Neotest",
     dependencies = {
       { "nvim-neotest/nvim-nio" },
       { "nvim-lua/plenary.nvim" },
@@ -27,35 +25,28 @@ return {
         },
       },
     },
-    cmd = { "Neotest" },
-    keys = function()
-      local neotest = require("neotest")
-      local coverage = require("coverage")
-
-      -- stylua: ignore
-      -- TODO: Is there a way to specify test suite (namespace)?
-      return {
-        { "<leader>ta", function() neotest.run.attach() end,                  desc = "Attach" },
-        { "<leader>td", function() neotest.run.run({ strategy = 'dap' }) end, desc = "Debug" },
-        { "<leader>tc", function() coverage.load(true) end,                   desc = "Show Coverage" },
-        {
-          "<leader>tC",
-          function()
-            coverage.load(true)
-            coverage.summary()
-          end,
-          desc = "Coverage Summary"
-        },
-        { "<leader>tf", function() neotest.run.run(vim.fn.expand('%')) end,      desc = "File" },
-        { "<leader>tj", function() neotest.jump.next({ status = 'failed' }) end, desc = "Next Failed" },
-        { "<leader>tk", function() neotest.jump.prev({ status = 'failed' }) end, desc = "Prev Failed" },
-        { "<leader>tr", function() neotest.output.open() end,                    desc = "Results" },
-        { "<leader>ts", function() neotest.summary.toggle() end,                 desc = "Summary" },
-        { "<leader>tt", function() neotest.run.run() end,                        desc = "Run Nearest" },
-        -- WARNING: Will produce error unless executed inside a file containing tests
-        { "<leader>tw", function() neotest.run.run({ suite = true }) end,        desc = "Workspace" },
-      }
-    end,
+    -- stylua: ignore
+    keys = {
+      { "<leader>ta", function() require('neotest').run.attach() end,                  desc = "Attach" },
+      { "<leader>td", function() require('neotest').run.run({ strategy = 'dap' }) end, desc = "Debug" },
+      { "<leader>tc", function() require('coverage').load(true) end,                   desc = "Show Coverage" },
+      {
+        "<leader>tC",
+        function()
+          require('coverage').load(true)
+          require('coverage').summary()
+        end,
+        desc = "Coverage Summary"
+      },
+      { "<leader>tf", function() require('neotest').run.run(vim.fn.expand('%')) end,      desc = "File" },
+      { "<leader>tj", function() require('neotest').jump.next({ status = 'failed' }) end, desc = "Next Failed" },
+      { "<leader>tk", function() require('neotest').jump.prev({ status = 'failed' }) end, desc = "Prev Failed" },
+      { "<leader>tr", function() require('neotest').output.open() end,                    desc = "Results" },
+      { "<leader>ts", function() require('neotest').summary.toggle() end,                 desc = "Summary" },
+      { "<leader>tt", function() require('neotest').run.run() end,                        desc = "Run Nearest" },
+      -- WARNING: Will produce error unless executed inside a file containing tests
+      { "<leader>tw", function() require('neotest').run.run({ suite = true }) end,        desc = "Workspace" },
+    },
     opts = function()
       return {
         adapters = {
@@ -69,7 +60,7 @@ return {
             end,
           }),
           require("neotest-plenary"),
-          require("neotest-ctest"), -- TODO: Make sure it works
+          require("neotest-ctest"),
         },
         status = {
           virtual_text = true,
