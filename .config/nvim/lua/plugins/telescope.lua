@@ -6,7 +6,6 @@ return {
     { "nvim-lua/plenary.nvim" },
     { "nvim-treesitter/nvim-treesitter" },
     -- Extensions
-    { "nvim-telescope/telescope-file-browser.nvim" }, -- Replace with oil.nvim?
     { "nvim-telescope/telescope-frecency.nvim" },
     { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
     { "nvim-telescope/telescope-media-files.nvim" },
@@ -16,8 +15,6 @@ return {
   cmd = "Telescope",
   -- stylua: ignore
   keys = {
-    { "<leader>e",  "<cmd>Telescope file_browser path=%:p:h select_buffer=true<cr>", desc = "Browse Files" },
-    { "<leader>E",  "<cmd>Telescope file_browser<cr>",                               desc = "Browse Workspace" },
     { "<leader>fc", "<cmd>Telescope commands<cr>",                                   desc = "Commands" },
     { "<leader>ff", "<cmd>Telescope find_files<cr>",                                 desc = "Files" },
     { "<leader>fF", "<cmd>Telescope frecency workspace=CWD<cr>",                     desc = "Recent Files" },
@@ -81,7 +78,6 @@ return {
   config = function(_, opts)
     local telescope = require("telescope")
     telescope.setup(opts)
-    telescope.load_extension("file_browser")
     telescope.load_extension("frecency")
     telescope.load_extension("fzf")
     telescope.load_extension("media_files")

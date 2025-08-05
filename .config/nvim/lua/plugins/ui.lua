@@ -19,7 +19,7 @@ return {
         [[                                                    ]],
       }
       dashboard.section.buttons.val = {
-        dashboard.button("e", "  Open Explorer", ":Telescope file_browser<cr>"),
+        dashboard.button("e", "  Explorer", ":Oil --float<cr>"),
         dashboard.button("f", "  Find file", ":Telescope find_files<CR>"),
         dashboard.button("t", "  Find text", ":Telescope live_grep <CR>"),
         dashboard.button("p", "  Find project", ":Telescope project <CR>"),
@@ -248,7 +248,47 @@ return {
   },
   -- }}}
   -- {{{ Explorer
-  -- See telescope-file-browser in telescope.lua config
+  {
+    "stevearc/oil.nvim",
+    dependencies = { "nvim-tree/nvim-web-devicons" },
+    cmd = { "Oil" },
+    init = function()
+      vim.api.nvim_create_autocmd("User", {
+        group = vim.api.nvim_create_augroup("OilFloatCustom", {}),
+        pattern = "OilEnter",
+        callback = function()
+          local actions = require("oil.actions")
+          local util = require("oil.util")
+          if util.is_floating_win() then
+            vim.keymap.set("n", "q", actions.close.callback, { buffer = true })
+          end
+        end,
+      })
+    end,
+    -- stylua: ignore
+    keys = {
+      { "<leader>e", "<cmd>Oil --float<cr>", desc = "Explorer" },
+    },
+    config = function()
+      CustomOilBar = function()
+        local path = vim.fn.expand("%")
+        path = path:gsub("oil://", "")
+        return "  " .. vim.fn.fnamemodify(path, ":.")
+      end
+
+      require("oil").setup({
+        columns = { "icon" },
+        win_options = { winbar = "%{v:lua.CustomOilBar()}" },
+        view_options = {
+          show_hidden = true,
+          -- is_always_hidden = function(name, _)
+          --   local folder_skip = { "dev-tools.locks", "dune.lock", "_build" }
+          --   return vim.tbl_contains(folder_skip, name)
+          -- end,
+        },
+      })
+    end,
+  },
   -- }}}
   -- {{{ Notifications
   {

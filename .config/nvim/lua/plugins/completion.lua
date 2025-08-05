@@ -14,7 +14,7 @@ return {
           })
         end,
       },
-      { "nvim-lua/plenary.nvim" }, -- for curl, log and async functions
+      { "nvim-lua/plenary.nvim" },         -- for curl, log and async functions
       { "nvim-telescope/telescope.nvim" }, -- for help actions
     },
     opts = {
@@ -41,7 +41,6 @@ return {
       { "hrsh7th/cmp-buffer" },
       { "hrsh7th/cmp-path" },
       { "hrsh7th/cmp-nvim-lua" },
-      { "hrsh7th/cmp-emoji" },
       { "hrsh7th/cmp-cmdline" },
       {
         "zbirenbaum/copilot-cmp",
@@ -53,7 +52,6 @@ return {
     config = function()
       local cmp = require("cmp")
 
-      -- TODO: What does this do?
       local has_words_before = function()
         local line, col = unpack(vim.api.nvim_win_get_cursor(0))
         return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
@@ -70,7 +68,6 @@ return {
           { name = "path" },
           { name = "buffer" },
           { name = "nvim_lua" },
-          { name = "emoji" },
         }),
         formatting = {
           expandable_indicator = true,
@@ -81,7 +78,6 @@ return {
               nvim_lsp = "[LSP]",
               nvim_lua = "[Lua]",
               path = "[Path]",
-              emoji = "[Emoji]",
               spell = "[Spell]",
             })[entry.source.name]
             return vim_item

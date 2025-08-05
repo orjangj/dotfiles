@@ -6,11 +6,12 @@ return {
       { "akinsho/toggleterm.nvim" },
     },
     keys = {
-      { "<leader>bb", "<cmd>CMakeBuild<cr>",            desc = "CMake Build" },
-      { "<leader>bc", "<cmd>CMakeClean<cr>",            desc = "CMake Clean" },
+      { "<leader>bb", "<cmd>CMakeBuild<cr>", desc = "CMake Build" },
+      { "<leader>bc", "<cmd>CMakeClean<cr>", desc = "CMake Clean" },
       { "<leader>bf", "<cmd>Telescope cmake_tools<cr>", desc = "CMake Project Files" }, -- TODO: load extension?
-      { "<leader>bt", "<cmd>CMakeRunTest<cr>",          desc = "Run CTest" },
-      { "<leader>bs", "<cmd>CMakeSettings<cr>",         desc = "CMake Settings" },
+      { "<leader>bt", "<cmd>CMakeRunTest<cr>", desc = "Run CTest" },
+      { "<leader>bs", "<cmd>CMakeSettings<cr>", desc = "CMake Settings" },
+      { "<leader>bs", "<cmd>CMakeSelectConfigurePreset<cr>", desc = "Select Configure Preset" },
     },
     config = function()
       require("cmake-tools").setup({
