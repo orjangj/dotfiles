@@ -17,7 +17,7 @@ return {
   keys = {
     { "<leader>fc", "<cmd>Telescope commands<cr>",                                   desc = "Commands" },
     { "<leader>ff", "<cmd>Telescope find_files<cr>",                                 desc = "Files" },
-    { "<leader>fF", "<cmd>Telescope frecency workspace=CWD<cr>",                     desc = "Recent Files" },
+    { "<leader>fr", "<cmd>Telescope frecency workspace=CWD<cr>",                     desc = "Recent Files" },
     { "<leader>fh", "<cmd>Telescope help_tags<cr>",                                  desc = "Help Tags" },
     { "<leader>fm", "<cmd>Telescope man_pages<cr>",                                  desc = "Man Pages" },
     { "<leader>fn", "<cmd>Telescope notify<cr>",                                     desc = "Notification history" },

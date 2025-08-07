@@ -6,6 +6,21 @@ return {
     dependencies = {
       "nvim-tree/nvim-web-devicons",
     },
+    init = function()
+      vim.api.nvim_create_augroup("AlphaOnEmpty", { clear = true })
+      vim.api.nvim_create_autocmd("BufDelete", {
+        group = "AlphaOnEmpty",
+        callback = function(event)
+          local fallback_name = vim.api.nvim_buf_get_name(event.buf)
+          local fallback_ft = vim.api.nvim_get_option_value("filetype", { buf = event.buf })
+          local is_empty = fallback_name == "" and fallback_ft == ""
+
+          if is_empty then
+            vim.cmd("Alpha")
+          end
+        end,
+      })
+    end,
     config = function()
       local dashboard = require("alpha.themes.dashboard")
       dashboard.section.header.val = {
@@ -21,9 +36,9 @@ return {
       dashboard.section.buttons.val = {
         dashboard.button("e", "  Explorer", ":Oil --float<cr>"),
         dashboard.button("f", "  Find file", ":Telescope find_files<CR>"),
-        dashboard.button("t", "  Find text", ":Telescope live_grep <CR>"),
+        dashboard.button("r", "  Recently used files", ":Telescope frecency workspace=CWD<CR>"),
+        dashboard.button("s", "  Search text", ":Telescope live_grep <CR>"),
         dashboard.button("p", "  Find project", ":Telescope project <CR>"),
-        dashboard.button("r", "  Recently used files", ":Telescope oldfiles <CR>"),
         dashboard.button("c", "  Configuration", ":cd ~/.config/nvim <CR>:e init.lua <CR>"),
         dashboard.button("d", "  Dotfiles", ":cd ~/.config <CR>:Telescope find_files <CR>"),
         dashboard.button("q", "  Quit Neovim", ":qa<CR>"),
@@ -320,11 +335,11 @@ return {
       local keymaps = {
         mode = { "n", "v" },
         -- Single-keys
-        { "<leader>c", "<cmd>Bdelete!<cr>", desc = "Close Buffer" },
+        { "<leader>c", "<cmd>Bdelete!<cr>",   desc = "Close Buffer" },
         { "<leader>h", "<cmd>nohlsearch<cr>", desc = "No Highlight" }, -- Make it Toggle hightlight
-        { "<leader>p", "<cmd>Lazy<cr>", desc = "Plugin" },
-        { "<leader>q", "<cmd>q!<cr>", desc = "Quit" },
-        { "<leader>w", "<cmd>w!<cr>", desc = "Save Buffer" },
+        { "<leader>p", "<cmd>Lazy<cr>",       desc = "Plugin" },
+        { "<leader>q", "<cmd>q!<cr>",         desc = "Quit" },
+        { "<leader>w", "<cmd>w!<cr>",         desc = "Save Buffer" },
         -- Groups
         { "<leader>a", group = "AI" },
         { "<leader>b", group = "Build" },
