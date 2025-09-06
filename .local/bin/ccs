@@ -16,8 +16,6 @@ IFS=$'\n\t'
 CCS_VERSION="${CCS_VERSION:-1240}"
 CCS_HOME="${HOME}/ti/ccs${CCS_VERSION}/ccs"
 CCS_WORKSPACE=${CCS_WORKSPACE:-out}
-CCS_CLI="${CCS_HOME}/eclipse/eclipse"
-CCS_DSLITE="${CCS_HOME}/ccs_base/DebugServer/bin/DSLite"
 
 CCS_USAGE="
 Usage: ccs <subcommand> [options]
@@ -63,13 +61,31 @@ _exit_1() {
 ###############################################################################
 
 _ccs() {
-    local application="$1"
-    local opts=("${@:2}")
-    ${CCS_CLI} -noSplash -data "${CCS_WORKSPACE}" -application "${application}" "${opts[@]}"
+    local ccs_cli="${CCS_HOME}/eclipse/ccs-server-cli.sh"
+    local args=("-noSplash")
+    local application="${1}"
+
+    if [[ $CCS_VERSION -lt 2000 ]]; then
+        ccs_cli="${CCS_HOME}/eclipse/eclipse"
+
+        if [[ "${application}" == "initialize" ]]; then
+            application="com.ti.common.core.initialize"
+        else
+            application="com.ti.ccstudio.apps.${application}"
+        fi
+        args+=("-data" "${CCS_WORKSPACE}" "-application" "${application}")
+    else
+        args+=("-workspace" "${CCS_WORKSPACE}" "-application" "com.ti.ccs.apps.${application}")
+    fi
+
+    args+=("${@:2}")
+
+    ${ccs_cli} "${args[@]}"
 }
 
 _dslite() {
-    ${CCS_DSLITE} flash -f "${@:-}"
+    local dslite_cli="${CCS_HOME}/ccs_base/DebugServer/bin/DSLite"
+    ${dslite_cli} flash -f "${@:-}"
 }
 
 _help() {
@@ -134,7 +150,7 @@ _contains() {
 # SUBCOMMANDS ################################################################
 
 discover() {
-    _ccs com.ti.common.core.initialize -ccs.toolDiscoveryPath "${HOME}/ti" -rtsc.productDiscoveryPath "${HOME}/ti"
+    _ccs initialize -ccs.toolDiscoveryPath "${HOME}/ti" -rtsc.productDiscoveryPath "${HOME}/ti"
 }
 
 import() {
@@ -146,7 +162,7 @@ Options:
     -h                Show this help message and exit
 "
     local projectspec=""
-    local extra_args=("-ccs.copyIntoWorkspace")
+    local extra_args=()
 
     OPTIND=1
     while getopts "hp:" opt; do
@@ -174,7 +190,7 @@ Options:
         fi
     fi
 
-    _ccs com.ti.ccstudio.apps.projectImport -ccs.location "${projectspec}" "${extra_args[@]}"
+    _ccs projectImport -ccs.location "${projectspec}" "${extra_args[@]}"
 }
 
 build() {
@@ -222,7 +238,7 @@ Options:
         fi
     fi
 
-    _ccs com.ti.ccstudio.apps.projectBuild -ccs.projects "${project}" "${extra_args[@]}"
+    _ccs projectBuild -ccs.projects "${project}" "${extra_args[@]}"
 }
 
 clean() {
@@ -269,7 +285,7 @@ Options:
         fi
     fi
 
-    _ccs com.ti.ccstudio.apps.projectBuild -ccs.projects "${project}" -ccs.clean "${extra_args[@]}"
+    _ccs projectBuild -ccs.projects "${project}" -ccs.clean "${extra_args[@]}"
 }
 
 flash() {
