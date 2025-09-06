@@ -33,11 +33,11 @@ CCS_WORKSPACE=${CCS_WORKSPACE:-$PWD/out}
 #   redirected to standard error. The command is expected to print a message
 #   and should typically be either `echo`, `printf`, or `cat`.
 _exit_1() {
-  {
-    printf "%s " "$(tput setaf 1)!$(tput sgr0)"
-    "${@}"
-  } 1>&2
-  exit 1
+    {
+        printf "%s " "$(tput setaf 1)!$(tput sgr0)"
+        "${@}"
+    } 1>&2
+    exit 1
 }
 
 ###############################################################################
@@ -53,7 +53,7 @@ _exit_1() {
 #   0 (success, true)  If <argument> is not present or null.
 #   1 (error,  false)  If <argument> is present and not null.
 _blank() {
-  [[ -z "${1:-}" ]]
+    [[ -z "${1:-}" ]]
 }
 
 # _command_exists()
@@ -66,11 +66,10 @@ _blank() {
 #                     environment.
 #   1 (error,  false) If not.
 #
-# Information on why `hash` is used 
+# Information on why `hash` is used
 _command_exists() {
-  hash "${1}" 2>/dev/null
+    hash "${1}" 2>/dev/null
 }
-
 
 # _contains()
 #
@@ -84,139 +83,178 @@ _command_exists() {
 # Examples:
 #   _contains "${_query}" "${_list[@]}"
 _contains() {
-  local _query="${1:-}"
-  shift
+    local _query="${1:-}"
+    shift
 
-  if [[ -z "${_query}"  ]] ||
-     [[ -z "${*:-}"     ]]
-  then
+    if [[ -z "${_query}" ]] ||
+        [[ -z "${*:-}" ]]; then
+        return 1
+    fi
+
+    for __element in "${@}"; do
+        [[ "${__element}" == "${_query}" ]] && return 0
+    done
+
     return 1
-  fi
-
-  for __element in "${@}"
-  do
-    [[ "${__element}" == "${_query}" ]] && return 0
-  done
-
-  return 1
 }
 
 # SUBCOMMANDS ################################################################
 
-init ()
-{
-  ${CCS_CLI} \
-    -nosplash \
-    -data "${CCS_WORKSPACE}" \
-    -application com.ti.common.core.initialize \
-    -ccs.toolDiscoveryPath "${HOME}/ti" \
-    -rtsc.productDiscoveryPath "${HOME}/ti"
+help() {
+    echo "Usage: ccs <subcommand> [args]"
+    echo ""
+    echo "Subcommands:"
+    echo "  build       Build a project"
+    echo "  clean       Clean a project"
+    echo "  discover    Discover tools and products"
+    echo "  flash       Flash a project to a target"
+    echo "  import      Import a project (.projectspec)"
+    echo "  help        Show this help message"
+    echo ""
+    echo "Environment variables:"
+    echo "  CCS_VERSION    CCS version to use (default: 1240)"
+    echo "  CCS_WORKSPACE  CCS workspace to use (default: ./out)"
+    echo ""
 }
 
-import ()
-{
-  local _projectspec="${1}"
-
-  if _blank "${_projectspec}"
-  then
-    _exit_1 printf "Missing positional argument: <projectspec>\\n"
-  fi
-
-  ${CCS_CLI} \
-    -noSplash \
-    -data "${CCS_WORKSPACE}" \
-    -application com.ti.ccstudio.apps.projectImport \
-    -ccs.copyIntoWorkspace \
-    -ccs.location "${_projectspec}"
+discover() {
+    ${CCS_CLI} \
+        -nosplash \
+        -data "${CCS_WORKSPACE}" \
+        -application com.ti.common.core.initialize \
+        -ccs.toolDiscoveryPath "${HOME}/ti" \
+        -rtsc.productDiscoveryPath "${HOME}/ti"
 }
 
-build ()
-{
-  local _arguments=()
+import() {
+    local _projectspec="${1}"
 
-  for __arg in "${@:-}"
-  do
-    case ${__arg} in
-      *)
-        _arguments+=("${__arg}")
-        ;;
-    esac
-  done
-
-  if [ ! "${#_arguments[@]}" -eq "2" ]; then
-    _exit_1 printf "Expected positional arguments: <project> <configuration>\\n"
-  fi
-
-  local _name="${_arguments[0]}"
-  local _configuration="${_arguments[1]}"
-
-  if _blank "${_name}"
-  then
-    _exit_1 printf "Missing positional argument: <project>\\n"
-  elif _blank "${_configuration}"
-  then
-    _exit_1 printf "Missing positional argument: <configuration>\\n"
-  fi
-
-  ${CCS_CLI} \
-    -noSplash \
-    -data "${CCS_WORKSPACE}" \
-    -application com.ti.ccstudio.apps.projectBuild \
-    -ccs.projects "${_name}" \
-    -ccs.configuration "${_configuration}" \
-    -ccs.listErrors \
-    -ccs.listProblems
-}
-
-flash ()
-{
-    local _image="${1}"
-    local _useropts="${@:2}"
-
-    if _blank "${_image}"
-    then
-      _exit_1 printf "Missing positional argument: <image>\\n"
+    if _blank "${_projectspec}"; then
+        _exit_1 printf "Missing positional argument: <projectspec>\\n"
     fi
 
-    ${CCS_DSLITE} flash -f ${_useropts} "${_image}"
+    ${CCS_CLI} \
+        -noSplash \
+        -data "${CCS_WORKSPACE}" \
+        -application com.ti.ccstudio.apps.projectImport \
+        -ccs.copyIntoWorkspace \
+        -ccs.location "${_projectspec}"
+}
+
+build() {
+    local _arguments=()
+
+    for __arg in "${@:-}"; do
+        case ${__arg} in
+        *)
+            _arguments+=("${__arg}")
+            ;;
+        esac
+    done
+
+    if [ ! "${#_arguments[@]}" -eq "2" ]; then
+        _exit_1 printf "Expected positional arguments: <project> <configuration>\\n"
+    fi
+
+    local _name="${_arguments[0]}"
+    local _configuration="${_arguments[1]}"
+
+    if _blank "${_name}"; then
+        _exit_1 printf "Missing positional argument: <project>\\n"
+    elif _blank "${_configuration}"; then
+        _exit_1 printf "Missing positional argument: <configuration>\\n"
+    fi
+
+    ${CCS_CLI} \
+        -noSplash \
+        -data "${CCS_WORKSPACE}" \
+        -application com.ti.ccstudio.apps.projectBuild \
+        -ccs.listErrors \
+        -ccs.listProblems \
+        -ccs.projects "${_name}" \
+        -ccs.configuration "${_configuration}"
+}
+
+clean() {
+    local _arguments=()
+
+    for __arg in "${@:-}"; do
+        case ${__arg} in
+        *)
+            _arguments+=("${__arg}")
+            ;;
+        esac
+    done
+
+    if [ ! "${#_arguments[@]}" -eq "2" ]; then
+        _exit_1 printf "Expected positional arguments: <project> <configuration>\\n"
+    fi
+
+    local _name="${_arguments[0]}"
+    local _configuration="${_arguments[1]}"
+
+    if _blank "${_name}"; then
+        _exit_1 printf "Missing positional argument: <project>\\n"
+    elif _blank "${_configuration}"; then
+        _exit_1 printf "Missing positional argument: <configuration>\\n"
+    fi
+
+    ${CCS_CLI} \
+        -noSplash \
+        -data "${CCS_WORKSPACE}" \
+        -application com.ti.ccstudio.apps.projectBuild \
+        -ccs.clean \
+        -ccs.projects "${_name}" \
+        -ccs.configuration "${_configuration}"
+}
+
+flash() {
+    _exit_1 printf "Not Implemented yet"
+    #local _image="${1}"
+    #local _useropts="${@:2}"
+
+    #if _blank "${_image}"
+    #then
+    #    _exit_1 printf "Missing positional argument: <image>\\n"
+    #fi
+
+    #${CCS_DSLITE} flash -f "${_useropts}" "${_image}"
 }
 
 # Program Option Parsing ######################################################
 
 unset options
 # while the number of arguments is greater than 0
-while ((${#}))
-do
-  case "${1}" in
+while ((${#})); do
+    case "${1}" in
     # if option is of type -ab
     -[!-]?*)
-      # loop over each character starting with the second
-      for ((i=1; i<${#1}; i++))
-      do
-        # extract 1 character from position 'i'
-        c="${1:i:1}"
-        # add current char to options
-        options+=("-${c}")
-      done
-      ;;
+        # loop over each character starting with the second
+        for ((i = 1; i < ${#1}; i++)); do
+            # extract 1 character from position 'i'
+            c="${1:i:1}"
+            # add current char to options
+            options+=("-${c}")
+        done
+        ;;
     # if option is of type --foo=bar, split on first '='
     --?*=*)
-      options+=("${1%%=*}" "${1#*=}")
-      ;;
+        options+=("${1%%=*}" "${1#*=}")
+        ;;
     # end of options, stop breaking them up
     --)
-      options+=(--endopts)
-      shift
-      options+=("${@}")
-      break
-      ;;
+        options+=(--endopts)
+        shift
+        options+=("${@}")
+        break
+        ;;
     # otherwise, nothing special
     *)
-      options+=("${1}")
-      ;;
-  esac
+        options+=("${1}")
+        ;;
+    esac
 
-  shift
+    shift
 done
 # set new positional parameters to altered options. Set default to blank.
 set -- "${options[@]:-}"
@@ -227,27 +265,25 @@ unset options
 _SUBCOMMAND=""
 _SUBCOMMAND_ARGUMENTS=()
 
-while ((${#}))
-do
-  __opt="${1}"
+while ((${#})); do
+    __opt="${1}"
 
-  shift
+    shift
 
-  case "${__opt}" in
-#    -h|--help)
-#      _SUBCOMMAND="help"
-#      ;;
+    case "${__opt}" in
+    -h | --help)
+        _SUBCOMMAND="help"
+        ;;
     *)
-      # The first non-option argument is assumed to be the subcommand name.
-      # All subsequent arguments are added to $_SUBCOMMAND_ARGUMENTS.
-      if [[ -n "${_SUBCOMMAND}" ]]
-      then
-        _SUBCOMMAND_ARGUMENTS+=("${__opt}")
-      else
-        _SUBCOMMAND="${__opt}"
-      fi
-      ;;
-  esac
+        # The first non-option argument is assumed to be the subcommand name.
+        # All subsequent arguments are added to $_SUBCOMMAND_ARGUMENTS.
+        if [[ -n "${_SUBCOMMAND}" ]]; then
+            _SUBCOMMAND_ARGUMENTS+=("${__opt}")
+        else
+            _SUBCOMMAND="${__opt}"
+        fi
+        ;;
+    esac
 done
 
 ###############################################################################
@@ -265,36 +301,31 @@ _DEFINED_SUBCOMMANDS=()
 # Description:
 #   The primary function for starting the program.
 _main() {
-  # If $_SUBCOMMAND is blank, then set to `$DEFAULT_SUBCOMMAND`
-  #if [[ -z "${_SUBCOMMAND}" ]]
-  #then
-  #  _SUBCOMMAND="${DEFAULT_SUBCOMMAND}"
-  #fi
-
-  for __name in $(declare -F)
-  do
-    # Each element has the format `declare -f function_name`, so set the name
-    # to only the 'function_name' part of the string.
-    local _function_name
-    _function_name=$(printf "%s" "${__name}" | awk '{ print $3 }')
-
-    if ! { [[ -z "${_function_name:-}"                      ]] ||
-           [[ "${_function_name}" =~ ^_(.*)                 ]]
-    }
-    then
-      _DEFINED_SUBCOMMANDS+=("${_function_name}")
+    if [[ -z "${_SUBCOMMAND}" ]]; then
+        _SUBCOMMAND="help"
     fi
-  done
 
-  # If the subcommand is defined, run it, otherwise return an error.
-  if _contains "${_SUBCOMMAND}" "${_DEFINED_SUBCOMMANDS[@]:-}"
-  then
-    # Pass all comment arguments to the program except for the first ($0).
-    ${_SUBCOMMAND} "${_SUBCOMMAND_ARGUMENTS[@]:-}"
-    #_exit_1 printf "subcommand: %s\\n" "${_DEFINED_SUBCOMMANDS}"
-  else
-    _exit_1 printf "Unknown subcommand: %s\\n" "${_SUBCOMMAND}"
-  fi
+    for __name in $(declare -F); do
+        # Each element has the format `declare -f function_name`, so set the name
+        # to only the 'function_name' part of the string.
+        local _function_name
+        _function_name=$(printf "%s" "${__name}" | awk '{ print $3 }')
+
+        if ! {
+            [[ -z "${_function_name:-}" ]] ||
+                [[ "${_function_name}" =~ ^_(.*) ]]
+        }; then
+            _DEFINED_SUBCOMMANDS+=("${_function_name}")
+        fi
+    done
+
+    # If the subcommand is defined, run it, otherwise return an error.
+    if _contains "${_SUBCOMMAND}" "${_DEFINED_SUBCOMMANDS[@]:-}"; then
+        # Pass all comment arguments to the program except for the first ($0).
+        ${_SUBCOMMAND} "${_SUBCOMMAND_ARGUMENTS[@]:-}"
+    else
+        _exit_1 printf "Unknown subcommand: %s\\n" "${_SUBCOMMAND}"
+    fi
 }
 
 _main
