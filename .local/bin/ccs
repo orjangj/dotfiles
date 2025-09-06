@@ -274,26 +274,81 @@ Options:
 
 flash() {
     local usage="
-Usage: ccs flash <project> <configuration>
-
-Positional arguments:
-    project          Project to flash
-    configuration    Configuration to flash
+Usage: ccs flash [options]
     
 Options:
-    -h                  Show this help message and exit
+    -i <image>   Image (.hex) to flash to the target
+    -c <config>  Target configuration to use (.ccxml)
+    -r <reset>   Set reset operation to be done after flashing the target
+    -h           Show this help message and exit
 "
-    _exit_1 printf "Not Implemented yet"
+    local image=""
+    local config=""
+    local extra_args=()
 
-    #local _image="${1:-}"
-    #local _useropts="${@:2}"
+    OPTIND=1
+    while getopts "hc:i:r:" opt; do
+        case $opt in
+        i) image+="${OPTARG}" ;;
+        c) config="${OPTARG}" ;;
+        r) extra_args+=("-r ${OPTARG}") ;;
+        h) _help "${usage}" ;;
+        *) exit 1 ;;
+        esac
+    done
+    shift $((OPTIND - 1))
 
-    #if _blank "${_image}"
-    #then
-    #    _exit_1 printf "Missing positional argument: <image>\\n"
-    #fi
+    if _blank "${image}"; then
+        mapfile -t executables < <(
+            cd "${CCS_WORKSPACE}"
+            find . -type f -name "*.hex"
+        )
 
-    #_dslite "${_useropts}" "${_image}"
+        if _blank "${executables[*]}"; then
+            echo "${usage}"
+            _exit_1 printf "Could not find any executables to flash in '${CCS_WORKSPACE}'\\n"
+        elif [ "${#executables[@]}" -eq 1 ]; then
+            image="${executables[0]}"
+        else
+            PS3="Select an executables to flash: "
+            select exe in "${executables[@]}"; do
+                if [[ -n $exe ]]; then
+                    image="${exe}"
+                    break
+                fi
+            done
+        fi
+    fi
+
+    if _blank "${config}"; then
+        local project=""
+        project=$(basename -s ".hex" "${image}")
+        local search_path="${CCS_WORKSPACE}/${project}/targetConfigs"
+
+        mapfile -t configurations < <(
+            cd "${search_path}"
+            find . -type f -name "*.ccxml" -printf "%f\n"
+        )
+
+        if _blank "${configurations[*]}"; then
+            echo "${usage}"
+            _exit_1 printf "Could not find any target configurations '${CCS_WORKSPACE}'\\n"
+        elif [ "${#configurations[@]}" -eq 1 ]; then
+            config="${configurations[0]}"
+        else
+            PS3="Select a target configuration: "
+            select cfg in "${configurations[@]}"; do
+                if [[ -n $cfg ]]; then
+                    config="${cfg}"
+                    break
+                fi
+            done
+        fi
+
+        config="${search_path}/${config}"
+    fi
+
+    _dslite -c "${config}" "${extra_args[@]}" "${image}"
 }
 
 # Program Option Parsing ######################################################
