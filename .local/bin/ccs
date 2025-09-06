@@ -15,9 +15,27 @@ IFS=$'\n\t'
 
 CCS_VERSION="${CCS_VERSION:-1240}"
 CCS_HOME="${HOME}/ti/ccs${CCS_VERSION}/ccs"
+CCS_WORKSPACE=${CCS_WORKSPACE:-out}
 CCS_CLI="${CCS_HOME}/eclipse/eclipse"
 CCS_DSLITE="${CCS_HOME}/ccs_base/DebugServer/bin/DSLite"
-CCS_WORKSPACE=${CCS_WORKSPACE:-$PWD/out}
+
+CCS_USAGE="
+Usage: ccs <subcommand> [options]
+
+Subcommands:
+    build       Build project
+    clean       Clean project
+    discover    Discover tools and products in $HOME/ti
+    flash       Flash project to a target
+    import      Import a project (.projectspec)
+
+Options:
+    -h    Show this help message and exit
+
+Environment variables:
+    CCS_VERSION      CCS version to use (default: 1240)
+    CCS_WORKSPACE    CCS workspace to use (default: ./out)
+"
 
 ###############################################################################
 # Error Messages
@@ -43,6 +61,21 @@ _exit_1() {
 ###############################################################################
 # Utility Functions
 ###############################################################################
+
+_ccs() {
+    local application="$1"
+    local opts=("${@:2}")
+    ${CCS_CLI} -noSplash -data "${CCS_WORKSPACE}" -application "${application}" "${opts[@]}"
+}
+
+_dslite() {
+    ${CCS_DSLITE} flash -f "${@:-}"
+}
+
+_help() {
+    echo "${@:-${CCS_USAGE}}"
+    exit 0
+}
 
 # _blank()
 #
@@ -100,117 +133,159 @@ _contains() {
 
 # SUBCOMMANDS ################################################################
 
-help() {
-    echo "Usage: ccs <subcommand> [args]"
-    echo ""
-    echo "Subcommands:"
-    echo "  build       Build a project"
-    echo "  clean       Clean a project"
-    echo "  discover    Discover tools and products"
-    echo "  flash       Flash a project to a target"
-    echo "  import      Import a project (.projectspec)"
-    echo "  help        Show this help message"
-    echo ""
-    echo "Environment variables:"
-    echo "  CCS_VERSION    CCS version to use (default: 1240)"
-    echo "  CCS_WORKSPACE  CCS workspace to use (default: ./out)"
-    echo ""
-}
-
 discover() {
-    ${CCS_CLI} \
-        -nosplash \
-        -data "${CCS_WORKSPACE}" \
-        -application com.ti.common.core.initialize \
-        -ccs.toolDiscoveryPath "${HOME}/ti" \
-        -rtsc.productDiscoveryPath "${HOME}/ti"
+    _ccs com.ti.common.core.initialize -ccs.toolDiscoveryPath "${HOME}/ti" -rtsc.productDiscoveryPath "${HOME}/ti"
 }
 
 import() {
-    local _projectspec="${1}"
+    local usage="
+Usage: ccs import [options]
 
-    if _blank "${_projectspec}"; then
-        _exit_1 printf "Missing positional argument: <projectspec>\\n"
+Options:
+    -p <projectspec>  Path to the projectspec to import
+    -h                Show this help message and exit
+"
+    local projectspec=""
+    local extra_args=("-ccs.copyIntoWorkspace")
+
+    OPTIND=1
+    while getopts "hp:" opt; do
+        case $opt in
+        h) _help "${usage}" ;;
+        p) projectspec="${OPTARG}" ;;
+        *) exit 1 ;;
+        esac
+    done
+    shift $((OPTIND - 1))
+
+    if _blank "${projectspec}"; then
+        mapfile -t files < <(find . -type f -name "*.projectspec")
+        PS3="Select a projectspec to import: "
+        select file in "${files[@]}"; do
+            if [[ -n $file ]]; then
+                projectspec=$(realpath "${file}")
+                break
+            fi
+        done
+
+        if _blank "${projectspec}"; then
+            echo "${usage}"
+            _exit_1 printf "Could not find a projectspec on path '$PWD'\\n"
+        fi
     fi
 
-    ${CCS_CLI} \
-        -noSplash \
-        -data "${CCS_WORKSPACE}" \
-        -application com.ti.ccstudio.apps.projectImport \
-        -ccs.copyIntoWorkspace \
-        -ccs.location "${_projectspec}"
+    _ccs com.ti.ccstudio.apps.projectImport -ccs.location "${projectspec}" "${extra_args[@]}"
 }
 
 build() {
-    local _arguments=()
+    local usage="
+Usage: ccs build [options]
+    
+Options:
+    -p <project>        Project to build
+    -c <configuration>  Project build configuration to build
+    -h                  Show this help message and exit
+"
+    local project=""
+    local extra_args=("-ccs.listErrors" "-ccs.listProblems")
 
-    for __arg in "${@:-}"; do
-        case ${__arg} in
-        *)
-            _arguments+=("${__arg}")
-            ;;
+    OPTIND=1
+    while getopts "hc:p:" opt; do
+        case $opt in
+        h) _help "${usage}" ;;
+        c) extra_args+=("-ccs.configuration ${OPTARG}") ;;
+        p) project="${OPTARG}" ;;
+        *) exit 1 ;;
         esac
     done
+    shift $((OPTIND - 1))
 
-    if [ ! "${#_arguments[@]}" -eq "2" ]; then
-        _exit_1 printf "Expected positional arguments: <project> <configuration>\\n"
+    if _blank "${project}"; then
+        mapfile -t projects < <(
+            cd "${CCS_WORKSPACE}"
+            find . -maxdepth 1 -type d -not -name "." -not -name ".metadata" -printf "%f\n"
+        )
+
+        if _blank "${projects[*]}"; then
+            echo "${usage}"
+            _exit_1 printf "Could not find any projects to build in '${CCS_WORKSPACE}'\\n"
+        elif [ "${#projects[@]}" -eq 1 ]; then
+            project="${projects[0]}"
+        else
+            PS3="Select a project to build: "
+            select prj in "${projects[@]}"; do
+                if [[ -n $prj ]]; then
+                    project="${prj}"
+                    break
+                fi
+            done
+        fi
     fi
 
-    local _name="${_arguments[0]}"
-    local _configuration="${_arguments[1]}"
-
-    if _blank "${_name}"; then
-        _exit_1 printf "Missing positional argument: <project>\\n"
-    elif _blank "${_configuration}"; then
-        _exit_1 printf "Missing positional argument: <configuration>\\n"
-    fi
-
-    ${CCS_CLI} \
-        -noSplash \
-        -data "${CCS_WORKSPACE}" \
-        -application com.ti.ccstudio.apps.projectBuild \
-        -ccs.listErrors \
-        -ccs.listProblems \
-        -ccs.projects "${_name}" \
-        -ccs.configuration "${_configuration}"
+    _ccs com.ti.ccstudio.apps.projectBuild -ccs.projects "${project}" "${extra_args[@]}"
 }
 
 clean() {
-    local _arguments=()
+    local usage="
+Usage: ccs clean [options]
+    
+Options:
+    -p <project>        Project to clean
+    -c <configuration>  Build configuration to clean
+    -h                  Show this help message and exit
+"
+    local project="${1:-}"
+    local extra_args=()
 
-    for __arg in "${@:-}"; do
-        case ${__arg} in
-        *)
-            _arguments+=("${__arg}")
-            ;;
+    OPTIND=1
+    while getopts "hc:" opt; do
+        case $opt in
+        h) _help "${usage}" ;;
+        c) extra_args+=("-ccs.configuration ${OPTARG}") ;;
+        *) exit 1 ;;
         esac
     done
+    shift $((OPTIND - 1))
 
-    if [ ! "${#_arguments[@]}" -eq "2" ]; then
-        _exit_1 printf "Expected positional arguments: <project> <configuration>\\n"
+    if _blank "${project}"; then
+        mapfile -t projects < <(
+            cd "${CCS_WORKSPACE}"
+            find . -maxdepth 1 -type d -not -name "." -not -name ".metadata" -printf "%f\n"
+        )
+
+        if _blank "${projects[*]}"; then
+            echo "${usage}"
+            _exit_1 printf "Could not find any projects to clean in '${CCS_WORKSPACE}'\\n"
+        elif [ "${#projects[@]}" -eq 1 ]; then
+            project="${projects[0]}"
+        else
+            PS3="Select a project to clean: "
+            select prj in "${projects[@]}"; do
+                if [[ -n $prj ]]; then
+                    project="${prj}"
+                    break
+                fi
+            done
+        fi
     fi
 
-    local _name="${_arguments[0]}"
-    local _configuration="${_arguments[1]}"
-
-    if _blank "${_name}"; then
-        _exit_1 printf "Missing positional argument: <project>\\n"
-    elif _blank "${_configuration}"; then
-        _exit_1 printf "Missing positional argument: <configuration>\\n"
-    fi
-
-    ${CCS_CLI} \
-        -noSplash \
-        -data "${CCS_WORKSPACE}" \
-        -application com.ti.ccstudio.apps.projectBuild \
-        -ccs.clean \
-        -ccs.projects "${_name}" \
-        -ccs.configuration "${_configuration}"
+    _ccs com.ti.ccstudio.apps.projectBuild -ccs.projects "${project}" -ccs.clean "${extra_args[@]}"
 }
 
 flash() {
+    local usage="
+Usage: ccs flash <project> <configuration>
+
+Positional arguments:
+    project          Project to flash
+    configuration    Configuration to flash
+    
+Options:
+    -h                  Show this help message and exit
+"
     _exit_1 printf "Not Implemented yet"
-    #local _image="${1}"
+
+    #local _image="${1:-}"
     #local _useropts="${@:2}"
 
     #if _blank "${_image}"
@@ -218,7 +293,7 @@ flash() {
     #    _exit_1 printf "Missing positional argument: <image>\\n"
     #fi
 
-    #${CCS_DSLITE} flash -f "${_useropts}" "${_image}"
+    #_dslite "${_useropts}" "${_image}"
 }
 
 # Program Option Parsing ######################################################
@@ -271,8 +346,13 @@ while ((${#})); do
     shift
 
     case "${__opt}" in
-    -h | --help)
-        _SUBCOMMAND="help"
+    -h)
+        # Check if we should pass help option to subcommand
+        if [ -z "${_SUBCOMMAND}" ]; then
+            _help "${CCS_USAGE}"
+        else
+            _SUBCOMMAND_ARGUMENTS+=("${__opt}")
+        fi
         ;;
     *)
         # The first non-option argument is assumed to be the subcommand name.
@@ -302,7 +382,7 @@ _DEFINED_SUBCOMMANDS=()
 #   The primary function for starting the program.
 _main() {
     if [[ -z "${_SUBCOMMAND}" ]]; then
-        _SUBCOMMAND="help"
+        _help "${CCS_USAGE}"
     fi
 
     for __name in $(declare -F); do
