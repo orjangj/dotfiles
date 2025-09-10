@@ -97,17 +97,4 @@ return {
     },
   },
   -- }}}
-  -- {{{ Lazygit
-  {
-    -- TODO: Replace with something else? Fugitive or Neogit maybe?
-    "kdheepak/lazygit.nvim",
-    dependencies = {
-      "nvim-lua/plenary.nvim",
-      -- TODO: telescope integration?
-    },
-    keys = {
-      { "<leader>gg", "<cmd>LazyGit<cr>", desc = "LazyGit" },
-    },
-  },
-  -- }}}
 }

@@ -13,6 +13,14 @@ return {
     },
     opts = {
       file_types = { "markdown", "copilot-chat" },
+      heading = {
+        sign = false,
+      },
+      code = {
+        border = "thin",
+        sign = false,
+        highlight_language = "Comment",
+      },
     },
     ft = { "markdown", "copilot-chat" },
   },

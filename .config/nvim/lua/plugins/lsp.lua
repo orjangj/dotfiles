@@ -47,6 +47,7 @@ return {
     },
     config = function()
       local servers = {
+        bashls = {},
         clangd = {
           cmd = {
             "clangd",
@@ -81,7 +82,7 @@ return {
 
       require("mason").setup({ ui = { border = "rounded" } })
       require("mason-lspconfig").setup({
-        ensure_installed = { "clangd@19.1.2", "cmake", "lua_ls" },
+        ensure_installed = { "bashls", "clangd@19.1.2", "cmake", "lua_ls" },
         automatic_installation = true,
       })
       require("mason-nvim-dap").setup({
@@ -138,7 +139,7 @@ return {
       -- Configure ui/window borders for lsp/diagnostics
       vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded" })
       vim.lsp.handlers["textDocument/signatureHelp"] =
-        vim.lsp.with(vim.lsp.handlers.signature_help, { border = "rounded" })
+          vim.lsp.with(vim.lsp.handlers.signature_help, { border = "rounded" })
       vim.diagnostic.config({ virtual_text = true, float = { border = "rounded" } })
 
       require("trouble").setup()
@@ -170,7 +171,7 @@ return {
             },
           }),
           diagnostics.cmake_lint,
-          -- TODO: consider using ruff for python linting (requires none-ls-extras.nvim)
+          diagnostics.hadolint.with({ extra_args = { "--ignore", "DL3008" } }),
           formatting.prettier.with({
             filetypes = {
               "json",

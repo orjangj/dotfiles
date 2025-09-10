@@ -2,25 +2,27 @@ return {
   -- {{{ Dashboard
   {
     "goolord/alpha-nvim",
+    -- commit = "a35468cd72645dbd52c0624ceead5f301c566dff",
     event = "VimEnter",
     dependencies = {
       "nvim-tree/nvim-web-devicons",
     },
-    init = function()
-      vim.api.nvim_create_augroup("AlphaOnEmpty", { clear = true })
-      vim.api.nvim_create_autocmd("BufDelete", {
-        group = "AlphaOnEmpty",
-        callback = function(event)
-          local fallback_name = vim.api.nvim_buf_get_name(event.buf)
-          local fallback_ft = vim.api.nvim_get_option_value("filetype", { buf = event.buf })
-          local is_empty = fallback_name == "" and fallback_ft == ""
-
-          if is_empty then
-            vim.cmd("Alpha")
-          end
-        end,
-      })
-    end,
+    -- Seems like there's some WinResized bug caused by this
+    -- init = function()
+    --   vim.api.nvim_create_augroup("DashboardOnEmpty", { clear = true })
+    --   vim.api.nvim_create_autocmd("BufDelete", {
+    --     group = "DashboardOnEmpty",
+    --     callback = function(event)
+    --       local fallback_name = vim.api.nvim_buf_get_name(event.buf)
+    --       local fallback_ft = vim.api.nvim_get_option_value("filetype", { buf = event.buf })
+    --       local is_empty = fallback_name == "" and fallback_ft == ""
+    --
+    --       if is_empty then
+    --         vim.cmd("Alpha")
+    --       end
+    --     end,
+    --   })
+    -- end,
     config = function()
       local dashboard = require("alpha.themes.dashboard")
       dashboard.section.header.val = {
@@ -335,11 +337,11 @@ return {
       local keymaps = {
         mode = { "n", "v" },
         -- Single-keys
-        { "<leader>c", "<cmd>Bdelete!<cr>",   desc = "Close Buffer" },
+        { "<leader>c", "<cmd>Bdelete!<cr>", desc = "Close Buffer" },
         { "<leader>h", "<cmd>nohlsearch<cr>", desc = "No Highlight" }, -- Make it Toggle hightlight
-        { "<leader>p", "<cmd>Lazy<cr>",       desc = "Plugin" },
-        { "<leader>q", "<cmd>q!<cr>",         desc = "Quit" },
-        { "<leader>w", "<cmd>w!<cr>",         desc = "Save Buffer" },
+        { "<leader>p", "<cmd>Lazy<cr>", desc = "Plugin" },
+        { "<leader>q", "<cmd>q!<cr>", desc = "Quit" },
+        { "<leader>w", "<cmd>w!<cr>", desc = "Save Buffer" },
         -- Groups
         { "<leader>a", group = "AI" },
         { "<leader>b", group = "Build" },
