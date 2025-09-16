@@ -25,6 +25,7 @@ Subcommands:
     clean       Clean project
     discover    Discover tools and products in $HOME/ti
     flash       Flash project to a target
+    erase       Mass erase a CC13xx or CC26xx target.
     import      Import a project (.projectspec)
 
 Options:
@@ -85,7 +86,8 @@ _ccs() {
 
 _dslite() {
     local dslite_cli="${CCS_HOME}/ccs_base/DebugServer/bin/DSLite"
-    ${dslite_cli} flash -f "${@:-}"
+    local args=("${@:-}")
+    ${dslite_cli} "${args[@]}"
 }
 
 _help() {
@@ -175,18 +177,21 @@ Options:
     shift $((OPTIND - 1))
 
     if _blank "${projectspec}"; then
-        mapfile -t files < <(find . -type f -name "*.projectspec")
-        PS3="Select a projectspec to import: "
-        select file in "${files[@]}"; do
-            if [[ -n $file ]]; then
-                projectspec=$(realpath "${file}")
-                break
-            fi
-        done
+        mapfile -t specs < <(find . -type f -name "*.projectspec" -printf "%P\n")
 
-        if _blank "${projectspec}"; then
+        if _blank "${specs[*]}"; then
             echo "${usage}"
             _exit_1 printf "Could not find a projectspec on path '$PWD'\\n"
+        elif [ "${#specs[@]}" -eq 1 ]; then
+            projectspec="${specs[0]}"
+        else
+            PS3="Select a projectspec to import: "
+            select spec in "${specs[@]}"; do
+                if [[ -n $spec ]]; then
+                    projectspec="${spec}"
+                    break
+                fi
+            done
         fi
     fi
 
@@ -196,7 +201,7 @@ Options:
 build() {
     local usage="
 Usage: ccs build [options]
-    
+
 Options:
     -p <project>        Project to build
     -c <configuration>  Project build configuration to build
@@ -218,8 +223,7 @@ Options:
 
     if _blank "${project}"; then
         mapfile -t projects < <(
-            cd "${CCS_WORKSPACE}"
-            find . -maxdepth 1 -type d -not -name "." -not -name ".metadata" -printf "%f\n"
+            find "${CCS_WORKSPACE}" -maxdepth 1 -type d -not -wholename "${CCS_WORKSPACE}" -not -name ".metadata" -printf "%P\n"
         )
 
         if _blank "${projects[*]}"; then
@@ -244,7 +248,7 @@ Options:
 clean() {
     local usage="
 Usage: ccs clean [options]
-    
+
 Options:
     -p <project>        Project to clean
     -c <configuration>  Build configuration to clean
@@ -265,8 +269,7 @@ Options:
 
     if _blank "${project}"; then
         mapfile -t projects < <(
-            cd "${CCS_WORKSPACE}"
-            find . -maxdepth 1 -type d -not -name "." -not -name ".metadata" -printf "%f\n"
+            find "${CCS_WORKSPACE}" -maxdepth 1 -type d -not -wholename "${CCS_WORKSPACE}" -not -name ".metadata" -printf "%P\n"
         )
 
         if _blank "${projects[*]}"; then
@@ -288,26 +291,79 @@ Options:
     _ccs projectBuild -ccs.projects "${project}" -ccs.clean "${extra_args[@]}"
 }
 
+erase() {
+    local usage="
+Usage: ccs flash [options]
+
+Performs a mass-erase on the connected target.
+
+Options:
+    -c <config>   Target configuration to use (.ccxml)
+    -h            Show this help message and exit
+"
+    local config=""
+
+    OPTIND=1
+    while getopts "hc:" opt; do
+        case $opt in
+        c) config="${OPTARG}" ;;
+        h) _help "${usage}" ;;
+        *) exit 1 ;;
+        esac
+    done
+    shift $((OPTIND - 1))
+
+    if _blank "${config}"; then
+        mapfile -t configurations < <(find "${CCS_WORKSPACE}" -type f -name "*.ccxml")
+
+        if _blank "${configurations[*]}"; then
+            echo "${usage}"
+            _exit_1 printf "Could not find any target configurations '${CCS_WORKSPACE}'\\n"
+        elif [ "${#configurations[@]}" -eq 1 ]; then
+            config="${configurations[0]}"
+        else
+            PS3="Select a target configuration: "
+            select cfg in "${configurations[@]}"; do
+                if [[ -n $cfg ]]; then
+                    config="${cfg}"
+                    break
+                fi
+            done
+        fi
+    fi
+
+    _dslite cc13xx-cc26xx-mass-erase -c "${config}"
+}
+
 flash() {
     local usage="
 Usage: ccs flash [options]
-    
+
+Flash the connected target with the given image. A menu of discovered images (.bin or .hex) is provided unless
+explicitly set through -i <image>. By default, binary images will be flashed to 0x00000000 address, but can be
+overriden with the -a <address> option.
+
 Options:
-    -i <image>   Image (.hex) to flash to the target
-    -c <config>  Target configuration to use (.ccxml)
-    -r <reset>   Set reset operation to be done after flashing the target
-    -h           Show this help message and exit
+    -a <address>  Address to load the image to (only relevant for .bin images, defaults to 0x00000000)
+    -i <image>    Image to flash to the target
+    -c <config>   Target configuration to use (.ccxml)
+    -r            Performs a board reset after program has been loaded and verified
+    -v            Verify the image
+    -h            Show this help message and exit
 "
+    local address="0x00000000"
     local image=""
     local config=""
     local extra_args=()
 
     OPTIND=1
-    while getopts "hc:i:r:" opt; do
+    while getopts "hvra:c:i:" opt; do
         case $opt in
+        a) address="${OPTARG}" ;;
         i) image+="${OPTARG}" ;;
         c) config="${OPTARG}" ;;
-        r) extra_args+=("-r ${OPTARG}") ;;
+        r) extra_args+=("-r" "2") ;;
+        v) extra_args+=("-v") ;;
         h) _help "${usage}" ;;
         *) exit 1 ;;
         esac
@@ -315,10 +371,7 @@ Options:
     shift $((OPTIND - 1))
 
     if _blank "${image}"; then
-        mapfile -t executables < <(
-            cd "${CCS_WORKSPACE}"
-            find . -type f -name "*.hex"
-        )
+        mapfile -t executables < <(find "${CCS_WORKSPACE}" -type f -name "*.hex" -o -name "*.bin")
 
         if _blank "${executables[*]}"; then
             echo "${usage}"
@@ -337,14 +390,7 @@ Options:
     fi
 
     if _blank "${config}"; then
-        local project=""
-        project=$(basename -s ".hex" "${image}")
-        local search_path="${CCS_WORKSPACE}/${project}/targetConfigs"
-
-        mapfile -t configurations < <(
-            cd "${search_path}"
-            find . -type f -name "*.ccxml" -printf "%f\n"
-        )
+        mapfile -t configurations < <(find "${CCS_WORKSPACE}" -type f -name "*.ccxml")
 
         if _blank "${configurations[*]}"; then
             echo "${usage}"
@@ -360,11 +406,13 @@ Options:
                 fi
             done
         fi
-
-        config="${search_path}/${config}"
     fi
 
-    _dslite -c "${config}" "${extra_args[@]}" "${image}"
+    if [[ "${image}" == *.bin ]]; then
+        image="${image},${address}"
+    fi
+
+    _dslite flash -f -c "${config}" "${extra_args[@]}" "${image}"
 }
 
 # Program Option Parsing ######################################################
