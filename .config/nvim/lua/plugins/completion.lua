@@ -18,7 +18,7 @@ return {
       { "nvim-telescope/telescope.nvim" }, -- for help actions
     },
     opts = {
-      -- See Configuration section for options
+      model = "claude-sonnet-4.5",
     },
     -- stylua: ignore
     keys = {
