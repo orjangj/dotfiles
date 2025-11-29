@@ -1,0 +1,47 @@
+#!/bin/bash
+
+# Check if at least 2 arguments are provided
+if [ "$#" -lt 2 ]; then
+    echo "Usage: $0 <directory1> <directory2> [max_depth]"
+    exit 1
+fi
+
+DIR1="${1%/}" # Remove trailing slash to ensure path arithmetic works
+DIR2="${2%/}" # Remove trailing slash
+DEPTH=$3
+
+# Check if directories exist
+if [[ ! -d "$DIR1" ]]; then
+    echo "Error: Directory $DIR1 does not exist."
+    exit 1
+fi
+
+if [[ ! -d "$DIR2" ]]; then
+    echo "Error: Directory $DIR2 does not exist."
+    exit 1
+fi
+
+# Build find arguments
+# Global options (like -maxdepth) must come before tests (like -type)
+FIND_ARGS=("$DIR1")
+if [ -n "$DEPTH" ]; then
+    FIND_ARGS+=("-maxdepth" "$DEPTH")
+fi
+FIND_ARGS+=("-type" "f")
+
+# Find files in DIR1 and process them
+find "${FIND_ARGS[@]}" | sort | while read -r FILE1; do
+    # Get the relative path by removing the DIR1 prefix
+    REL_PATH="${FILE1#"$DIR1"/}"
+    
+    FILE2="${DIR2}/${REL_PATH}"
+
+    # Check if the matching file exists in the second directory
+    if [[ -f "$FILE2" ]]; then
+        echo "========================================"
+        echo "Diffing: $REL_PATH"
+        echo "========================================"
+        diff --color=auto "$FILE1" "$FILE2"
+        echo "" 
+    fi
+done
