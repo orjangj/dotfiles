@@ -61,7 +61,7 @@ return {
             "--header-insertion=iwyu",
           },
         },
-        cmake = {},
+        -- cmake = {},
         -- cpptools = {}, -- TODO: Check it out
         lua_ls = {
           Lua = {
@@ -78,11 +78,28 @@ return {
             },
           },
         },
+        ruff = {},
+        pyright = {
+          python = {
+            analysis = {
+              typeCheckingMode = "strict", -- Change to "strict" for intense typing
+              autoSearchPaths = true,
+              useLibraryCodeForTypes = true,
+              -- This helps autocompleting the parentheses and arguments
+              autoImportCompletions = true,
+            },
+          },
+        },
       }
 
       require("mason").setup({ ui = { border = "rounded" } })
       require("mason-lspconfig").setup({
-        ensure_installed = { "bashls", "clangd@19.1.2", "cmake", "lua_ls" },
+        ensure_installed = {
+          "bashls",
+          "clangd@19.1.2",
+          -- "cmake",
+          "lua_ls",
+        },
         automatic_installation = true,
       })
       require("mason-nvim-dap").setup({
@@ -96,10 +113,12 @@ return {
       end
 
       for server, settings in pairs(servers) do
-        require("lspconfig")[server].setup({
+        -- Merge capabilities with server config
+        local server_config = vim.tbl_deep_extend("force", settings, {
           capabilities = capabilities,
-          settings = settings,
         })
+        vim.lsp.config[server] = server_config
+        vim.lsp.enable(server)
       end
 
       -- note: diagnostics are not exclusive to lsp servers
@@ -129,18 +148,21 @@ return {
         end,
       })
 
-      -- Change diagnostic symbols in the sign column (gutter)
-      local signs = { Error = "", Warn = "", Hint = "", Info = "" }
-      for type, icon in pairs(signs) do
-        local hl = "DiagnosticSign" .. type
-        vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
-      end
-
       -- Configure ui/window borders for lsp/diagnostics
       vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded" })
-      vim.lsp.handlers["textDocument/signatureHelp"] =
-          vim.lsp.with(vim.lsp.handlers.signature_help, { border = "rounded" })
-      vim.diagnostic.config({ virtual_text = true, float = { border = "rounded" } })
+      vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.buf.signature_help, { border = "rounded" })
+      vim.diagnostic.config({
+        virtual_text = true,
+        float = { border = "rounded" },
+        signs = {
+          text = {
+            [vim.diagnostic.severity.ERROR] = "",
+            [vim.diagnostic.severity.WARN] = "",
+            [vim.diagnostic.severity.INFO] = "",
+            [vim.diagnostic.severity.HINT] = "",
+          },
+        },
+      })
 
       require("trouble").setup()
     end,
@@ -170,7 +192,7 @@ return {
               "--suppress=unknownMacro",
             },
           }),
-          diagnostics.cmake_lint,
+          -- diagnostics.cmake_lint,
           diagnostics.hadolint.with({ extra_args = { "--ignore", "DL3008" } }),
           formatting.prettier.with({
             filetypes = {
@@ -181,9 +203,9 @@ return {
               "txt",
             },
           }),
-          formatting.black.with({ extra_args = { "--fast", "--line-length", "100" } }),
+          -- formatting.black.with({ extra_args = { "--fast", "--line-length", "100" } }),
           formatting.stylua.with({ extra_args = { "--indent-type", "Spaces", "--indent-width", "2" } }),
-          formatting.cmake_format.with({ extra_args = { "--line-width", "120" } }),
+          -- formatting.cmake_format.with({ extra_args = { "--line-width", "120" } }),
         },
       })
     end,

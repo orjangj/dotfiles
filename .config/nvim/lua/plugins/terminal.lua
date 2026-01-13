@@ -3,7 +3,7 @@ return {
   version = "*",
   keys = {
     -- Only description to let lazy.nvim lazy load it
-    { [[<c-\>]], desc = "Toggle terminal" },
+      { [[<c-t>]], desc = "Toggle terminal" },
   },
   opts = {
     direction = "vertical",
@@ -26,7 +26,7 @@ return {
         term.direction = "vertical"
       end
     end,
-    open_mapping = [[<c-\>]],
+    open_mapping = [[<c-t>]],
     shade_terminals = false,
     start_in_insert = true,
     insert_mappings = true,
