@@ -21,7 +21,7 @@ return {
           })
         end,
       },
-      { "nvim-lua/plenary.nvim" }, -- for curl, log and async functions
+      { "nvim-lua/plenary.nvim" },         -- for curl, log and async functions
       { "nvim-telescope/telescope.nvim" }, -- for help actions
     },
     opts = {
@@ -31,14 +31,17 @@ return {
     -- stylua: ignore
     keys = {
       { "<leader>aa", "<cmd>CopilotChatToggle<cr>",        desc = "Toggle Chat" },
-      { "<leader>al", "<cmd>CopilotChatReset<cr>",         desc = "Reset Chat" },
+      { "<leader>ac", "<cmd>CopilotChatCommit<cr>",        desc = "Generate Commit Message" },
+      { "<leader>ad", "<cmd>CopilotChatDocs<cr>",          desc = "Generate Documentation" },
       { "<leader>ae", "<cmd>CopilotChatExplain<cr>",       desc = "Explain Code" },
+      { "<leader>af", "<cmd>CopilotChatFix<cr>",           desc = "Fix Diagnostic" },
+      { "<leader>am", "<cmd>CopilotChatModels<cr>",        desc = "Select Models" },
+      { "<leader>an", "<cmd>CopilotChatBetterNamings<cr>", desc = "Better Naming" },
+      { "<leader>ao", "<cmd>CopilotChatOptimize<cr>",      desc = "Optimize Code" },
       { "<leader>at", "<cmd>CopilotChatTests<cr>",         desc = "Generate Tests" },
       { "<leader>ar", "<cmd>CopilotChatReview<cr>",        desc = "Review Code" },
       { "<leader>aR", "<cmd>CopilotChatRefactor<cr>",      desc = "Refactor Code" },
-      { "<leader>an", "<cmd>CopilotChatBetterNamings<cr>", desc = "Better Naming" },
-      { "<leader>af", "<cmd>CopilotChatFixError<cr>",      desc = "Fix Diagnostic" },
-      { "<leader>am", "<cmd>CopilotChatModels<cr>",        desc = "Select Models" },
+      { "<leader>as", "<cmd>CopilotChatReview<cr>",        desc = "Save Session" },
     },
   },
   {
