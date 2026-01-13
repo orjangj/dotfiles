@@ -1,5 +1,4 @@
 -- TODO: look into https://github.com/WhoIsSethDaniel/mason-tool-installer.nvim
--- TODO: Auto update LSP servers?
 return {
   {
     "neovim/nvim-lspconfig",
@@ -30,20 +29,20 @@ return {
     },
     -- stylua: ignore
     keys = {
-      { "<leader>la", function() vim.lsp.buf.code_action() end,                 desc = "Code Action" },
-      { "<leader>lA", function() vim.lsp.codelens.run() end,                    desc = "CodeLens Action" },
-      { "<leader>ld", "<cmd>Telescope diagnostics bufnr=0 previewer=false<cr>", desc = "Buffer Diagnostics" },
-      { "<leader>lD", "<cmd>Telescope diagnostics<cr>",                         desc = "Workspace Diagnostics" },
-      { "<leader>lf", function() vim.lsp.buf.format({ async = true }) end,      desc = "Format Buffer" },
-      { "<leader>li", "<cmd>LspInfo<cr>",                                       desc = "List LSP Clients" },
-      { "<leader>lI", "<cmd>Mason<cr>",                                         desc = "LSP Installer" },
-      { "<leader>lj", function() vim.diagnostic.goto_next() end,                desc = "Next Diagnostic" },
-      { "<leader>lk", function() vim.diagnostic.goto_prev() end,                desc = "Prev Diagnostic" },
-      { "<leader>lr", "<cmd>Telescope lsp_references<cr>",                      desc = "References" },
-      { "<leader>lR", function() vim.lsp.buf.rename() end,                      desc = "Rename" },
-      { "<leader>ls", "<cmd>Telescope lsp_document_symbols<cr>",                desc = "Document Symbols" },
-      { "<leader>lS", "<cmd>Telescope lsp_dynamic_workspace_symbols<cr>",       desc = "Workspace Symbols" },
-      { "<leader>lt", "<cmd>Trouble diagnostics toggle<cr>",                    desc = "Trouble Diagnostics" },
+      { "<leader>la", function() vim.lsp.buf.code_action() end,                   desc = "Code Action" },
+      { "<leader>lA", function() vim.lsp.codelens.run() end,                      desc = "CodeLens Action" },
+      { "<leader>ld", "<cmd>Telescope diagnostics bufnr=0 previewer=false<cr>",   desc = "Buffer Diagnostics" },
+      { "<leader>lD", "<cmd>Telescope diagnostics<cr>",                           desc = "Workspace Diagnostics" },
+      { "<leader>lf", function() vim.lsp.buf.format({ async = true }) end,        desc = "Format Buffer" },
+      { "<leader>li", "<cmd>LspInfo<cr>",                                         desc = "List LSP Clients" },
+      { "<leader>lI", "<cmd>Mason<cr>",                                           desc = "LSP Installer" },
+      { "<leader>lj", function() vim.diagnostic.jump({ count = 1, float = true }) end, desc = "Next Diagnostic" },
+      { "<leader>lk", function() vim.diagnostic.jump({ count = -1, float = true }) end, desc = "Prev Diagnostic" },
+      { "<leader>lr", "<cmd>Telescope lsp_references<cr>",                        desc = "References" },
+      { "<leader>lR", function() vim.lsp.buf.rename() end,                        desc = "Rename" },
+      { "<leader>ls", "<cmd>Telescope lsp_document_symbols<cr>",                  desc = "Document Symbols" },
+      { "<leader>lS", "<cmd>Telescope lsp_dynamic_workspace_symbols<cr>",         desc = "Workspace Symbols" },
+      { "<leader>lt", "<cmd>Trouble diagnostics toggle<cr>",                      desc = "Trouble Diagnostics" },
     },
     config = function()
       local servers = {
@@ -99,6 +98,7 @@ return {
           "clangd@19.1.2",
           -- "cmake",
           "lua_ls",
+          "pyright",
         },
         automatic_installation = true,
       })
@@ -135,13 +135,13 @@ return {
           -- these will be buffer-local keybindings
           -- because they only work if you have an active language server
 
-          vim.keymap.set("n", "K", "<cmd>lua vim.lsp.buf.hover()<cr>", opts)
+          vim.keymap.set("n", "K", "<cmd>lua vim.lsp.buf.hover({ border = 'rounded' })<cr>", opts)
           vim.keymap.set("n", "gd", "<cmd>lua vim.lsp.buf.definition()<cr>", opts)
           vim.keymap.set("n", "gD", "<cmd>lua vim.lsp.buf.declaration()<cr>", opts)
           vim.keymap.set("n", "gi", "<cmd>lua vim.lsp.buf.implementation()<cr>", opts)
           vim.keymap.set("n", "go", "<cmd>lua vim.lsp.buf.type_definition()<cr>", opts)
           vim.keymap.set("n", "gr", "<cmd>lua vim.lsp.buf.references()<cr>", opts)
-          vim.keymap.set("n", "gs", "<cmd>lua vim.lsp.buf.signature_help()<cr>", opts)
+          vim.keymap.set("n", "gs", "<cmd>lua vim.lsp.buf.signature_help({ border = 'rounded' })<cr>", opts)
           vim.keymap.set("n", "<F2>", "<cmd>lua vim.lsp.buf.rename()<cr>", opts)
           vim.keymap.set({ "n", "x" }, "<F3>", "<cmd>lua vim.lsp.buf.format({async = true})<cr>", opts)
           vim.keymap.set("n", "<F4>", "<cmd>lua vim.lsp.buf.code_action()<cr>", opts)
@@ -149,8 +149,6 @@ return {
       })
 
       -- Configure ui/window borders for lsp/diagnostics
-      vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded" })
-      vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.buf.signature_help, { border = "rounded" })
       vim.diagnostic.config({
         virtual_text = true,
         float = { border = "rounded" },

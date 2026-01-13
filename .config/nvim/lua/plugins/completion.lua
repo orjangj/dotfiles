@@ -11,14 +11,22 @@ return {
           require("copilot").setup({
             suggestion = { enabled = false },
             panel = { enabled = false },
+            server_opts_overrides = {
+              settings = {
+                telemetry = {
+                  telemetryLevel = "off",
+                },
+              },
+            },
           })
         end,
       },
-      { "nvim-lua/plenary.nvim" },         -- for curl, log and async functions
+      { "nvim-lua/plenary.nvim" }, -- for curl, log and async functions
       { "nvim-telescope/telescope.nvim" }, -- for help actions
     },
     opts = {
       model = "claude-sonnet-4.5",
+      temperature = 0.3,
     },
     -- stylua: ignore
     keys = {

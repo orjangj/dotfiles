@@ -1,3 +1,42 @@
+local languages = {
+  "bash",
+  "c",
+  "cmake",
+  "cpp",
+  "css",
+  "diff",
+  "dockerfile",
+  "doxygen",
+  "html",
+  "javascript",
+  "json",
+  "json5",
+  "kconfig",
+  "kotlin",
+  "lua",
+  "make",
+  "markdown",
+  "meson",
+  "python",
+  "query",
+  "rasi",
+  "regex",
+  "rst",
+  "rust",
+  "toml",
+  "vim",
+  "vimdoc",
+  "xml",
+  "yaml",
+}
+
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = languages,
+  callback = function()
+    vim.treesitter.start()
+  end,
+})
+
 return {
   {
     "nvim-treesitter/nvim-treesitter",
@@ -9,39 +48,7 @@ return {
     build = ":TSUpdate",
     lazy = false,
     config = function()
-      -- TODO: Only install when entering file missing treesitter integration. Not all of the languages below are actively used.
-      require("nvim-treesitter").install({
-        "bash",
-        "c",
-        "cmake",
-        "cpp",
-        "css",
-        "diff",
-        "dockerfile",
-        "doxygen",
-        "html",
-        "javascript",
-        "json",
-        "jsonc",
-        "json5",
-        "kconfig",
-        "kotlin",
-        "lua",
-        "make",
-        "markdown",
-        "meson",
-        "python",
-        "query",
-        "rasi",
-        "regex",
-        "rst",
-        "rust",
-        "toml",
-        "vim",
-        "vimdoc",
-        "xml",
-        "yaml",
-      })
+      require("nvim-treesitter").install(languages)
     end,
   },
   { "martinda/Jenkinsfile-vim-syntax", ft = "Jenkinsfile" },

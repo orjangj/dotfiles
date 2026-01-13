@@ -1,6 +1,6 @@
 return {
   "nvim-telescope/telescope.nvim",
-  branch = "0.1.x",
+  version = "v0.2.1",
   dependencies = {
     { "nvim-lua/popup.nvim" },
     { "nvim-lua/plenary.nvim" },
@@ -11,6 +11,7 @@ return {
     { "nvim-telescope/telescope-media-files.nvim" },
     { "nvim-telescope/telescope-project.nvim" },
     { "nvim-telescope/telescope-symbols.nvim" },
+    { "nvim-telescope/telescope-ui-select.nvim" },
   },
   cmd = "Telescope",
   -- stylua: ignore
@@ -82,5 +83,6 @@ return {
     telescope.load_extension("fzf")
     telescope.load_extension("media_files")
     telescope.load_extension("project")
+    telescope.load_extension("ui-select")
   end,
 }
