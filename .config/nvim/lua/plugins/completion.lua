@@ -21,12 +21,12 @@ return {
           })
         end,
       },
-      { "nvim-lua/plenary.nvim" },         -- for curl, log and async functions
+      { "nvim-lua/plenary.nvim" }, -- for curl, log and async functions
       { "nvim-telescope/telescope.nvim" }, -- for help actions
     },
     opts = {
       model = "claude-sonnet-4.5",
-      temperature = 0.3,
+      temperature = 0.1, -- Lower = focused, higher = creative
     },
     -- stylua: ignore
     keys = {
