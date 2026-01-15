@@ -2,7 +2,7 @@
 
 entries=" Lock\n⇠ Logout\n⏾ Suspend\n Reboot\n⏻ Shutdown"
 
-selected=$(echo -e $entries | wofi -p "Power Menu" --width 270 --height 270 --dmenu --cache-file /dev/null --insensitive | awk '{print tolower($2)}')
+selected=$(echo -e "$entries" | wofi -p "Power Menu" --width 270 --height 270 --dmenu --cache-file /dev/null --insensitive | awk '{print tolower($2)}')
 
 case $selected in
   lock)
