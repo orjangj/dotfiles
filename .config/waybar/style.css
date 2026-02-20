@@ -67,6 +67,7 @@ tooltip label {
   padding-right: 15px;
 }
 
+#custom-quickemu,
 #network,
 #cpu,
 #memory,
@@ -77,6 +78,15 @@ tooltip label {
 #battery {
   padding-left: 10px;
   padding-right: 10px;
+}
+
+#custom-quickemu {
+  color: @teal;
+  padding-left: 15px;
+}
+
+#custom-quickemu.running {
+  color: @green;
 }
 
 #network {

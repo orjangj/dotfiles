@@ -73,17 +73,17 @@ export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quo
 # }}}
 # Functions {{{
 function venv {
-    if [[ "$1" == "create" && ! -d "venv" ]]; then
-        python -m venv venv
+    if [[ "$1" == "create" && ! -d ".venv" ]]; then
+        python -m venv .venv
 
         if [[ -f requirements.txt ]]; then
-            ./venv/bin/pip install -r requirements.txt
+            .venv/bin/pip install -r requirements.txt
         fi
     elif [[ "$1" == "destroy" ]]; then
         if [[ ! -z "${VIRTUAL_ENV}" ]]; then
             deactivate
         fi
-        rm -rf venv
+        rm -rf .venv
     fi
 }
 # }}}
@@ -151,7 +151,7 @@ function prompt_git() {
     if [[ "${branch}" == "detached" ]]; then
         # Check if we're checked out to a tag
         local tag=$(git describe --tags --exact-match 2>/dev/null)
-        if [[ ! -z "${tag}" ]]; then
+        if [[ -n "${tag}" ]]; then
             branch="${branch}:${tag}"
         fi
     fi
@@ -184,6 +184,8 @@ function prompt_python_venv {
         # TODO: Implement look-behind to see if parent directories have a venv (and activate top most venv instead)
         if [[ -f $PWD/venv/pyvenv.cfg ]]; then
             . $PWD/venv/bin/activate
+        elif [[ -f $PWD/.venv/pyvenv.cfg ]]; then
+            . $PWD/.venv/bin/activate
         fi
     else
         local parentdir="$(dirname "$VIRTUAL_ENV")"
@@ -195,13 +197,15 @@ function prompt_python_venv {
 
             # Should we activate the venv for the current working directory?
             if [[ -f $PWD/venv/pyvenv.cfg ]]; then
-                . $PWD/venv/bin/activate  # Doesnt seem to work?
+                . $PWD/venv/bin/activate
+            elif [[ -f $PWD/.venv/pyvenv.cfg ]]; then
+                . $PWD/.venv/bin/activate
             fi
         fi
     fi
 
     # The prompt
-    if [[ ! -z "${VIRTUAL_ENV}" ]]; then
+    if [[ -n "${VIRTUAL_ENV}" ]]; then
         local name=$(basename $(dirname "$VIRTUAL_ENV"))
         prompt="${prompt}${MAGENTA_BOLD}:${name}${RESET} "
     fi
@@ -241,6 +245,10 @@ fi
 
 if [ -f ~/.bash_exports ]; then
     . ~/.bash_exports
+fi
+
+if [ -f ~/.bash_extras ]; then
+    . ~/.bash_extras
 fi
 
 # }}}

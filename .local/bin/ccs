@@ -202,10 +202,12 @@ build() {
     local usage="
 Usage: ccs build [options]
 
+NOTE: Setting -c <config> changes the active build configuration
+
 Options:
-    -p <project>        Project to build
-    -c <configuration>  Project build configuration to build
-    -h                  Show this help message and exit
+    -p <project>  Project to build
+    -c <config>   Set project build configuration
+    -h            Show this help message and exit
 "
     local project=""
     local extra_args=("-ccs.listErrors" "-ccs.listProblems")
@@ -214,7 +216,7 @@ Options:
     while getopts "hc:p:" opt; do
         case $opt in
         h) _help "${usage}" ;;
-        c) extra_args+=("-ccs.configuration ${OPTARG}") ;;
+        c) extra_args+=("-ccs.configuration" "${OPTARG}") ;;
         p) project="${OPTARG}" ;;
         *) exit 1 ;;
         esac
@@ -250,9 +252,9 @@ clean() {
 Usage: ccs clean [options]
 
 Options:
-    -p <project>        Project to clean
-    -c <configuration>  Build configuration to clean
-    -h                  Show this help message and exit
+    -p <project>  Project to clean
+    -c <config>   Build configuration to clean
+    -h            Show this help message and exit
 "
     local project="${1:-}"
     local extra_args=()
@@ -261,7 +263,7 @@ Options:
     while getopts "hc:" opt; do
         case $opt in
         h) _help "${usage}" ;;
-        c) extra_args+=("-ccs.configuration ${OPTARG}") ;;
+        c) extra_args+=("-ccs.configuration" "${OPTARG}") ;;
         *) exit 1 ;;
         esac
     done

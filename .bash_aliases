@@ -110,3 +110,5 @@ fi
 if type vdir &> /dev/null; then
   alias vdir='vdir --color=auto'
 fi
+
+alias sysconfig='/home/og/ti/sysconfig_${SYSCONFIG_VERSION:-1.8.2}/sysconfig_cli.sh'
