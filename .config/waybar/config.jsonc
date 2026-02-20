@@ -6,7 +6,7 @@
     "margin-right": 5,
     "margin-top": 5,
     "modules-left": ["hyprland/workspaces"],
-    "modules-center": ["clock"],
+    "modules-center": ["clock", "idle_inhibitor"],
     "modules-right": ["custom/quickemu", "network", "cpu", "memory", "disk", "temperature", "pulseaudio", "backlight", "battery"],
     "wlr/workspaces": {
         "disable-scroll": true,
@@ -86,6 +86,15 @@
         "format-plugged": " {capacity}%",
         "format-alt": "{icon} {time}",
         "format-icons": ["", "", "", "", "", "", "", "", "", "", ""]
+    },
+    "idle_inhibitor": {
+        "format": "{icon}",
+        "format-icons": {
+            "activated": "󰒳",
+            "deactivated": "󰒲"
+        },
+        "tooltip-format-activated": "Idle inhibitor active",
+        "tooltip-format-deactivated": "Idle inhibitor inactive"
     },
     "custom/quickemu": {
         "exec": "~/.config/waybar/scripts/quickemu.sh",

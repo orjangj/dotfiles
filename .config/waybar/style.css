@@ -19,6 +19,11 @@ window#waybar {
   border-radius: 10px;
 }
 
+.modules-center {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
 #workspaces button {
   color: @grey;
   border-radius: 1rem;
@@ -63,8 +68,7 @@ tooltip label {
 
 #clock {
   color: @blue;
-  padding-left: 15px;
-  padding-right: 15px;
+  padding-right: 10px;
 }
 
 #custom-quickemu,
@@ -80,6 +84,14 @@ tooltip label {
   padding-right: 10px;
 }
 
+#idle_inhibitor.deactivated {
+  color: #7b88a1;
+}
+
+#idle_inhibitor.activated {
+  color: #ebcb8b;
+}
+
 #custom-quickemu {
   color: @teal;
   padding-left: 15px;
@@ -90,7 +102,6 @@ tooltip label {
 }
 
 #network {
-  padding-left: 15px;
   color: @teal;
 }
 
