@@ -72,6 +72,7 @@ tooltip label {
 }
 
 #custom-quickemu,
+#custom-hardware-icon,
 #network,
 #cpu,
 #memory,
@@ -82,6 +83,10 @@ tooltip label {
 #battery {
   padding-left: 10px;
   padding-right: 10px;
+}
+
+#custom-hardware-icon {
+  color: @teal;
 }
 
 #idle_inhibitor.deactivated {

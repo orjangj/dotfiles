@@ -7,28 +7,7 @@
     "margin-top": 5,
     "modules-left": ["hyprland/workspaces"],
     "modules-center": ["clock", "idle_inhibitor"],
-    "modules-right": ["custom/quickemu", "network", "cpu", "memory", "disk", "temperature", "pulseaudio", "backlight", "battery"],
-    "wlr/workspaces": {
-        "disable-scroll": true,
-        "on-click": "activate",
-        "format": "{icon}",
-        "format-icons": {
-            "1": "",
-            "2": "",
-            "3": "",
-            "4": "",
-            "5": "",
-            "6": ""
-        },
-        "persistent_workspaces": {
-            "1": [],
-            "2": [],
-            "3": [],
-            "4": [],
-            "5": [],
-            "6": []
-        }
-    },
+    "modules-right": ["custom/quickemu", "group/hardware","network", "pulseaudio", "battery"],
     "hyprland/workspaces": {
         "disable-scroll": true,
         "on-click": "activate",
@@ -49,6 +28,18 @@
             "5": [],
             "6": []
         }
+    },
+    "group/hardware": {
+        "orientation": "horizontal",
+        "drawer": {
+            "transition-duration": 500,
+            "transition-left-to-right": false
+        },
+        "modules": ["custom/hardware-icon", "cpu", "memory", "temperature", "disk", "backlight"]
+    },
+    "custom/hardware-icon": {
+        "format": "",
+        "tooltip": false
     },
     "clock": {
         "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
