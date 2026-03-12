@@ -81,13 +81,12 @@ _ccs() {
 
     args+=("${@:2}")
 
-    ${ccs_cli} "${args[@]}"
+    "${ccs_cli}" "${args[@]}"
 }
 
 _dslite() {
     local dslite_cli="${CCS_HOME}/ccs_base/DebugServer/bin/DSLite"
-    local args=("${@:-}")
-    ${dslite_cli} "${args[@]}"
+    "${dslite_cli}" "${@}"
 }
 
 _help() {
@@ -95,16 +94,29 @@ _help() {
     exit 0
 }
 
-# _blank()
+# _blank_item()
 #
 # Usage:
-#   _blank <argument>
+#   _blank_item <argument>
 #
 # Exit / Error Status:
 #   0 (success, true)  If <argument> is not present or null.
 #   1 (error,  false)  If <argument> is present and not null.
-_blank() {
+_blank_item() {
     [[ -z "${1:-}" ]]
+}
+
+# _blank_array()
+#
+# Usage:
+#   _blank_array <array_name>
+#
+# Exit / Error Status:
+#   0 (success, true)  If the named array has zero elements.
+#   1 (error,  false)  If it has one or more elements.
+_blank_array() {
+    local -n _arr="${1}"
+    [[ ${#_arr[@]} -eq 0 ]]
 }
 
 # _command_exists()
@@ -117,7 +129,8 @@ _blank() {
 #                     environment.
 #   1 (error,  false) If not.
 #
-# Information on why `hash` is used
+# Uses `hash` because it searches the command cache and PATH without
+# executing the command, and is a shell builtin (no subprocess overhead).
 _command_exists() {
     hash "${1}" 2>/dev/null
 }
@@ -164,7 +177,7 @@ Options:
     -h                Show this help message and exit
 "
     local projectspec=""
-    local extra_args=()
+    local extra_args=() # reserved for future import options
 
     OPTIND=1
     while getopts "hp:" opt; do
@@ -176,12 +189,12 @@ Options:
     done
     shift $((OPTIND - 1))
 
-    if _blank "${projectspec}"; then
+    if _blank_item "${projectspec}"; then
         mapfile -t specs < <(find . -type f -name "*.projectspec" -printf "%P\n")
 
-        if _blank "${specs[*]}"; then
+        if _blank_array specs; then
             echo "${usage}"
-            _exit_1 printf "Could not find a projectspec on path '$PWD'\\n"
+            _exit_1 printf "Could not find a projectspec on path '%s'\\n" "${PWD}"
         elif [ "${#specs[@]}" -eq 1 ]; then
             projectspec="${specs[0]}"
         else
@@ -223,14 +236,14 @@ Options:
     done
     shift $((OPTIND - 1))
 
-    if _blank "${project}"; then
+    if _blank_item "${project}"; then
         mapfile -t projects < <(
             find "${CCS_WORKSPACE}" -maxdepth 1 -type d -not -wholename "${CCS_WORKSPACE}" -not -name ".metadata" -printf "%P\n"
         )
 
-        if _blank "${projects[*]}"; then
+        if _blank_array projects; then
             echo "${usage}"
-            _exit_1 printf "Could not find any projects to build in '${CCS_WORKSPACE}'\\n"
+            _exit_1 printf "Could not find any projects to build in '%s'\\n" "${CCS_WORKSPACE}"
         elif [ "${#projects[@]}" -eq 1 ]; then
             project="${projects[0]}"
         else
@@ -256,27 +269,28 @@ Options:
     -c <config>   Build configuration to clean
     -h            Show this help message and exit
 "
-    local project="${1:-}"
+    local project=""
     local extra_args=()
 
     OPTIND=1
-    while getopts "hc:" opt; do
+    while getopts "hc:p:" opt; do
         case $opt in
         h) _help "${usage}" ;;
         c) extra_args+=("-ccs.configuration" "${OPTARG}") ;;
+        p) project="${OPTARG}" ;;
         *) exit 1 ;;
         esac
     done
     shift $((OPTIND - 1))
 
-    if _blank "${project}"; then
+    if _blank_item "${project}"; then
         mapfile -t projects < <(
             find "${CCS_WORKSPACE}" -maxdepth 1 -type d -not -wholename "${CCS_WORKSPACE}" -not -name ".metadata" -printf "%P\n"
         )
 
-        if _blank "${projects[*]}"; then
+        if _blank_array projects; then
             echo "${usage}"
-            _exit_1 printf "Could not find any projects to clean in '${CCS_WORKSPACE}'\\n"
+            _exit_1 printf "Could not find any projects to clean in '%s'\\n" "${CCS_WORKSPACE}"
         elif [ "${#projects[@]}" -eq 1 ]; then
             project="${projects[0]}"
         else
@@ -295,7 +309,7 @@ Options:
 
 erase() {
     local usage="
-Usage: ccs flash [options]
+Usage: ccs erase [options]
 
 Performs a mass-erase on the connected target.
 
@@ -315,12 +329,12 @@ Options:
     done
     shift $((OPTIND - 1))
 
-    if _blank "${config}"; then
+    if _blank_item "${config}"; then
         mapfile -t configurations < <(find "${CCS_WORKSPACE}" -type f -name "*.ccxml")
 
-        if _blank "${configurations[*]}"; then
+        if _blank_array configurations; then
             echo "${usage}"
-            _exit_1 printf "Could not find any target configurations '${CCS_WORKSPACE}'\\n"
+            _exit_1 printf "Could not find any target configurations in '%s'\\n" "${CCS_WORKSPACE}"
         elif [ "${#configurations[@]}" -eq 1 ]; then
             config="${configurations[0]}"
         else
@@ -362,7 +376,7 @@ Options:
     while getopts "hvra:c:i:" opt; do
         case $opt in
         a) address="${OPTARG}" ;;
-        i) image+="${OPTARG}" ;;
+        i) image="${OPTARG}" ;;
         c) config="${OPTARG}" ;;
         r) extra_args+=("-r" "2") ;;
         v) extra_args+=("-v") ;;
@@ -372,16 +386,16 @@ Options:
     done
     shift $((OPTIND - 1))
 
-    if _blank "${image}"; then
+    if _blank_item "${image}"; then
         mapfile -t executables < <(find "${CCS_WORKSPACE}" -type f -name "*.hex" -o -name "*.bin")
 
-        if _blank "${executables[*]}"; then
+        if _blank_array executables; then
             echo "${usage}"
-            _exit_1 printf "Could not find any executables to flash in '${CCS_WORKSPACE}'\\n"
+            _exit_1 printf "Could not find any executables to flash in '%s'\\n" "${CCS_WORKSPACE}"
         elif [ "${#executables[@]}" -eq 1 ]; then
             image="${executables[0]}"
         else
-            PS3="Select an executables to flash: "
+            PS3="Select an executable to flash: "
             select exe in "${executables[@]}"; do
                 if [[ -n $exe ]]; then
                     image="${exe}"
@@ -391,12 +405,12 @@ Options:
         fi
     fi
 
-    if _blank "${config}"; then
+    if _blank_item "${config}"; then
         mapfile -t configurations < <(find "${CCS_WORKSPACE}" -type f -name "*.ccxml")
 
-        if _blank "${configurations[*]}"; then
+        if _blank_array configurations; then
             echo "${usage}"
-            _exit_1 printf "Could not find any target configurations '${CCS_WORKSPACE}'\\n"
+            _exit_1 printf "Could not find any target configurations in '%s'\\n" "${CCS_WORKSPACE}"
         elif [ "${#configurations[@]}" -eq 1 ]; then
             config="${configurations[0]}"
         else
