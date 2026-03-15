@@ -11,3 +11,6 @@ venv/
 .vault_pass.txt
 .become_pass.txt
 .env
+.claude/
+*.run
+.envrc
