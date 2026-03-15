@@ -5,122 +5,23 @@
     "margin-left": 5,
     "margin-right": 5,
     "margin-top": 5,
-    "modules-left": ["hyprland/workspaces"],
-    "modules-center": ["clock", "idle_inhibitor"],
-    "modules-right": ["custom/quickemu", "group/hardware","network", "pulseaudio", "battery"],
-    "hyprland/workspaces": {
-        "disable-scroll": true,
-        "on-click": "activate",
-        "format": "{icon}",
-        "format-icons": {
-            "1": "",
-            "2": "",
-            "3": "",
-            "4": "",
-            "5": "",
-            "6": ""
-        },
-        "persistent_workspaces": {
-            "1": [],
-            "2": [],
-            "3": [],
-            "4": [],
-            "5": [],
-            "6": []
-        }
-    },
-    "group/hardware": {
-        "orientation": "horizontal",
-        "drawer": {
-            "transition-duration": 500,
-            "transition-left-to-right": false
-        },
-        "modules": ["custom/hardware-icon", "cpu", "memory", "temperature", "disk", "backlight"]
-    },
-    "custom/hardware-icon": {
-        "format": "",
-        "tooltip": false
-    },
-    "clock": {
-        "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
-        "format": " {:%a %d/%m    %H:%M}"
-    },
-    "cpu": {
-        "format": " {usage}%"
-    },
-    "memory": {
-        "format": " {}%"
-    },
-    "temperature": {
-        "critical-threshold": 80,
-        "format": " {temperatureC}°C"
-    },
-    "backlight": {
-        "format": "{icon} {percent}%",
-        "format-icons": ["", ""]
-    },
-    "disk": {
-      "format": " {percentage_used}%"
-    },
-    "battery": {
-        "states": {
-            "good": 95,
-            "warning": 32,
-            "critical": 15
-        },
-        "events": {
-            "on-discharging-warning": "notify-send -u normal 'Low Battery'",
-            "on-discharging-critical": "notify-send -u critical 'Very Low Battery'"
-        },
-        "format": "{icon} {capacity}%",
-        "format-charging": " {capacity}%",
-        "format-plugged": " {capacity}%",
-        "format-alt": "{icon} {time}",
-        "format-icons": ["", "", "", "", "", "", "", "", "", "", ""]
-    },
-    "idle_inhibitor": {
-        "format": "{icon}",
-        "format-icons": {
-            "activated": "󰒳",
-            "deactivated": "󰒲"
-        },
-        "tooltip-format-activated": "Idle inhibitor active",
-        "tooltip-format-deactivated": "Idle inhibitor inactive"
-    },
-    "custom/quickemu": {
-        "exec": "~/.config/waybar/scripts/quickemu.sh",
-        "return-type": "json",
-        "interval": 5,
-        "on-click": "~/.config/waybar/scripts/quickemu.sh --menu",
-        "tooltip": true
-    },
-    "network": {
-        "format-wifi": "  {signalStrength}%",
-        "format-ethernet": " {ifname}: {ipaddr}/{cidr}",
-        "format-linked": " {ifname} (No IP)",
-        "format-disconnected": "睊Disconnected",
-        "format-alt": "{ifname}: {ipaddr}/{cidr}",
-        "tooltip-format": "{ifname} via {gwaddr}",
-        "tooltip-format-wifi": "SSID: {essid}\nIP: {ipaddr}",
-        "tooltip-format-ethernet": "{ifname} {ipaddr} ",
-        "tooltip-format-disconnected": "Disconnected"
-    },
-    "pulseaudio": {
-        "format": "{icon} {volume}% {format_source}",
-        "format-bluetooth": "{icon} {volume}% {format_source}",
-        "format-bluetooth-muted": "{icon} {format_source}",
-        "format-muted": " {format_source}",
-        "format-source": " {volume}%",
-        "format-source-muted": "",
-        "format-icons": {
-            "headphone": "",
-            "hands-free": "",
-            "headset": "",
-            "phone": "",
-            "portable": "",
-            "car": "",
-            "default": ["", "", ""]
-        },
-        "on-click": "pavucontrol"
-    }
+    "include": [
+        "~/.config/waybar/modules.jsonc"
+    ],
+    "modules-left": [
+        "hyprland/workspaces"
+    ],
+    "modules-center": [
+        "clock",
+        "idle_inhibitor",
+        "custom/updates"
+    ],
+    "modules-right": [
+        "custom/quickemu",
+        "group/hardware",
+        "network",
+        "pulseaudio",
+        "power-profiles-daemon",
+        "battery"
+    ]
 }

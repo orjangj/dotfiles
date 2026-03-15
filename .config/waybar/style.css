@@ -71,6 +71,27 @@ tooltip label {
   padding-right: 10px;
 }
 
+#custom-updates {
+  color: @cyan;
+  padding-left: 10px;
+}
+
+#custom-updates.up-to-date {
+  color: @green;
+}
+
+#custom-updates.updates-available {
+  color: @yellow;
+}
+
+#custom-updates.unsupported {
+  color: @red;
+}
+
+#custom-updates.checking {
+  color: @grey;
+}
+
 #custom-quickemu,
 #custom-hardware-icon,
 #network,
@@ -79,6 +100,7 @@ tooltip label {
 #disk,
 #temperature,
 #pulseaudio,
+#power-profiles-daemon,
 #backlight,
 #battery {
   padding-left: 10px;
@@ -136,6 +158,10 @@ tooltip label {
 
 #backlight {
   color: @yellow;
+}
+
+#power-profiles-daemon {
+  color: @magenta;
 }
 
 #battery {
