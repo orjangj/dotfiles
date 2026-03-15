@@ -22,7 +22,7 @@ alias repos='cd ~/projects/git'
 
 # Workarounds for older machines where terminfo or termcap for xterm-kitty or
 # xterm-alacritty are not available
-alias ssh="TERM=xterm-256color $(which ssh)"
+ssh() { TERM=xterm-256color command ssh "$@"; }
 
 if type pyserial-miniterm &> /dev/null; then
   alias miniterm='pyserial-miniterm'
@@ -46,11 +46,11 @@ alias df='df -h'
 
 alias cdl='cd -'
 alias ..='cd ..'
-alias ...='cd ..; cd ..'
-alias ....='cd ..; cd ..; cd ..'
-alias .....='cd ..; cd ..; cd ..; cd ..'
-alias .4='cd ..; cd ..; cd ..; cd ..'
-alias .5='cd ..; cd ..; cd ..; cd ..; cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+alias .....='cd ../../../..'
+alias .4='cd ../../../..'
+alias .5='cd ../../../../..'
 
 # Time
 # -----------------------------------------------------------------------------
@@ -78,7 +78,7 @@ alias publicip='curl https://ipinfo.io/ip'
 # Sysadmin
 # -----------------------------------------------------------------------------
 
-alias mnt="mount | awk -F' ' '{ printf \"%s\t%s\n\",\$1,\$3; }' | column -t | grep -E ^/dev/ | sort"
+mnt() { mount | awk -F' ' '{ printf "%s\t%s\n",$1,$3; }' | column -t | grep -E ^/dev/ | sort; }
 alias path='echo -e ${PATH//:/\\n}'
 
 # Git
@@ -110,5 +110,3 @@ fi
 if type vdir &> /dev/null; then
   alias vdir='vdir --color=auto'
 fi
-
-alias sysconfig='/home/og/ti/sysconfig_${SYSCONFIG_VERSION:-1.8.2}/sysconfig_cli.sh'
