@@ -203,7 +203,7 @@ return {
           }),
           -- formatting.black.with({ extra_args = { "--fast", "--line-length", "100" } }),
           formatting.stylua.with({ extra_args = { "--indent-type", "Spaces", "--indent-width", "2" } }),
-          -- formatting.cmake_format.with({ extra_args = { "--line-width", "120" } }),
+          formatting.cmake_format.with({ extra_args = { "--line-width", "120" } }),
         },
       })
     end,

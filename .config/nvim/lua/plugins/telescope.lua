@@ -16,17 +16,17 @@ return {
   cmd = "Telescope",
   -- stylua: ignore
   keys = {
-    { "<leader>fc", "<cmd>Telescope commands<cr>",                                   desc = "Commands" },
-    { "<leader>ff", "<cmd>Telescope find_files<cr>",                                 desc = "Files" },
-    { "<leader>fr", "<cmd>Telescope frecency workspace=CWD<cr>",                     desc = "Recent Files" },
-    { "<leader>fh", "<cmd>Telescope help_tags<cr>",                                  desc = "Help Tags" },
-    { "<leader>fm", "<cmd>Telescope man_pages<cr>",                                  desc = "Man Pages" },
-    { "<leader>fn", "<cmd>Telescope notify<cr>",                                     desc = "Notification history" },
-    { "<leader>fp", "<cmd>Telescope project display_type=full<cr>",                  desc = "Projects" },
-    { "<leader>fs", "<cmd>Telescope live_grep<cr>",                                  desc = "Search" },
-    { "<leader>fS", "<cmd>Telescope current_buffer_fuzzy_find theme=ivy<cr>",        desc = "Search (buffer)" },
-    { "<leader>fz", "<cmd>Telescope symbols<cr>",                                    desc = "Symbols" },
-    { "<leader>fZ", "<cmd>Telescope spell_suggest<cr>",                              desc = "Spelling Suggestions" },
+    { "<leader>fc", "<cmd>Telescope commands<cr>",                            desc = "Commands" },
+    { "<leader>ff", "<cmd>Telescope find_files<cr>",                          desc = "Files" },
+    { "<leader>fr", "<cmd>Telescope frecency workspace=CWD<cr>",              desc = "Recent Files" },
+    { "<leader>fh", "<cmd>Telescope help_tags<cr>",                           desc = "Help Tags" },
+    { "<leader>fm", "<cmd>Telescope man_pages<cr>",                           desc = "Man Pages" },
+    { "<leader>fn", "<cmd>Telescope notify<cr>",                              desc = "Notification history" },
+    { "<leader>fp", "<cmd>Telescope project display_type=full<cr>",           desc = "Projects" },
+    { "<leader>fs", "<cmd>Telescope live_grep<cr>",                           desc = "Search" },
+    { "<leader>fS", "<cmd>Telescope current_buffer_fuzzy_find theme=ivy<cr>", desc = "Search (buffer)" },
+    { "<leader>fz", "<cmd>Telescope symbols<cr>",                             desc = "Symbols" },
+    { "<leader>fZ", "<cmd>Telescope spell_suggest<cr>",                       desc = "Spelling Suggestions" },
   },
   opts = function()
     return {

@@ -16,6 +16,7 @@ local languages = {
   "lua",
   "make",
   "markdown",
+  "markdown_inline",
   "meson",
   "python",
   "query",

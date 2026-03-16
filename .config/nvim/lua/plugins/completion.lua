@@ -27,6 +27,7 @@ return {
     opts = {
       model = "claude-sonnet-4.5",
       temperature = 0.1, -- Lower = focused, higher = creative
+      highlight_headers = false,
     },
     -- stylua: ignore
     keys = {
