@@ -14,9 +14,11 @@ window#waybar {
 .modules-left,
 .modules-center,
 .modules-right {
-  background-color: @bg0;
-  border: 2px solid @blue;
+  border: 2px solid transparent;
   border-radius: 10px;
+  background:
+    linear-gradient(@bg0, @bg0) padding-box,
+    linear-gradient(180deg, @cyan, @bg3) border-box;
 }
 
 .modules-center {
@@ -112,11 +114,11 @@ tooltip label {
 }
 
 #idle_inhibitor.deactivated {
-  color: #7b88a1;
+  color: @grey;
 }
 
 #idle_inhibitor.activated {
-  color: #ebcb8b;
+  color: @yellow;
 }
 
 #custom-quickemu {
