@@ -16,30 +16,23 @@ window#waybar {
 .modules-right {
   border: 2px solid transparent;
   border-radius: 10px;
+  padding: 1px 5px;
   background:
     linear-gradient(@bg0, @bg0) padding-box,
     linear-gradient(180deg, @cyan, @bg3) border-box;
 }
 
-.modules-center {
-  padding-left: 10px;
-  padding-right: 10px;
-}
-
 #workspaces button {
-  color: @grey;
+  color: @bg3;
+  border: 2px solid transparent;
   border-radius: 1rem;
   box-shadow: inset 0 -3px transparent;
   transition: all 0.5s cubic-bezier(.55,-0.68,.48,1.68);
+  padding: 1px 6px;
 }
 
-/* sway */
-#workspaces button.focused {
-  color: @cyan;
-  border-radius: 1rem;
-}
-
-/* wlr */
+/* sway + wlr */
+#workspaces button.focused,
 #workspaces button.active {
   color: @cyan;
   border-radius: 1rem;
@@ -48,7 +41,7 @@ window#waybar {
 /* Note: This will emulate the behavior of occupied + unfocused workspace,
  * which waybar doesn't seem to have yet.*/
 #workspaces button.persistent {
-  color: @bg1;
+  color: @bg3;
   border-radius: 1rem;
 }
 
@@ -59,43 +52,20 @@ window#waybar {
 }
 
 tooltip {
-    background: @bg0;
-    border: 2px solid @cyan;
+  background: @bg0;
+  border: 2px solid @cyan;
 }
 
 tooltip label {
-    color: @text;
+  color: @text;
 }
 
-
-#clock {
-  color: @blue;
-  padding-right: 10px;
-}
-
-#custom-updates {
-  color: @cyan;
-  padding-left: 10px;
-}
-
-#custom-updates.up-to-date {
-  color: @green;
-}
-
-#custom-updates.updates-available {
-  color: @yellow;
-}
-
-#custom-updates.unsupported {
-  color: @red;
-}
-
-#custom-updates.checking {
-  color: @grey;
-}
-
-#custom-quickemu,
+/* Default color and spacing for all modules */
+#clock,
+#custom-updates,
 #custom-hardware-icon,
+#custom-quickemu,
+#idle_inhibitor,
 #network,
 #cpu,
 #memory,
@@ -105,71 +75,36 @@ tooltip label {
 #power-profiles-daemon,
 #backlight,
 #battery {
-  padding-left: 10px;
-  padding-right: 10px;
-}
-
-#custom-hardware-icon {
-  color: @teal;
-}
-
-#idle_inhibitor.deactivated {
-  color: @grey;
-}
-
-#idle_inhibitor.activated {
-  color: @yellow;
-}
-
-#custom-quickemu {
-  color: @teal;
-  padding-left: 15px;
-}
-
-#custom-quickemu.running {
-  color: @green;
-}
-
-#network {
-  color: @teal;
-}
-
-#cpu {
   color: @cyan;
+  padding: 0 8px;
 }
 
-#memory {
-  color: @blue;
-}
-
-#disk {
+#custom-updates.updates-available {
   color: @orange;
 }
 
-#temperature {
-  color: @magenta;
+#custom-updates.unsupported {
+  color: @red;
 }
 
-#pulseaudio {
-  color: @cyan;
+#custom-updates.checking {
+  color: @bg3;
+}
+
+#idle_inhibitor.deactivated {
+  color: @bg3;
+}
+
+#idle_inhibitor.activated {
+  color: @orange;
 }
 
 #pulseaudio.muted {
-    color: @red;
-}
-
-#backlight {
-  color: @yellow;
-}
-
-#power-profiles-daemon {
-  color: @magenta;
+  color: @red;
 }
 
 #battery {
-  color: @green;
   border-radius: 7px;
-  padding-right: 15px;
 }
 
 #battery.charging {
@@ -177,27 +112,11 @@ tooltip label {
 }
 
 #battery.warning:not(.charging) {
-  color: @red;
-  background: @bg0;  /* TODO: Not sure why this is necessary, but the bg is red otherwise */
-}
-
-@keyframes blink-critical {
-    50% {
-      color: @bg0;
-    }
-
-    to {
-      color: @bg0;
-      background-color: @red;
-    }
+  color: @orange;
+  background: transparent;
 }
 
 #battery.critical:not(.charging) {
   color: @red;
-  animation-name: blink-critical;
-  animation-timing-function: linear;
-  animation-iteration-count: infinite;
-  animation-direction: alternate;
-  animation-duration: 2s;
+  background: transparent;
 }
-
