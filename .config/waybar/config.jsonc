@@ -15,7 +15,8 @@
         "clock",
         "idle_inhibitor",
         "power-profiles-daemon",
-        "custom/updates"
+        "custom/updates",
+        "custom/firmware"
     ],
     "modules-right": [
         "custom/quickemu",

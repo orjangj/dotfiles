@@ -65,8 +65,8 @@
     },
 
     "clock": {
-        "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
-        "format": " {:%a %d/%m  %H:%M}"
+        "format": "{:%H:%M | %a}",
+        "tooltip": false
     },
 
     "cpu": {
@@ -156,6 +156,15 @@
         "restart-interval": 3600,
         "signal": 8,
         "on-click": "~/.config/waybar/scripts/install-updates.sh",
+        "tooltip": true
+    },
+
+    "custom/firmware": {
+        "exec": "~/.config/waybar/scripts/check-firmware.sh",
+        "return-type": "json",
+        "restart-interval": 86400,
+        "signal": 9,
+        "on-click": "~/.config/waybar/scripts/install-firmware.sh",
         "tooltip": true
     }
 }

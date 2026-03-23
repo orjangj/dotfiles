@@ -1,7 +1,7 @@
 @import "nord.css";
 
 * {
-  font-family: Hack Nerd Font;
+  font-family: Ubuntu Nerd Font, Hack Nerd Font;
   font-size: 14px;
   font-weight: bold;
   min-height: 0;
@@ -65,6 +65,7 @@ tooltip label {
 /* Default color and spacing for all modules */
 #clock,
 #custom-updates,
+#custom-firmware,
 #custom-hardware-icon,
 #custom-quickemu,
 #idle_inhibitor,
@@ -90,6 +91,18 @@ tooltip label {
 }
 
 #custom-updates.checking {
+  color: @bg3;
+}
+
+#custom-firmware.updates-available {
+  color: @orange;
+}
+
+#custom-firmware.unsupported {
+  color: @red;
+}
+
+#custom-firmware.checking {
   color: @bg3;
 }
 
