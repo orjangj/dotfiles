@@ -21,6 +21,5 @@ s.statusbar_toggle = "killall -SIGUSR1 " .. s.statusbar
 
 s.keybindings = s.terminal .. [[ --title keybindings -- bash -c "$HOME/.config/hypr/scripts/keybindings.sh"]]
 s.power_menu  = "$HOME/.config/hypr/scripts/power_menu.sh"
-s.wallpaper   = "$HOME/.config/hypr/scripts/wallpaper.sh"
 
 return s

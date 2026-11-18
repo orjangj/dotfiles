@@ -4,12 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-This is a personal Hyprland (Wayland compositor) configuration. It carries two parallel configs during the migration to Lua:
-
-- `hyprland.lua` + `conf/*.lua` + `local/*.lua` — read by Hyprland >= 0.57 (Lua only; `.conf` is ignored)
-- `hyprland.conf` + `conf/*.conf` + `local/*.conf` — read by Hyprland <= 0.54 (no Lua support)
-
-Keep both in sync until every machine runs >= 0.57, then delete the `.conf` side. Scripts in `scripts/` work with both (see `scripts/hypr_version.sh`).
+This is a personal Hyprland (Wayland compositor) configuration in Lua (`hyprland.lua` + `conf/*.lua` + `local/*.lua`). Requires Hyprland >= 0.57, which no longer reads `hyprland.conf`.
 
 There are no build, test, or lint steps — changes take effect by reloading the compositor.
 
@@ -35,7 +30,7 @@ Scripts in `scripts/` are plain shell scripts with no dependencies to install.
 - `s.mod` — modifier key (SUPER)
 - `s.terminal` — `foot`
 - `s.editor` — chains `fzf` (project selection from `~/projects/git`) → `nvim` in the terminal
-- `s.browser`, `s.menu`, `s.todo`, `s.screenlock`, `s.wallpaper` — application/script shortcuts
+- `s.browser`, `s.menu`, `s.todo`, `s.screenlock` — application/script shortcuts
 
 ### Modular Config Responsibilities
 
@@ -52,8 +47,6 @@ Scripts in `scripts/` are plain shell scripts with no dependencies to install.
 
 ### Scripts
 
-- `scripts/hypr_version.sh` — sourced helper: `hypr_version_ge 0.57` gates hyprctl syntax that changed (dispatch, hyprpaper IPC)
-- `scripts/wallpaper.sh` — sets a random wallpaper from `~/.local/share/backgrounds/wallpapers/nord/` via hyprpaper IPC (run at startup and on `SUPER+W`); hyprpaper 0.8 dropped `preload`/`unload`/`listloaded`
 - `scripts/power_menu.sh` — `wofi` menu for lock/logout/suspend/reboot/shutdown
 - `scripts/keybindings.sh` — fzf list of binds from `hyprctl binds -j` (binding + description)
 - `scripts/hyprlock_battery_status.sh` — outputs battery string for `hyprlock` display (returns empty on desktop)
@@ -63,7 +56,7 @@ Scripts in `scripts/` are plain shell scripts with no dependencies to install.
 - `hypridle.conf` — locks at 3 min idle, turns off displays at 4 min; suspend is commented out (NVIDIA incompatibility)
 - `hyprlock.conf` — Nord-themed lock screen; battery status is refreshed every 5 seconds via `hyprlock_battery_status.sh`
 
-hyprpaper, hyprlock and hypridle still use the hyprlang (`.conf`) format, and these files work with both old and new versions. Keep `hyprpaper.conf` free of the 0.8-only `wallpaper { }` block; `wallpaper.sh` sets the wallpaper instead.
+hyprpaper, hyprlock and hypridle still use the hyprlang (`.conf`) format. `hyprpaper.conf` picks a random wallpaper from `~/.local/share/backgrounds/wallpapers/nord/` at startup.
 
 ## Color Theme
 

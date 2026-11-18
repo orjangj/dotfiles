@@ -22,7 +22,6 @@ bind(mod .. " + Q",      exec(s.screenlock),       "Lock screen")
 bind(mod .. " + S",      exec(s.keybindings),      "Show keybindings")
 bind(mod .. " + T",      exec(s.todo),             "Todo")
 bind(mod .. " + V",      hl.dsp.window.float({ action = "toggle" }), "Toggle floating")
-bind(mod .. " + W",      exec(s.wallpaper),        "Random wallpaper")
 bind(mod .. " + RETURN", exec(s.terminal),         "Terminal")
 bind(mod .. " + TAB",    exec(s.statusbar_toggle), "Toggle status bar")
 
