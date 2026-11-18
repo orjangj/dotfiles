@@ -1,0 +1,10 @@
+local s = require("conf.settings")
+
+hl.on("hyprland.start", function()
+    hl.exec_cmd("dunst")
+    hl.exec_cmd(s.statusbar)
+    hl.exec_cmd("hyprpaper")
+    hl.exec_cmd(s.wallpaper)
+    hl.exec_cmd("hyprctl setcursor Nordzy-cursors 24")
+    hl.exec_cmd("hypridle")
+end)

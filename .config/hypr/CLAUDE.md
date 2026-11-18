@@ -4,45 +4,58 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-This is a personal Hyprland (Wayland compositor) configuration. There are no build, test, or lint steps — changes take effect by reloading the compositor.
+This is a personal Hyprland (Wayland compositor) configuration. It carries two parallel configs during the migration to Lua:
+
+- `hyprland.lua` + `conf/*.lua` + `local/*.lua` — read by Hyprland >= 0.57 (Lua only; `.conf` is ignored)
+- `hyprland.conf` + `conf/*.conf` + `local/*.conf` — read by Hyprland <= 0.54 (no Lua support)
+
+Keep both in sync until every machine runs >= 0.57, then delete the `.conf` side. Scripts in `scripts/` work with both (see `scripts/hypr_version.sh`).
+
+There are no build, test, or lint steps — changes take effect by reloading the compositor.
 
 ## Applying Changes
 
 ```bash
-hyprctl reload          # Reload hyprland.conf and all sourced configs
-hyprctl dispatch <cmd>  # Run a one-off dispatcher command
+Hyprland --verify-config --config ~/.config/hypr/hyprland.lua  # Check for errors without starting
+hyprctl reload                      # Reload hyprland.lua and all required modules
+hyprctl configerrors                # Show errors from the running config
+hyprctl dispatch 'hl.dsp.exit()'    # dispatch takes a Lua expression (hl.dsp.*)
 ```
 
 Scripts in `scripts/` are plain shell scripts with no dependencies to install.
 
 ## Architecture
 
-`hyprland.conf` is the entry point and sources all files under `conf/` in order. **`conf/settings.conf` must be sourced first** — it defines variables (`$MOD`, `$TERMINAL`, `$BROWSER`, `$EDITOR`, `$STATUSBAR`, etc.) that the other config files reference.
+`hyprland.lua` is the entry point. It loads the modules in `conf/` with `require("conf.<name>")`, then every `local/*.lua` (machine-local overrides, alphabetical, loaded last).
 
-### Key Variable Definitions (conf/settings.conf)
+`conf/settings.lua` and `conf/colors.lua` return tables; other modules use them with `local s = require("conf.settings")` / `local c = require("conf.colors")`.
 
-- `$MOD` — modifier key (SUPER)
-- `$TERMINAL` — `foot`
-- `$EDITOR` — chains `fzf` (project selection from `~/projects`) → `nvim` in the terminal
-- `$BROWSER`, `$MENU`, `$TODO`, `$LOCK`, `$WALLPAPER` — application/script shortcuts
+### Key Settings (conf/settings.lua)
+
+- `s.mod` — modifier key (SUPER)
+- `s.terminal` — `foot`
+- `s.editor` — chains `fzf` (project selection from `~/projects/git`) → `nvim` in the terminal
+- `s.browser`, `s.menu`, `s.todo`, `s.screenlock`, `s.wallpaper` — application/script shortcuts
 
 ### Modular Config Responsibilities
 
 | File | Purpose |
 |------|---------|
-| `conf/keybindings.conf` | All keyboard/mouse shortcuts |
-| `conf/window.conf` | Border colors, gaps, and floating window rules |
-| `conf/autostart.conf` | Programs launched at session start |
-| `conf/input.conf` | Keyboard (US/NO layouts, caps→esc), mouse, touchpad |
-| `conf/monitor.conf` | Display resolution and positioning |
-| `conf/workspace.conf` | Workspace definitions |
-| `conf/environment.conf` | Env vars (Wayland flags, NVIDIA, cursor size) |
-| `conf/misc.conf` | One-off Hyprland toggles |
+| `conf/keybindings.lua` | All keyboard/mouse shortcuts; every bind has a `description` (shown by `scripts/keybindings.sh`) |
+| `conf/window.lua` | Border colors, gaps, and window rules (sizes are expressions, e.g. `monitor_w*0.8 monitor_h*0.8`) |
+| `conf/autostart.lua` | Programs launched on `hyprland.start` |
+| `conf/input.lua` | Keyboard (US/NO layouts, caps→esc), mouse, touchpad |
+| `conf/monitor.lua` | Display resolution and positioning |
+| `conf/environment.lua` | Env vars (Wayland flags, NVIDIA, cursor size) |
+| `conf/misc.lua` | One-off Hyprland toggles |
+| `conf/animation.lua`, `conf/decoration.lua`, `conf/cursor.lua`, `conf/layout.lua` | Look and feel, master layout |
 
 ### Scripts
 
-- `scripts/wallpaper.sh` — picks a random wallpaper from `~/.local/share/backgrounds/wallpapers/nord/` via `swaybg`
+- `scripts/hypr_version.sh` — sourced helper: `hypr_version_ge 0.57` gates hyprctl syntax that changed (dispatch, hyprpaper IPC)
+- `scripts/wallpaper.sh` — sets a random wallpaper from `~/.local/share/backgrounds/wallpapers/nord/` via hyprpaper IPC (run at startup and on `SUPER+W`); hyprpaper 0.8 dropped `preload`/`unload`/`listloaded`
 - `scripts/power_menu.sh` — `wofi` menu for lock/logout/suspend/reboot/shutdown
+- `scripts/keybindings.sh` — fzf list of binds from `hyprctl binds -j` (binding + description)
 - `scripts/hyprlock_battery_status.sh` — outputs battery string for `hyprlock` display (returns empty on desktop)
 
 ### Lock Screen & Idle
@@ -50,14 +63,16 @@ Scripts in `scripts/` are plain shell scripts with no dependencies to install.
 - `hypridle.conf` — locks at 3 min idle, turns off displays at 4 min; suspend is commented out (NVIDIA incompatibility)
 - `hyprlock.conf` — Nord-themed lock screen; battery status is refreshed every 5 seconds via `hyprlock_battery_status.sh`
 
+hyprpaper, hyprlock and hypridle still use the hyprlang (`.conf`) format, and these files work with both old and new versions. Keep `hyprpaper.conf` free of the 0.8-only `wallpaper { }` block; `wallpaper.sh` sets the wallpaper instead.
+
 ## Color Theme
 
-Nord palette is used consistently throughout. Key values:
+Nord palette is used consistently throughout (`conf/colors.lua`). Key values:
 - Background: `#2e3440` / `#3b4252`
 - Foreground/text: `#eceff4`
-- Accent (borders, highlights): `rgb(88c0d0)` → `rgb(a3be8c)` gradient at 45°
-- Shadow: `0xff2e3440`
+- Accent (borders): `rgb(88c0d0)` → `rgb(4c566a)` gradient at 45°
+- Shadow: `0xee1a1a1a`
 
-## Floating Window Rules
+## Window Rules
 
-Defined in `conf/window.conf`. Currently floating: `btop`, `nnn`, `todo` (foot with title "todo"), VNC, VirtualBox, FortiClient. QEMU VMs are pinned to workspace 4.
+Defined in `conf/window.lua`. Currently floating: `btop`, `nnn`, `todo`, `keybindings` (foot titles), Volume Control, file dialogs, update windows, VNC, FortiClient. QEMU and virt-viewer windows go to workspace 4, Slack to workspace 3.
