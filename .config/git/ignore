@@ -5,12 +5,14 @@ tags
 .roles
 ansible_collections
 build/
-out/
+out*/
 venv/
 .venv/
 .vault_pass.txt
 .become_pass.txt
 .env
-.claude/
+.claude/*
+!.claude/settings.json
 *.run
 .envrc
+TODO.md
