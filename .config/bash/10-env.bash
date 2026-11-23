@@ -20,7 +20,6 @@ path_prepend ~/.local/bin
 path_prepend ~/bin
 path_prepend ~/go/bin
 path_prepend ~/.cargo/bin
-path_prepend ~/node_modules/.bin
 path_prepend /snap/bin
 
 if [[ -n $SSH_CONNECTION ]]; then
